@@ -1,0 +1,31 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Grille tarifaire</h5>
+  <small class="text-muted">Prix par nuitée selon la catégorie de client et le type de chambre</small>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-bordered align-middle">
+      <thead>
+        <tr>
+          <th>Catégorie \ Type</th>
+          <th *ngFor="let t of types" class="text-center">{{ t.libelle }}<br><small class="text-muted">base {{ t.prixBase | number:'1.0-0' }} DA</small></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categories">
+          <td><b>{{ cat.libelle }}</b><br><small class="text-muted">{{ cat.code }}</small></td>
+          <td *ngFor="let t of types">
+            <div class="input-group input-group-sm">
+              <input type="number" class="form-control" [ngModel]="prix(cat.id, t.id)"
+                     (ngModelChange)="setPrix(cat.id, t.id, $event)">
+              <button class="btn btn-outline-primary" (click)="saveCell(cat.id, t.id)" title="Enregistrer"><i class="fa-solid fa-check"></i></button>
+            </div>
+          </td>
+        </tr>
+        <tr *ngIf="!categories.length"><td [attr.colspan]="types.length + 1" class="text-center text-muted">Aucune catégorie.</td></tr>
+      </tbody>
+    </table>
+    <small class="text-muted">Astuce : saisir le prix puis cliquer sur ✓ pour enregistrer.</small>
+  </div>
+</div>

@@ -16,6 +16,9 @@ public interface ReservationRepo extends JpaRepository<Reservation, Long> {
 
     List<Reservation> findByDateArriveeBetween(LocalDate start, LocalDate end);
 
+    /** All reservations whose stay interval overlaps [start, end]. */
+    List<Reservation> findByDateArriveeLessThanAndDateDepartGreaterThan(LocalDate end, LocalDate start);
+
     @Query("""
             SELECT r FROM Reservation r
             WHERE r.chambre.id = :chambreId

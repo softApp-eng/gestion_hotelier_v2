@@ -1,8 +1,10 @@
 package com.softappeng.hotelv2.service;
 
 import com.softappeng.hotelv2.entities.Chambre;
+import com.softappeng.hotelv2.entities.Pavillon;
 import com.softappeng.hotelv2.entities.TypeChambre;
 import com.softappeng.hotelv2.repositories.ChambreRepo;
+import com.softappeng.hotelv2.repositories.PavillonRepo;
 import com.softappeng.hotelv2.repositories.TypeChambreRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ public class ChambreService {
 
     private final ChambreRepo chambreRepo;
     private final TypeChambreRepo typeChambreRepo;
+    private final PavillonRepo pavillonRepo;
 
     // ---- Rooms ----
     public List<Chambre> findAll() {
@@ -29,6 +32,10 @@ public class ChambreService {
         if (chambre.getTypeChambre() != null && chambre.getTypeChambre().getId() != null) {
             TypeChambre t = typeChambreRepo.findById(chambre.getTypeChambre().getId()).orElse(null);
             chambre.setTypeChambre(t);
+        }
+        if (chambre.getPavillon() != null && chambre.getPavillon().getId() != null) {
+            Pavillon p = pavillonRepo.findById(chambre.getPavillon().getId()).orElse(null);
+            chambre.setPavillon(p);
         }
         return chambreRepo.save(chambre);
     }

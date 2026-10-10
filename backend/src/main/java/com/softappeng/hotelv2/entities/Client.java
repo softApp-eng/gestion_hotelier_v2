@@ -47,6 +47,10 @@ public class Client extends Auditable {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateNaissance;
 
+    @ManyToOne
+    @JoinColumn(name = "categorie_client_id")
+    private CategorieClient categorieClient;
+
     public String getNomComplet() {
         return (nom == null ? "" : nom) + " " + (prenom == null ? "" : prenom);
     }

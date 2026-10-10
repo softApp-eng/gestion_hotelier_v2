@@ -11,6 +11,7 @@ import java.time.LocalDate;
 /**
  * Room reservation.
  * statut: EN_ATTENTE, CONFIRMEE, EN_COURS, TERMINEE, ANNULEE.
+ * modePaiement: TPE, ESPECES, PRISE_EN_CHARGE.
  */
 @Entity
 @Data
@@ -30,6 +31,14 @@ public class Reservation extends Auditable {
     @JoinColumn(name = "chambre_id")
     private Chambre chambre;
 
+    @ManyToOne
+    @JoinColumn(name = "pavillon_id")
+    private Pavillon pavillon;
+
+    @ManyToOne
+    @JoinColumn(name = "categorie_client_id")
+    private CategorieClient categorieClient;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateArrivee;
 
@@ -37,6 +46,21 @@ public class Reservation extends Auditable {
     private LocalDate dateDepart;
 
     private int nbPersonnes = 1;
+
+    /** Accompanying persons (family of an officer, delegation members...). */
+    private String accompagnants;
+
+    /** TPE, ESPECES, PRISE_EN_CHARGE. */
+    private String modePaiement = "ESPECES";
+
+    @ManyToOne
+    @JoinColumn(name = "organisme_id")
+    private Organisme organisme;
+
+    private String referencePec;
+
+    /** Applied nightly tariff (from the tariff grid), when resolved. */
+    private double tarifNuitee;
 
     private String statut = "CONFIRMEE";
 

@@ -10,6 +10,7 @@ export class GestionChambresComponent implements OnInit {
 
   chambres: any[] = [];
   types: any[] = [];
+  pavillons: any[] = [];
   loading = false;
 
   showForm = false;
@@ -21,6 +22,7 @@ export class GestionChambresComponent implements OnInit {
   ngOnInit(): void {
     this.load();
     this.loadTypes();
+    this.api.pavillons().subscribe(d => this.pavillons = d);
   }
 
   load(): void {
@@ -36,13 +38,22 @@ export class GestionChambresComponent implements OnInit {
   }
 
   newRoom(): void {
-    this.form = { etat: 'LIBRE', typeChambre: { id: this.types[0]?.id } };
+    this.form = { etat: 'LIBRE', typeChambre: { id: this.types[0]?.id }, pavillon: { id: this.pavillons[0]?.id } };
     this.showForm = true;
   }
 
   edit(c: any): void {
-    this.form = { ...c, typeChambre: c.typeChambre ? { id: c.typeChambre.id } : null };
+    this.form = {
+      ...c,
+      typeChambre: c.typeChambre ? { id: c.typeChambre.id } : null,
+      pavillon: c.pavillon ? { id: c.pavillon.id } : null
+    };
     this.showForm = true;
+  }
+
+  onTypeChange(): void {
+    const t = this.types.find((x: any) => x.id === this.form.typeChambre?.id);
+    if (t) this.form.prix = t.prixBase;
   }
 
   save(): void {

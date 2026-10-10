@@ -3,10 +3,12 @@ package com.softappeng.hotelv2.controller;
 import com.softappeng.hotelv2.entities.Sejour;
 import com.softappeng.hotelv2.service.SejourService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -18,7 +20,19 @@ public class SejourController {
 
     @GetMapping
     public List<Sejour> all(@RequestParam(required = false) String statut) {
-        return statut == null ? sejourService.findAll() : sejourService.enCours();
+        return (statut == null || statut.isBlank()) ? sejourService.findAll() : sejourService.byStatut(statut);
+    }
+
+    /** Advanced search used by the Séjours screen filters. */
+    @GetMapping("/recherche")
+    public List<Sejour> recherche(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkinTo,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutFrom,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate checkoutTo,
+            @RequestParam(required = false) String statut,
+            @RequestParam(required = false) String numero) {
+        return sejourService.recherche(checkinFrom, checkinTo, checkoutFrom, checkoutTo, statut, numero);
     }
 
     @GetMapping("/{id}")

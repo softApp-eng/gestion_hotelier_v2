@@ -18,6 +18,12 @@
           <option>STANDARD</option><option>MILITAIRE</option><option>ETRANGER</option><option>SOCIETE</option>
         </select>
       </div>
+      <div class="col-md-3">
+        <label class="form-label">Catégorie (tarif)</label>
+        <select class="form-select" [(ngModel)]="form.categorieClient.id">
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
+        </select>
+      </div>
       <div class="col-md-3"><label class="form-label">Nationalité</label><input class="form-control" [(ngModel)]="form.nationalite"></div>
       <div class="col-md-3 d-flex align-items-end gap-3">
         <div class="form-check"><input class="form-check-input" type="checkbox" [(ngModel)]="form.vip" id="vip"><label class="form-check-label" for="vip">VIP</label></div>
@@ -36,7 +42,7 @@
     <input class="form-control mb-3" placeholder="Rechercher (nom, téléphone, CIN)…" [(ngModel)]="search">
     <div class="table-responsive">
       <table class="table table-hover align-middle">
-        <thead><tr><th>Nom</th><th>Téléphone</th><th>Type</th><th>CIN</th><th>Statut</th><th>Actions</th></tr></thead>
+        <thead><tr><th>Nom</th><th>Téléphone</th><th>Type</th><th>Catégorie</th><th>CIN</th><th>Statut</th><th>Actions</th></tr></thead>
         <tbody>
           <tr *ngFor="let c of filtered()">
             <td><b>{{ c.nom }}</b> {{ c.prenom }}
@@ -44,6 +50,7 @@
             </td>
             <td>{{ c.telephone }}</td>
             <td>{{ c.typeClient }}</td>
+            <td>{{ c.categorieClient?.libelle || '-' }}</td>
             <td>{{ c.cin }}</td>
             <td><span *ngIf="c.blacklist" class="badge bg-danger">Blacklist</span><span *ngIf="!c.blacklist" class="badge bg-success">OK</span></td>
             <td>
@@ -51,7 +58,7 @@
               <button class="btn btn-outline-danger btn-sm" (click)="remove(c)"><i class="fa-solid fa-trash"></i></button>
             </td>
           </tr>
-          <tr *ngIf="!filtered().length"><td colspan="6" class="text-center text-muted">Aucun client.</td></tr>
+          <tr *ngIf="!filtered().length"><td colspan="7" class="text-center text-muted">Aucun client.</td></tr>
         </tbody>
       </table>
     </div>

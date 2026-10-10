@@ -29,6 +29,14 @@ export const MENU: MenuItem[] = [
     ]
   },
   {
+    label: 'Planning',
+    icon: 'fa-solid fa-calendar-days',
+    subItems: [
+      { label: 'Planning des chambres', link: '/gestion/planning' },
+      { label: 'État journalier', link: '/gestion/etat-journalier' }
+    ]
+  },
+  {
     label: 'Restauration',
     isTitle: true
   },
@@ -47,6 +55,20 @@ export const MENU: MenuItem[] = [
     subItems: [
       { label: 'Caisse & Ventes', link: '/gestion/pos/caisse' },
       { label: 'Tickets repas', link: '/gestion/pos/tickets' }
+    ]
+  },
+  {
+    label: 'Configuration',
+    isTitle: true
+  },
+  {
+    label: 'Paramètres hôtel',
+    icon: 'fa-solid fa-sliders',
+    subItems: [
+      { label: 'Pavillons', link: '/gestion/config/pavillons' },
+      { label: 'Catégories clients', link: '/gestion/config/categories-clients' },
+      { label: 'Grille tarifaire', link: '/gestion/config/tarifs' },
+      { label: 'Organismes (PEC)', link: '/gestion/config/organismes' }
     ]
   },
   {

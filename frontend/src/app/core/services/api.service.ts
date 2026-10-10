@@ -70,6 +70,21 @@ export class ApiService {
   checkinDirect(s: any): Observable<any> { return this.http.post(`${this.base}/sejours/checkin-direct`, s); }
   checkout(id: number): Observable<any> { return this.http.post(`${this.base}/sejours/${id}/checkout`, {}); }
 
+  /** Advanced stay search used by the Séjours filters. */
+  sejoursRecherche(f: { checkinFrom?: string; checkinTo?: string; checkoutFrom?: string; checkoutTo?: string; statut?: string; numero?: string }): Observable<any> {
+    let params = new HttpParams();
+    if (f.checkinFrom) params = params.set('checkinFrom', f.checkinFrom);
+    if (f.checkinTo) params = params.set('checkinTo', f.checkinTo);
+    if (f.checkoutFrom) params = params.set('checkoutFrom', f.checkoutFrom);
+    if (f.checkoutTo) params = params.set('checkoutTo', f.checkoutTo);
+    if (f.statut) params = params.set('statut', f.statut);
+    if (f.numero) params = params.set('numero', f.numero);
+    return this.http.get(`${this.base}/sejours/recherche`, { params });
+  }
+
+  // ------------------------------------------------- REPORTING (existing)
+  // (placed after stays for readability)
+
   // ----------------------------------------------------------------- MENU
   categories(): Observable<any> { return this.http.get(`${this.base}/menu/categories`); }
   saveCategorie(c: any): Observable<any> { return this.http.post(`${this.base}/menu/categories`, c); }
@@ -132,4 +147,53 @@ export class ApiService {
     return u.id ? this.http.put(`${this.base}/users/${u.id}`, u) : this.http.post(`${this.base}/users`, u);
   }
   deleteUser(id: number): Observable<any> { return this.http.delete(`${this.base}/users/${id}`); }
+
+  // ---------------------------------------------------- CONFIG: PAVILLONS
+  pavillons(): Observable<any> { return this.http.get(`${this.base}/pavillons`); }
+  savePavillon(p: any): Observable<any> {
+    return p.id ? this.http.put(`${this.base}/pavillons/${p.id}`, p) : this.http.post(`${this.base}/pavillons`, p);
+  }
+  deletePavillon(id: number): Observable<any> { return this.http.delete(`${this.base}/pavillons/${id}`); }
+
+  // --------------------------------------------- CONFIG: CATEGORIES CLIENTS
+  categoriesClients(): Observable<any> { return this.http.get(`${this.base}/categories-clients`); }
+  saveCategorieClient(c: any): Observable<any> {
+    return c.id ? this.http.put(`${this.base}/categories-clients/${c.id}`, c)
+                : this.http.post(`${this.base}/categories-clients`, c);
+  }
+  deleteCategorieClient(id: number): Observable<any> { return this.http.delete(`${this.base}/categories-clients/${id}`); }
+
+  // ------------------------------------------------------- CONFIG: TARIFS
+  tarifs(): Observable<any> { return this.http.get(`${this.base}/tarifs`); }
+  saveTarif(t: any): Observable<any> { return this.http.post(`${this.base}/tarifs`, t); }
+  deleteTarif(id: number): Observable<any> { return this.http.delete(`${this.base}/tarifs/${id}`); }
+  tarifPrix(categorieClientId: number, typeChambreId: number): Observable<any> {
+    const params = new HttpParams().set('categorieClientId', categorieClientId).set('typeChambreId', typeChambreId);
+    return this.http.get(`${this.base}/tarifs/prix`, { params });
+  }
+
+  // --------------------------------------------------- CONFIG: ORGANISMES
+  organismes(): Observable<any> { return this.http.get(`${this.base}/organismes`); }
+  saveOrganisme(o: any): Observable<any> {
+    return o.id ? this.http.put(`${this.base}/organismes/${o.id}`, o) : this.http.post(`${this.base}/organismes`, o);
+  }
+  deleteOrganisme(id: number): Observable<any> { return this.http.delete(`${this.base}/organismes/${id}`); }
+
+  // ------------------------------------------------------------- PLANNING
+  planning(debut: string, fin: string, pavillonId?: number): Observable<any> {
+    let params = new HttpParams().set('debut', debut).set('fin', fin);
+    if (pavillonId) params = params.set('pavillonId', pavillonId);
+    return this.http.get(`${this.base}/planning`, { params });
+  }
+  etatJournalier(date?: string): Observable<any> {
+    let params = new HttpParams();
+    if (date) params = params.set('date', date);
+    return this.http.get(`${this.base}/planning/etat-journalier`, { params });
+  }
+  chambresDisponibles(debut: string, fin: string, pavillonId?: number, typeChambreId?: number): Observable<any> {
+    let params = new HttpParams().set('debut', debut).set('fin', fin);
+    if (pavillonId) params = params.set('pavillonId', pavillonId);
+    if (typeChambreId) params = params.set('typeChambreId', typeChambreId);
+    return this.http.get(`${this.base}/planning/disponibles`, { params });
+  }
 }

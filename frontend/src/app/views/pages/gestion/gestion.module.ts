@@ -16,6 +16,12 @@ import { PosCaisseComponent } from './pos/caisse/pos-caisse.component';
 import { PosTicketsComponent } from './pos/tickets/pos-tickets.component';
 import { GestionRapportsComponent } from './rapports/gestion-rapports.component';
 import { GestionUtilisateursComponent } from './utilisateurs/gestion-utilisateurs.component';
+import { GestionPavillonsComponent } from './config/pavillons/gestion-pavillons.component';
+import { GestionCategoriesClientsComponent } from './config/categories-clients/gestion-categories-clients.component';
+import { GestionTarifsComponent } from './config/tarifs/gestion-tarifs.component';
+import { GestionOrganismesComponent } from './config/organismes/gestion-organismes.component';
+import { PlanningChambresComponent } from './planning/planning-chambres.component';
+import { EtatJournalierComponent } from './etat-journalier/etat-journalier.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -24,6 +30,12 @@ const routes: Routes = [
   { path: 'reservations', component: GestionReservationsComponent },
   { path: 'sejours', component: GestionSejoursComponent },
   { path: 'clients', component: GestionClientsComponent },
+  { path: 'planning', component: PlanningChambresComponent },
+  { path: 'etat-journalier', component: EtatJournalierComponent },
+  { path: 'config/pavillons', component: GestionPavillonsComponent },
+  { path: 'config/categories-clients', component: GestionCategoriesClientsComponent },
+  { path: 'config/tarifs', component: GestionTarifsComponent },
+  { path: 'config/organismes', component: GestionOrganismesComponent },
   { path: 'restaurant/tables', component: RestoTablesComponent },
   { path: 'restaurant/commandes', component: RestoCommandesComponent },
   { path: 'restaurant/menu', component: RestoMenuComponent },
@@ -40,6 +52,12 @@ const routes: Routes = [
     GestionReservationsComponent,
     GestionSejoursComponent,
     GestionClientsComponent,
+    GestionPavillonsComponent,
+    GestionCategoriesClientsComponent,
+    GestionTarifsComponent,
+    GestionOrganismesComponent,
+    PlanningChambresComponent,
+    EtatJournalierComponent,
     RestoTablesComponent,
     RestoCommandesComponent,
     RestoMenuComponent,

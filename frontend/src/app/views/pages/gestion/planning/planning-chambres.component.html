@@ -1,0 +1,56 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Planning des chambres</h5>
+  <button class="btn btn-outline-secondary btn-sm" (click)="imprimer()"><i class="fa-solid fa-print me-1"></i>Imprimer</button>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label">Pavillon</label>
+        <select class="form-select" [(ngModel)]="pavillonId" (ngModelChange)="load()">
+          <option [ngValue]="null">Tous les pavillons</option>
+          <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Mois</label>
+        <input type="month" class="form-control" [(ngModel)]="mois" (ngModelChange)="load()">
+      </div>
+      <div class="col-md-6 text-md-end">
+        <span class="badge bg-success me-1">Libre</span>
+        <span class="badge bg-info me-1">Réservée</span>
+        <span class="badge bg-danger me-1">Occupée</span>
+        <span class="badge bg-secondary">Bloquée</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card" *ngIf="planning">
+  <div class="card-body table-responsive">
+    <table class="table table-sm table-bordered align-middle mb-0">
+      <thead>
+        <tr>
+          <th>Chambre</th>
+          <th>Type</th>
+          <th *ngFor="let j of jours()" class="text-center" style="min-width:28px;">{{ jourNum(j.date) }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of planning.chambres">
+          <td><b>{{ c.numero }}</b></td>
+          <td><small>{{ c.typeChambre || '-' }}</small></td>
+          <td *ngFor="let j of c.jours" class="text-center p-0" [title]="(j.libelle || j.statut)">
+            <div class="w-100" style="height:24px;" [ngClass]="cellClass(j.statut)"></div>
+          </td>
+        </tr>
+        <tr *ngIf="!planning.chambres.length">
+          <td [attr.colspan]="jours().length + 2" class="text-center text-muted">Aucune chambre.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="text-muted small mt-2" *ngIf="loading"><i class="fa-solid fa-spinner fa-spin me-1"></i>Chargement…</div>

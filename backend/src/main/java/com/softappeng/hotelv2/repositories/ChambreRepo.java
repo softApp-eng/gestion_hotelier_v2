@@ -10,4 +10,6 @@ public interface ChambreRepo extends JpaRepository<Chambre, Long> {
     Optional<Chambre> findByNumero(String numero);
     List<Chambre> findByEtat(String etat);
     List<Chambre> findByTypeChambreId(Long typeChambreId);
+    List<Chambre> findByPavillonId(Long pavillonId);
+    List<Chambre> findAllByOrderByNumeroAsc();
 }

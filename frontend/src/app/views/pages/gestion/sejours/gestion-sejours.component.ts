@@ -11,8 +11,12 @@ export class GestionSejoursComponent implements OnInit {
   sejours: any[] = [];
   clients: any[] = [];
   chambres: any[] = [];
+  pavillons: any[] = [];
   showForm = false;
   form: any = {};
+  modesPaiement = ['ESPECES', 'TPE', 'PRISE_EN_CHARGE'];
+
+  filtres: any = { checkinFrom: '', checkinTo: '', checkoutFrom: '', checkoutTo: '', statut: '', numero: '' };
 
   constructor(private api: ApiService) {}
 
@@ -20,14 +24,28 @@ export class GestionSejoursComponent implements OnInit {
     this.load();
     this.api.clients().subscribe(d => this.clients = d);
     this.api.chambres().subscribe(d => this.chambres = d.filter((c: any) => c.etat === 'LIBRE'));
+    this.api.pavillons().subscribe(d => this.pavillons = d);
   }
 
   load(): void {
     this.api.sejours().subscribe(d => this.sejours = d);
   }
 
+  rechercher(): void {
+    this.api.sejoursRecherche(this.filtres).subscribe(d => this.sejours = d);
+  }
+
+  resetFiltres(): void {
+    this.filtres = { checkinFrom: '', checkinTo: '', checkoutFrom: '', checkoutTo: '', statut: '', numero: '' };
+    this.load();
+  }
+
   newWalkIn(): void {
-    this.form = { client: { id: this.clients[0]?.id }, chambre: { id: this.chambres[0]?.id } };
+    this.form = {
+      client: { id: this.clients[0]?.id },
+      chambre: { id: this.chambres[0]?.id },
+      modePaiement: 'ESPECES'
+    };
     this.showForm = true;
   }
 
@@ -49,5 +67,14 @@ export class GestionSejoursComponent implements OnInit {
         });
       }
     });
+  }
+
+  modeBadge(m: string): string {
+    switch (m) {
+      case 'TPE': return 'bg-info text-dark';
+      case 'PRISE_EN_CHARGE': return 'bg-warning text-dark';
+      case 'ESPECES': return 'bg-secondary';
+      default: return 'bg-light text-dark';
+    }
   }
 }

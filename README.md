@@ -56,12 +56,32 @@ Ouvrez **http://localhost:4200**.
 | Module | Description |
 |---|---|
 | **Tableau de bord** | CA du jour, ventes, taux d'occupation, commandes ouvertes, CA 7 jours, top produits |
-| **Hôtel** | Chambres (CRUD + états + types), Réservations (anti double-réservation), Check-in/Check-out, Clients |
+| **Hôtel** | Chambres (CRUD + états + types + pavillon + blocage), Réservations enrichies (catégorie client, pavillon, mode de paiement TPE/Espèces/Prise en charge, accompagnants, tarif auto), Check-in/Check-out, Clients |
 | **Restaurant** | Plan de salle interactif, prise de commande, encaissement, gestion menu/produits/catégories |
 | **Point de vente (POS)** | Grille produits tactile, panier, remise, multi-paiement, ouverture/clôture de caisse, ticket imprimable |
 | **Tickets repas** | Création (auto-numérotée + code unique), contrôle d'accès par code/scan, impression **PDF + QR**, annulation |
 | **Rapports** | CA 7 jours, ventes par période, export **CSV** |
 | **Utilisateurs & rôles** | Gestion des comptes (ADMIN), rôles RECEPTION / SERVEUR / CAISSIER / MANAGER / ADMIN |
+| **Planning** | Planning **mensuel par pavillon** (Libre / Réservée / Occupée / Bloquée), **État journalier** des chambres, **impression** |
+| **Configuration hôtel** | **Pavillons**, **Catégories de clients** (officier sup./sub., gendarmerie, civil, invité, délégation…), **Grille tarifaire** (catégorie × type de chambre), **Organismes** de prise en charge |
+
+---
+
+## 🏨 Module Hôtel — Étape 1 (socle)
+
+| Fonction | Détail |
+|---|---|
+| **Pavillons** | 2 pavillons créés au départ (paramétrables) ; chaque chambre rattachée à un pavillon |
+| **Catégories clients** | 7 catégories (OFF_SUP, OFF_SUB, GEND, GEND_GEN, CIVIL, INVITE, DELEGATION) |
+| **Grille tarifaire** | Prix / nuitée = **catégorie client × type de chambre** (éditable en grille), appliqué automatiquement aux réservations |
+| **Réservation** | Pavillon, chambre, catégorie client, dates, nb personnes, **accompagnants (officier + famille)**, **mode de paiement** (TPE / Espèces / **Prise en charge**), organisme payeur + référence PEC, tarif et montant calculés |
+| **Chambres** | Filtre par pavillon + **blocage** (période + motif) |
+| **Séjours** | Filtres : date check-in (du/au), date check-out (du/au), option (en cours / terminés), **n° de chambre** |
+| **Planning des chambres** | Grille **mensuelle par pavillon** : Libre / Réservée / Occupée / Bloquée, **imprimable** |
+| **État journalier** | État des chambres par pavillon (occupant, arrivée, départ prévu, paiement), taux d'occupation, **imprimable** |
+| **Organismes (PEC)** | Armée, Gendarmerie, Délégation… rattachés aux réservations en prise en charge |
+
+> **À venir (Étape 2)** : compte client (folio) + prestations, **bons repas** (déjeuner/dîner) imprimés et imputés au compte, **facturation** (globale + hébergement + subsistance en PEC ; globale en espèces), **Night audit** (clôture de caisse, rapport d'encaissement, taux d'occupation, main courante imprimables).
 
 ---
 
@@ -74,6 +94,10 @@ Ouvrez **http://localhost:4200**.
 | GET/POST/PUT | `/api/clients` | Clients |
 | GET/POST/PUT/PATCH | `/api/chambres`, `/api/chambres/types` | Chambres & types |
 | GET/POST/PUT | `/api/reservations` | Réservations |
+| GET | `/api/sejours/recherche?checkinFrom=&checkinTo=&checkoutFrom=&checkoutTo=&statut=&numero=` | Recherche de séjours (filtres) |
+| GET/POST/PUT | `/api/pavillons`, `/api/categories-clients`, `/api/organismes` | Configuration hôtel |
+| GET/POST/DELETE | `/api/tarifs`, `/api/tarifs/prix` | Grille tarifaire |
+| GET | `/api/planning?debut=&fin=&pavillonId=`, `/api/planning/etat-journalier`, `/api/planning/disponibles` | Planning & état journalier |
 | POST | `/api/sejours/checkin/{id}`, `/api/sejours/{id}/checkout` | Check-in / Check-out |
 | GET/POST | `/api/menu/categories`, `/api/menu/produits` | Menu |
 | GET/POST | `/api/tables` | Tables |

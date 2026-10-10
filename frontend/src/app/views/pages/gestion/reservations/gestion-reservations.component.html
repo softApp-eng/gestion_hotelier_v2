@@ -32,19 +32,67 @@
       <div class="col-md-4">
         <label class="form-label">Client</label>
         <select class="form-select" [(ngModel)]="form.client.id">
-          <option *ngFor="let c of clients" [value]="c.id">{{ c.nom }} {{ c.prenom }}</option>
+          <option *ngFor="let c of clients" [value]="c.id">{{ c.nom }} {{ c.prenom }} — {{ c.categorieClient?.libelle || 'sans catégorie' }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Pavillon (filtre)</label>
+        <select class="form-select" [(ngModel)]="pavillonFiltre">
+          <option [ngValue]="null">Tous</option>
+          <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
         </select>
       </div>
       <div class="col-md-3">
         <label class="form-label">Chambre</label>
-        <select class="form-select" [(ngModel)]="form.chambre.id">
-          <option *ngFor="let c of chambres" [value]="c.id">{{ c.numero }} — {{ c.typeChambre?.libelle }} ({{ c.prix | number:'1.0-0' }} DA)</option>
+        <select class="form-select" [(ngModel)]="form.chambre.id" (ngModelChange)="onChambreOrCategorieChange()">
+          <option *ngFor="let c of chambresFiltrees()" [value]="c.id">{{ c.numero }} — {{ c.typeChambre?.libelle }} ({{ c.prix | number:'1.0-0' }} DA)</option>
         </select>
       </div>
-      <div class="col-md-2"><label class="form-label">Arrivée</label><input type="date" class="form-control" [(ngModel)]="form.dateArrivee"></div>
-      <div class="col-md-2"><label class="form-label">Départ</label><input type="date" class="form-control" [(ngModel)]="form.dateDepart"></div>
-      <div class="col-md-1"><label class="form-label">Pers.</label><input type="number" class="form-control" [(ngModel)]="form.nbPersonnes"></div>
+      <div class="col-md-3">
+        <label class="form-label">Catégorie client (tarif)</label>
+        <select class="form-select" [(ngModel)]="form.categorieClient.id" (ngModelChange)="onChambreOrCategorieChange()">
+          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
+        </select>
+      </div>
     </div>
+
+    <div class="row g-2 mt-1">
+      <div class="col-md-2"><label class="form-label">Arrivée</label><input type="date" class="form-control" [(ngModel)]="form.dateArrivee" (ngModelChange)="recalcMontant()"></div>
+      <div class="col-md-2"><label class="form-label">Départ</label><input type="date" class="form-control" [(ngModel)]="form.dateDepart" (ngModelChange)="recalcMontant()"></div>
+      <div class="col-md-1"><label class="form-label">Pers.</label><input type="number" class="form-control" [(ngModel)]="form.nbPersonnes"></div>
+      <div class="col-md-3"><label class="form-label">Accompagnants (famille)</label><input class="form-control" [(ngModel)]="form.accompagnants" placeholder="Épouse + 2 enfants"></div>
+      <div class="col-md-2">
+        <label class="form-label">Mode de paiement</label>
+        <select class="form-select" [(ngModel)]="form.modePaiement">
+          <option *ngFor="let m of modesPaiement" [value]="m">{{ m }}</option>
+        </select>
+      </div>
+      <div class="col-md-2"><label class="form-label">Tarif / nuit</label><input type="number" class="form-control" [(ngModel)]="form.tarifNuitee" readonly></div>
+    </div>
+
+    <div class="row g-2 mt-1" *ngIf="isPec()">
+      <div class="col-md-4">
+        <label class="form-label">Organisme payeur (PEC)</label>
+        <select class="form-select" [(ngModel)]="form.organisme.id">
+          <option [ngValue]="null">— choisir —</option>
+          <option *ngFor="let o of organismes" [ngValue]="o.id">{{ o.nom }} ({{ o.type }})</option>
+        </select>
+      </div>
+      <div class="col-md-4"><label class="form-label">Référence PEC</label><input class="form-control" [(ngModel)]="form.referencePec" placeholder="PEC-2026-001"></div>
+      <div class="col-md-4 d-flex align-items-end"><span class="badge bg-warning text-dark">Prise en charge</span></div>
+    </div>
+
+    <div class="row g-2 mt-1">
+      <div class="col-md-4">
+        <label class="form-label">Observation</label>
+        <input class="form-control" [(ngModel)]="form.observation">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Montant prévu ({{ nbNuits() }} nuit(s))</label>
+        <input type="number" class="form-control" [(ngModel)]="form.montantPrevu">
+      </div>
+    </div>
+
     <div class="mt-3">
       <button class="btn btn-primary btn-sm me-2" (click)="save()">Enregistrer</button>
       <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
@@ -56,15 +104,28 @@
 <div class="card">
   <div class="card-body table-responsive">
     <table class="table table-hover align-middle">
-      <thead><tr><th>Client</th><th>Chambre</th><th>Arrivée</th><th>Départ</th><th>Nuits</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Client</th><th>Chambre</th><th>Pavillon</th><th>Arrivée</th><th>Départ</th>
+          <th>Pers.</th><th>Tarif/nuit</th><th>Montant</th><th>Paiement</th><th>Statut</th><th>Actions</th>
+        </tr>
+      </thead>
       <tbody>
         <tr *ngFor="let r of reservations">
-          <td>{{ r.client?.nom }} {{ r.client?.prenom }}</td>
+          <td>{{ r.client?.nom }} {{ r.client?.prenom }}
+            <div class="small text-muted" *ngIf="r.accompagnants"><i class="fa-solid fa-people-group me-1"></i>{{ r.accompagnants }}</div>
+          </td>
           <td>{{ r.chambre?.numero || '-' }}</td>
+          <td>{{ r.pavillon?.nom || r.chambre?.pavillon?.nom || '-' }}</td>
           <td>{{ r.dateArrivee }}</td>
           <td>{{ r.dateDepart }}</td>
           <td>{{ r.nbPersonnes }}</td>
+          <td>{{ r.tarifNuitee | number:'1.0-0' }} DA</td>
           <td>{{ r.montantPrevu | number:'1.0-0' }} DA</td>
+          <td>
+            <span class="badge" [ngClass]="modeBadge(r.modePaiement)">{{ r.modePaiement }}</span>
+            <div class="small text-muted" *ngIf="r.organisme">{{ r.organisme.nom }}</div>
+          </td>
           <td><span class="badge" [ngClass]="statutBadge(r.statut)">{{ r.statut }}</span></td>
           <td>
             <button class="btn btn-outline-success btn-sm me-1" (click)="checkin(r)" [disabled]="r.statut!=='CONFIRMEE'">Check-in</button>
@@ -72,7 +133,7 @@
             <button class="btn btn-outline-danger btn-sm" (click)="remove(r)"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
-        <tr *ngIf="!reservations.length"><td colspan="8" class="text-center text-muted">Aucune réservation.</td></tr>
+        <tr *ngIf="!reservations.length"><td colspan="11" class="text-center text-muted">Aucune réservation.</td></tr>
       </tbody>
     </table>
   </div>

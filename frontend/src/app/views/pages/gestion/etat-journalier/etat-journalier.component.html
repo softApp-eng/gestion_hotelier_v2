@@ -1,0 +1,47 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">État journalier des chambres</h5>
+  <button class="btn btn-outline-secondary btn-sm" (click)="imprimer()"><i class="fa-solid fa-print me-1"></i>Imprimer</button>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-3">
+        <label class="form-label">Date</label>
+        <input type="date" class="form-control" [(ngModel)]="date" (ngModelChange)="load()">
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-2 mb-3" *ngIf="etat">
+  <div class="col"><div class="card text-center"><div class="card-body py-2"><div class="text-muted small">Total</div><div class="h4 mb-0">{{ etat.totalChambres }}</div></div></div></div>
+  <div class="col"><div class="card text-center"><div class="card-body py-2"><div class="text-muted small">Libres</div><div class="h4 mb-0 text-success">{{ etat.libres }}</div></div></div></div>
+  <div class="col"><div class="card text-center"><div class="card-body py-2"><div class="text-muted small">Occupées</div><div class="h4 mb-0 text-danger">{{ etat.occupees }}</div></div></div></div>
+  <div class="col"><div class="card text-center"><div class="card-body py-2"><div class="text-muted small">Nettoyage</div><div class="h4 mb-0 text-warning">{{ etat.nettoyage }}</div></div></div></div>
+  <div class="col"><div class="card text-center"><div class="card-body py-2"><div class="text-muted small">Bloquées</div><div class="h4 mb-0 text-secondary">{{ etat.bloquees }}</div></div></div></div>
+  <div class="col"><div class="card text-center"><div class="card-body py-2"><div class="text-muted small">Taux occupation</div><div class="h4 mb-0">{{ etat.tauxOccupation }}%</div></div></div></div>
+</div>
+
+<div class="card mb-3" *ngFor="let p of etat?.pavillons">
+  <div class="card-header"><b>{{ p.pavillonNom }}</b></div>
+  <div class="card-body table-responsive">
+    <table class="table table-sm table-hover align-middle mb-0">
+      <thead><tr><th>Chambre</th><th>Type</th><th>État</th><th>Occupant</th><th>Arrivée</th><th>Départ prévu</th><th>Paiement</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let c of p.chambres">
+          <td><b>{{ c.numero }}</b></td>
+          <td>{{ c.typeChambre || '-' }}</td>
+          <td>
+            <span *ngIf="c.bloque" class="badge bg-secondary">BLOQUEE</span>
+            <span *ngIf="!c.bloque" class="badge" [ngClass]="etatBadge(c.etat)">{{ c.etat }}</span>
+          </td>
+          <td>{{ c.occupant || '-' }}</td>
+          <td>{{ c.dateArrivee || '-' }}</td>
+          <td>{{ c.dateDepartPrevue || '-' }}</td>
+          <td>{{ c.modePaiement || '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

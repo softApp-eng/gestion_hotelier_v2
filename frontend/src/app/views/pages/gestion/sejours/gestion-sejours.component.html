@@ -3,22 +3,56 @@
   <button class="btn btn-primary btn-sm" (click)="newWalkIn()"><i class="fa-solid fa-plus me-1"></i>Check-in direct</button>
 </div>
 
+<!-- Filters -->
+<div class="card mb-3">
+  <div class="card-header"><b><i class="fa-solid fa-filter me-1"></i>Filtres</b></div>
+  <div class="card-body">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-2"><label class="form-label">Check-in du</label><input type="date" class="form-control" [(ngModel)]="filtres.checkinFrom"></div>
+      <div class="col-md-2"><label class="form-label">Check-in au</label><input type="date" class="form-control" [(ngModel)]="filtres.checkinTo"></div>
+      <div class="col-md-2"><label class="form-label">Check-out du</label><input type="date" class="form-control" [(ngModel)]="filtres.checkoutFrom"></div>
+      <div class="col-md-2"><label class="form-label">Check-out au</label><input type="date" class="form-control" [(ngModel)]="filtres.checkoutTo"></div>
+      <div class="col-md-2">
+        <label class="form-label">Option</label>
+        <select class="form-select" [(ngModel)]="filtres.statut">
+          <option value="">Tous</option>
+          <option value="EN_COURS">En cours (dans l'hôtel)</option>
+          <option value="TERMINE">Terminés (check-out)</option>
+        </select>
+      </div>
+      <div class="col-md-2"><label class="form-label">N° chambre</label><input class="form-control" [(ngModel)]="filtres.numero" placeholder="ex : 101"></div>
+      <div class="col-md-12 mt-2">
+        <button class="btn btn-primary btn-sm me-2" (click)="rechercher()"><i class="fa-solid fa-magnifying-glass me-1"></i>Rechercher</button>
+        <button class="btn btn-light btn-sm" (click)="resetFiltres()">Réinitialiser</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="card mb-3" *ngIf="showForm">
   <div class="card-header"><b>Check-in direct (sans réservation)</b></div>
   <div class="card-body">
     <div class="row g-2">
-      <div class="col-md-5">
+      <div class="col-md-4">
         <label class="form-label">Client</label>
         <select class="form-select" [(ngModel)]="form.client.id">
           <option *ngFor="let c of clients" [value]="c.id">{{ c.nom }} {{ c.prenom }}</option>
         </select>
       </div>
-      <div class="col-md-4">
+      <div class="col-md-3">
         <label class="form-label">Chambre libre</label>
         <select class="form-select" [(ngModel)]="form.chambre.id">
           <option *ngFor="let c of chambres" [value]="c.id">{{ c.numero }} — {{ c.typeChambre?.libelle }}</option>
         </select>
       </div>
+      <div class="col-md-2"><label class="form-label">Départ prévu</label><input type="date" class="form-control" [(ngModel)]="form.dateDepartPrevue"></div>
+      <div class="col-md-3">
+        <label class="form-label">Mode de paiement</label>
+        <select class="form-select" [(ngModel)]="form.modePaiement">
+          <option *ngFor="let m of modesPaiement" [value]="m">{{ m }}</option>
+        </select>
+      </div>
+      <div class="col-md-6"><label class="form-label">Accompagnants</label><input class="form-control" [(ngModel)]="form.accompagnants" placeholder="Épouse + 2 enfants"></div>
       <div class="col-md-3"><label class="form-label">Montant (DA)</label><input type="number" class="form-control" [(ngModel)]="form.montant"></div>
     </div>
     <div class="mt-3">
@@ -31,13 +65,23 @@
 <div class="card">
   <div class="card-body table-responsive">
     <table class="table table-hover align-middle">
-      <thead><tr><th>Client</th><th>Chambre</th><th>Check-in</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead>
+      <thead>
+        <tr>
+          <th>Client</th><th>Chambre</th><th>Pavillon</th><th>Check-in</th><th>Départ prévu</th>
+          <th>Montant</th><th>Paiement</th><th>Statut</th><th>Actions</th>
+        </tr>
+      </thead>
       <tbody>
         <tr *ngFor="let s of sejours">
-          <td>{{ s.client?.nom }} {{ s.client?.prenom }}</td>
+          <td>{{ s.client?.nom }} {{ s.client?.prenom }}
+            <div class="small text-muted" *ngIf="s.accompagnants"><i class="fa-solid fa-people-group me-1"></i>{{ s.accompagnants }}</div>
+          </td>
           <td>{{ s.chambre?.numero }}</td>
+          <td>{{ s.pavillon?.nom || s.chambre?.pavillon?.nom || '-' }}</td>
           <td>{{ s.dateCheckin | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ s.dateDepartPrevue || '-' }}</td>
           <td>{{ s.montant | number:'1.0-0' }} DA</td>
+          <td><span class="badge" [ngClass]="modeBadge(s.modePaiement)">{{ s.modePaiement }}</span></td>
           <td><span class="badge" [ngClass]="s.statut==='EN_COURS'?'bg-success':'bg-secondary'">{{ s.statut }}</span></td>
           <td>
             <button class="btn btn-outline-danger btn-sm" (click)="checkout(s)" [disabled]="s.statut!=='EN_COURS'">
@@ -45,7 +89,7 @@
             </button>
           </td>
         </tr>
-        <tr *ngIf="!sejours.length"><td colspan="6" class="text-center text-muted">Aucun séjour.</td></tr>
+        <tr *ngIf="!sejours.length"><td colspan="9" class="text-center text-muted">Aucun séjour.</td></tr>
       </tbody>
     </table>
   </div>

@@ -9,6 +9,7 @@ import Swal from 'sweetalert2';
 export class GestionClientsComponent implements OnInit {
 
   clients: any[] = [];
+  categories: any[] = [];
   search = '';
   showForm = false;
   form: any = { typeClient: 'STANDARD' };
@@ -17,6 +18,7 @@ export class GestionClientsComponent implements OnInit {
 
   ngOnInit(): void {
     this.load();
+    this.api.categoriesClients().subscribe(d => this.categories = d);
   }
 
   load(): void {
@@ -34,12 +36,12 @@ export class GestionClientsComponent implements OnInit {
   }
 
   newClient(): void {
-    this.form = { typeClient: 'STANDARD' };
+    this.form = { typeClient: 'STANDARD', categorieClient: { id: this.categories[0]?.id } };
     this.showForm = true;
   }
 
   edit(c: any): void {
-    this.form = { ...c };
+    this.form = { ...c, categorieClient: c.categorieClient ? { id: c.categorieClient.id } : null };
     this.showForm = true;
   }
 

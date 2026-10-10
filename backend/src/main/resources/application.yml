@@ -20,7 +20,7 @@ spring:
       max-request-size: 10MB
 
 server:
-  port: 9091
+  port: 9090
 
 # --- JWT ---
 application:
@@ -48,7 +48,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
     show-sql: false
-    open-in-view: false
+    open-in-view: true
     properties:
       hibernate:
         format_sql: false
@@ -76,4 +76,4 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: false
-    open-in-view: false
+    open-in-view: true

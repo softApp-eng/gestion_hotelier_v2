@@ -70,4 +70,11 @@ export class GestionReservationsComponent implements OnInit {
       default: return 'bg-warning';
     }
   }
+
+  remove(r: any): void {
+    Swal.fire({ title: 'Supprimer la réservation ?', text: `Client ${r.client?.nom}, chambre ${r.chambre?.numero || '-'}`,
+      icon: 'warning', showCancelButton: true, confirmButtonText: 'Oui', cancelButtonText: 'Non' }).then(res => {
+      if (res.isConfirmed) this.api.deleteReservation(r.id).subscribe(() => this.load());
+    });
+  }
 }

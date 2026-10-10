@@ -69,7 +69,7 @@
           <td>
             <button class="btn btn-outline-success btn-sm me-1" (click)="checkin(r)" [disabled]="r.statut!=='CONFIRMEE'">Check-in</button>
             <button class="btn btn-outline-primary btn-sm me-1" (click)="edit(r)"><i class="fa-solid fa-pen"></i></button>
-            <button class="btn btn-outline-danger btn-sm" (click)="api.deleteReservation(r.id).subscribe(()=>load())"><i class="fa-solid fa-trash"></i></button>
+            <button class="btn btn-outline-danger btn-sm" (click)="remove(r)"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
         <tr *ngIf="!reservations.length"><td colspan="8" class="text-center text-muted">Aucune réservation.</td></tr>

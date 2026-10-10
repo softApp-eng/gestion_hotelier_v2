@@ -75,7 +75,7 @@
         <ul class="list-unstyled mb-3">
           <li *ngFor="let c of categories" class="d-flex justify-content-between border-bottom py-1">
             <span><i [class]="c.icon || 'fa-solid fa-tag'" class="me-1"></i>{{ c.nom }}</span>
-            <button class="btn btn-sm text-danger p-0" (click)="api.deleteCategorie(c.id).subscribe(()=>{loadCategories();load()})"><i class="fa-solid fa-xmark"></i></button>
+            <button class="btn btn-sm text-danger p-0" (click)="deleteCategorie(c)"><i class="fa-solid fa-xmark"></i></button>
           </li>
         </ul>
         <input class="form-control form-control-sm mb-2" placeholder="Nom" [(ngModel)]="catForm.nom">

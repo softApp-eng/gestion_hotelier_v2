@@ -61,4 +61,11 @@ export class RestoMenuComponent implements OnInit {
         this.catForm = { ordre: 0 }; this.loadCategories(); }
     });
   }
+
+  deleteCategorie(c: any): void {
+    Swal.fire({ title: 'Supprimer la catégorie ?', text: c.nom, icon: 'warning', showCancelButton: true,
+      confirmButtonText: 'Oui', cancelButtonText: 'Non' }).then(r => {
+      if (r.isConfirmed) this.api.deleteCategorie(c.id).subscribe(() => { this.loadCategories(); this.load(); });
+    });
+  }
 }

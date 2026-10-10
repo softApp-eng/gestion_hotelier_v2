@@ -115,7 +115,7 @@ export class RestoTablesComponent implements OnInit {
     }).then(r => {
       if (r.isConfirmed) {
         const mode = (r.value || 'ESPECES').toUpperCase();
-        this.api.payerCommande(this.commandeId, { typeVente: 'RESTAURANT', paiements: [{ mode, montant: t }] }).subscribe({
+        this.api.payerCommande(this.commandeId!, { typeVente: 'RESTAURANT', paiements: [{ mode, montant: t }] }).subscribe({
           next: () => {
             Swal.fire({ icon: 'success', title: 'Commande payée', timer: 1200, showConfirmButton: false });
             this.reset(); this.loadTables(); this.loadOpen();

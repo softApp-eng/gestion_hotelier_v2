@@ -1,0 +1,118 @@
+<div class="planning-container p-3">
+
+  <!-- EN-TÊTE & FILTRES -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h2 class="m-0 fw-bold text-indigo">
+        <i class="fa-solid fa-calendar-days me-2"></i>Planning des Chambres
+      </h2>
+      <p class="text-muted small mb-0">Vue globale des occupations et disponibilités du parc hôtelier</p>
+    </div>
+
+    <!-- CONTROLES DE NAVIGATION & FILTRES -->
+    <div class="d-flex align-items-center gap-3">
+      <!-- Filtre Catégorie -->
+      <mat-form-field appearance="outline" class="density-compact m-0">
+        <mat-label>Catégorie</mat-label>
+        <mat-select [(ngModel)]="selectedCategory">
+          <mat-option value="ALL">Toutes les catégories</mat-option>
+          <mat-option value="Standard">Standard</mat-option>
+          <mat-option value="Deluxe">Deluxe</mat-option>
+          <mat-option value="Suite">Suite</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Période / Navigation -->
+      <div class="btn-group">
+        <button mat-stroked-button (click)="navigateDays(-7)">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <!-- <button mat-stroked-button (click)="startDate = new Date(); generateDaysHeader()">Aujourd'hui</button> -->
+        <button mat-stroked-button (click)="navigateDays(7)">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- LÉGENDE DES STATUTS -->
+  <div class="d-flex gap-3 mb-3 p-2 bg-light rounded border fs-7">
+    <div class="d-flex align-items-center gap-1">
+      <span class="legend-box bg-success"></span> En Séjour (Check-In)
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <span class="legend-box bg-primary"></span> Réservé / Confirmé
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <span class="legend-box bg-warning text-dark"></span> Option / En Attente
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <span class="legend-box bg-secondary"></span> Libre
+    </div>
+    <div class="d-flex align-items-center gap-1">
+      <span class="legend-box bg-danger"></span> Hors Service
+    </div>
+  </div>
+
+  <!-- GRILLE PLANNING / RACK GENERAL -->
+  <mat-card class="shadow-sm border-0">
+    <mat-card-content class="p-0 overflow-auto">
+      <table class="table table-bordered planning-table m-0">
+
+        <!-- ENTÊTE DE LA GRILLE (DATES) -->
+        <thead>
+          <tr>
+            <th class="room-col bg-light">Chambre</th>
+            <th *ngFor="let day of daysHeader" class="text-center bg-light day-col">
+              <div class="fw-bold">{{ day | date:'EEE' }}</div>
+              <small class="text-muted">{{ day | date:'dd/MM' }}</small>
+            </th>
+          </tr>
+        </thead>
+
+        <!-- CORPS DE LA GRILLE (CHAMBRES X JOURS) -->
+        <tbody>
+          <tr *ngFor="let room of filteredRooms">
+            <!-- Colonne Info Chambre -->
+            <td class="room-cell bg-light">
+              <div class="d-flex justify-content-between align-items-center">
+                <div>
+                  <strong class="d-block">Ch. {{ room.number }}</strong>
+                  <small class="text-muted">{{ room.category }}</small>
+                </div>
+                <!-- Statut de ménage -->
+                <i class="fa-solid fa-broom fs-6"
+                   [class.text-success]="room.status === 'CLEAN' || room.status === 'INSPECTED'"
+                   [class.text-warning]="room.status === 'DIRTY'"
+                   [class.text-danger]="room.status === 'OUT_OF_SERVICE'"
+                   [matTooltip]="'Statut Ménage: ' + room.status"></i>
+              </div>
+            </td>
+
+            <!-- Cellules Jours -->
+            <td *ngFor="let day of daysHeader" class="planning-cell p-0 position-relative">
+              
+              <!-- bloc réservation si présent -->
+              <ng-container *ngWith="getReservationForCell(room.id, day) as res">
+                <div *ngIf="res && isReservationStart(res, day)"
+                     class="reservation-block text-white p-2 rounded shadow-sm position-absolute"
+                     [style.width.%]="res.nights * 100 - 4"
+                     [class.bg-success]="res.status === 'CHECKED_IN'"
+                     [class.bg-primary]="res.status === 'CONFIRMED'"
+                     [class.bg-warning]="res.status === 'PENDING'"
+                     [class.text-dark]="res.status === 'PENDING'"
+                     (click)="openReservationDetails(res)">
+                  <div class="fw-bold text-truncate">{{ res.guestName }}</div>
+                  <small class="d-block text-truncate">{{ res.nights }} nuit(s)</small>
+                </div>
+              </ng-container>
+
+            </td>
+          </tr>
+        </tbody>
+
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+</div>

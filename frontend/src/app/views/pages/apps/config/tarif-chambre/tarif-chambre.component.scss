@@ -1,0 +1,211 @@
+// Variables
+$primary-color: #2563eb;
+$primary-hover: #1d4ed8;
+$text-main: #1e293b;
+$text-muted: #64748b;
+$border-color: #e2e8f0;
+$bg-light: #f8fafc;
+
+.table-container {
+  margin: 24px;
+  border-radius: 12px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid $border-color;
+}
+
+// Barre d'outils et Filtres
+.header-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  gap: 16px;
+  background-color: #ffffff;
+  border-bottom: 1px solid $border-color;
+
+  .filters-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    flex: 1;
+
+    mat-form-field {
+      min-width: 200px;
+      margin-bottom: 0 !important; // Annulation des anciennes marges négatives
+
+      // Suppression stricte des espaces inutiles sous les inputs Material
+      ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+        display: none;
+      }
+
+      &.search-field {
+        width: 280px;
+      }
+
+      &.filter-field {
+        width: 220px;
+      }
+    }
+  }
+
+  .actions-group {
+    display: flex;
+    align-items: center;
+  }
+
+  .add-button {
+    height: 48px;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $primary-hover;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+  }
+}
+
+// Alignement des Icônes
+.search-icon {
+  color: $text-muted;
+  margin-right: 4px;
+}
+
+.btn-icon {
+  margin-right: 8px;
+  font-size: 0.95rem;
+}
+
+.action-icon {
+  font-size: 1.1rem;
+}
+
+// Structure du tableau
+.responsive-table {
+  overflow-x: auto;
+}
+
+.full-width-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  th.mat-mdc-header-cell {
+    background-color: $bg-light;
+    color: $text-muted;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 16px 20px;
+    border-bottom: 1px solid $border-color;
+  }
+
+  td.mat-mdc-cell {
+    padding: 14px 20px;
+    color: $text-main;
+    font-size: 0.925rem;
+    border-bottom: 1px solid $border-color;
+    transition: background-color 0.15s ease;
+  }
+
+  tr.mat-mdc-row {
+    &:hover td.mat-mdc-cell {
+      background-color: #f1f5f9;
+    }
+    
+    &:last-child td.mat-mdc-cell {
+      border-bottom: none;
+    }
+  }
+}
+
+// Badges d'état et Prix
+.price-badge {
+  font-weight: 700;
+  color: #0f172a;
+  background-color: #f1f5f9;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+
+  &.active {
+    background-color: #dcfce7;
+    color: #15803d;
+  }
+
+  &.inactive {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+}
+
+// États Vides et Chargement
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(2px);
+  z-index: 5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 48px 24px !important;
+  color: $text-muted;
+  font-size: 0.95rem;
+}
+
+// Adaptabilité Mobile & Tablette
+@media (max-width: 1024px) {
+  .header-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+
+    .filters-group {
+      width: 100%;
+
+      mat-form-field, 
+      mat-form-field.search-field,
+      mat-form-field.filter-field {
+        width: 100%;
+        min-width: 100%;
+      }
+    }
+
+    .actions-group {
+      width: 100%;
+
+      .add-button {
+        width: 100%;
+      }
+    }
+  }
+}

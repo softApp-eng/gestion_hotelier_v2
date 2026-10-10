@@ -1,0 +1,79 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Réservations</h5>
+  <button class="btn btn-primary btn-sm" (click)="newRes()"><i class="fa-solid fa-plus me-1"></i>Nouvelle réservation</button>
+</div>
+
+<!-- Arrivées du jour -->
+<div class="card mb-3 border-primary" *ngIf="arrivees.length">
+  <div class="card-header bg-primary text-white"><b>Arrivées prévues aujourd'hui ({{ arrivees.length }})</b></div>
+  <div class="card-body p-0">
+    <table class="table mb-0 align-middle">
+      <tbody>
+        <tr *ngFor="let a of arrivees">
+          <td>{{ a.client?.nom }} {{ a.client?.prenom }}</td>
+          <td>Chambre <b>{{ a.chambre?.numero }}</b></td>
+          <td>{{ a.dateDepart }}</td>
+          <td class="text-end">
+            <button class="btn btn-success btn-sm" (click)="checkin(a)" [disabled]="a.statut==='EN_COURS'">
+              <i class="fa-solid fa-right-to-bracket me-1"></i>Check-in
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Form -->
+<div class="card mb-3" *ngIf="showForm">
+  <div class="card-header"><b>{{ form.id ? 'Modifier' : 'Nouvelle' }} réservation</b></div>
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-md-4">
+        <label class="form-label">Client</label>
+        <select class="form-select" [(ngModel)]="form.client.id">
+          <option *ngFor="let c of clients" [value]="c.id">{{ c.nom }} {{ c.prenom }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Chambre</label>
+        <select class="form-select" [(ngModel)]="form.chambre.id">
+          <option *ngFor="let c of chambres" [value]="c.id">{{ c.numero }} — {{ c.typeChambre?.libelle }} ({{ c.prix | number:'1.0-0' }} DA)</option>
+        </select>
+      </div>
+      <div class="col-md-2"><label class="form-label">Arrivée</label><input type="date" class="form-control" [(ngModel)]="form.dateArrivee"></div>
+      <div class="col-md-2"><label class="form-label">Départ</label><input type="date" class="form-control" [(ngModel)]="form.dateDepart"></div>
+      <div class="col-md-1"><label class="form-label">Pers.</label><input type="number" class="form-control" [(ngModel)]="form.nbPersonnes"></div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary btn-sm me-2" (click)="save()">Enregistrer</button>
+      <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- List -->
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead><tr><th>Client</th><th>Chambre</th><th>Arrivée</th><th>Départ</th><th>Nuits</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let r of reservations">
+          <td>{{ r.client?.nom }} {{ r.client?.prenom }}</td>
+          <td>{{ r.chambre?.numero || '-' }}</td>
+          <td>{{ r.dateArrivee }}</td>
+          <td>{{ r.dateDepart }}</td>
+          <td>{{ r.nbPersonnes }}</td>
+          <td>{{ r.montantPrevu | number:'1.0-0' }} DA</td>
+          <td><span class="badge" [ngClass]="statutBadge(r.statut)">{{ r.statut }}</span></td>
+          <td>
+            <button class="btn btn-outline-success btn-sm me-1" (click)="checkin(r)" [disabled]="r.statut!=='CONFIRMEE'">Check-in</button>
+            <button class="btn btn-outline-primary btn-sm me-1" (click)="edit(r)"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-outline-danger btn-sm" (click)="api.deleteReservation(r.id).subscribe(()=>load())"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+        <tr *ngIf="!reservations.length"><td colspan="8" class="text-center text-muted">Aucune réservation.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>

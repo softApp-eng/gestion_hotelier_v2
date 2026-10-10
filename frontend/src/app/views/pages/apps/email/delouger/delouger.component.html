@@ -1,0 +1,194 @@
+<div class="delouger-container p-3">
+
+  <!-- EN-TÊTE DE LA PAGE -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="m-0 fw-bold text-danger">
+        <i class="fa-solid fa-right-left me-2"></i>Gestion des Délogements
+      </h2>
+      <p class="text-muted small mb-0">Changement de chambre en cours de séjour & réaffectation dynamique</p>
+    </div>
+    
+    <!-- Recherche Rapide du Client à Déloger -->
+    <div class="d-flex gap-2">
+      <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
+        <mat-label>Rechercher le client en séjour...</mat-label>
+        <input matInput [(ngModel)]="searchQuery" (keyup)="applySearch()" placeholder="Chambre actuelle, Nom, Résa...">
+        <i matPrefix class="fa-solid fa-magnifying-glass me-2 text-muted ps-2"></i>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- BANNÈRE D'INFORMATION GOUVERNANCE / MAINTENANCE -->
+  <mat-card class="alert-card mb-4 border-0 shadow-sm">
+    <mat-card-content class="p-3">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="icon-badge bg-danger-subtle text-danger p-3 rounded-circle">
+            <i class="fa-solid fa-triangle-exclamation fs-4"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold mb-1">Règles d'Or du Délogement</h5>
+            <p class="text-muted small mb-0">
+              Vérifiez toujours l'état de propreté de la nouvelle chambre. Si le délogement implique une catégorie supérieure, validez la **tarification d'upgrade**.
+            </p>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- TABLEAU DES CLIENTS EN SÉJOUR ÉLIGIBLES AU DÉLOGEMENT -->
+  <mat-card class="shadow-sm mb-4">
+    <mat-card-header class="bg-light p-3 border-bottom">
+      <mat-card-title class="fs-6 fw-bold m-0">Clients en séjour (In-House)</mat-card-title>
+    </mat-card-header>
+    <mat-card-content class="p-0">
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+          <!-- Chambre Actuelle -->
+          <ng-container matColumnDef="chambreActuelle">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Ch. Actuelle </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="badge bg-dark fs-6">Ch. {{ row.chambreNumero }}</span>
+              <small class="text-muted d-block">{{ row.pavillonNom }}</small>
+            </td>
+          </ng-container>
+
+          <!-- Client -->
+          <ng-container matColumnDef="client">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Client </th>
+            <td mat-cell *matCellDef="let row">
+              <div class="fw-bold">{{ row.clientNom }} {{ row.clientPrenom }}</div>
+              <small class="text-muted">Résa #{{ row.numeroResa }} • {{ row.categorieActuelle }}</small>
+            </td>
+          </ng-container>
+
+          <!-- Dates du Séjour -->
+          <ng-container matColumnDef="dates">
+            <th mat-header-cell *matHeaderCellDef> Période </th>
+            <td mat-cell *matCellDef="let row">
+              <small class="d-block"><strong>Du:</strong> {{ row.dateArrivee | date:'dd/MM/yyyy' }}</small>
+              <small class="d-block text-muted"><strong>Au:</strong> {{ row.dateDepart | date:'dd/MM/yyyy' }}</small>
+            </td>
+          </ng-container>
+
+          <!-- Statut Bagages / Clés -->
+          <ng-container matColumnDef="statutSecurit">
+            <th mat-header-cell *matHeaderCellDef> État Facturation </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="badge" [ngClass]="row.solde === 0 ? 'bg-success-subtle text-success border border-success' : 'bg-warning-subtle text-warning border border-warning'">
+                {{ row.solde === 0 ? 'Compte à jour' : 'Solde: ' + (row.solde | currency:'EUR':'symbol':'1.2-2') }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Action Déloger -->
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="text-end pe-3"> Action </th>
+            <td mat-cell *matCellDef="let row" class="text-end pe-3">
+              <button mat-flat-button color="warn" (click)="openDelougerModal(row)">
+                <i class="fa-solid fa-right-left me-1"></i> Déloger le client
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center p-4" [attr.colspan]="displayedColumns.length">
+              <i class="fa-solid fa-bed fs-3 text-muted mb-2 d-block"></i>
+              Aucun client trouvé pour le délogement.
+            </td>
+          </tr>
+
+        </table>
+      </div>
+      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+
+</div>
+
+<!-- MODAL / DIALOGUE DE DÉLOGEMENT (FORMULAIRE ACTIONNEL) -->
+<ng-template #delougerDialog>
+  <div class="p-3" *ngIf="selectedReservation">
+    <h3 class="fw-bold text-danger mb-1">
+      <i class="fa-solid fa-right-left me-2"></i>Délogement de {{ selectedReservation.clientNom }} {{ selectedReservation.clientPrenom }}
+    </h3>
+    <p class="text-muted small mb-3">Chambre actuelle : <strong>Ch. {{ selectedReservation.chambreNumero }}</strong> ({{ selectedReservation.categorieActuelle }})</p>
+
+    <mat-divider class="mb-3"></mat-divider>
+
+    <form [formGroup]="delougerForm">
+      <div class="row g-3">
+        
+        <!-- Motif du Délogement -->
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Motif du délogement</mat-label>
+            <mat-select formControlName="motif">
+              <mat-option value="MAINTENANCE">Panne / Problème Technique (Plomberie, AC...)</mat-option>
+              <mat-option value="NUISANCE">Nuisance sonore / Plainte client</mat-option>
+              <mat-option value="UPGRADE_COMMERCIAL">Upgrade gracieux / Gest commercial</mat-option>
+              <mat-option value="UPGRADE_PAYANT">Upgrade payant à la demande du client</mat-option>
+              <mat-option value="DEMANDE_CLIENT">Préférence client (Étage, vue...)</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Nouvelle Chambre Disponible -->
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nouvelle Chambre Propre</mat-label>
+            <mat-select formControlName="nouvelleChambreId">
+              <mat-option *ngFor="let room of chambresDisponibles" [value]="room.id">
+                Ch. {{ room.numero }} - {{ room.categorie }} ({{ room.pavillon }})
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Ajustement Tarifaire -->
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Ajustement Tarifaire par nuit (€)</mat-label>
+            <input matInput type="number" formControlName="fraisAjustement" placeholder="0">
+            <span matPrefix class="ps-2 me-1">€</span>
+          </mat-form-field>
+        </div>
+
+        <!-- Options Logistiques & Notifications -->
+        <div class="col-md-12">
+          <div class="card p-3 bg-light border-0">
+            <div class="fw-bold mb-2">Notifications & Actions Automatiques :</div>
+            <mat-slide-toggle color="primary" formControlName="notifyGouvernance" class="mb-2 d-block">
+              Informer la Gouvernance (Mettre l'ancienne chambre en statut <strong>DIRTY</strong>)
+            </mat-slide-toggle>
+            <mat-slide-toggle color="primary" formControlName="recodeKeyCards" class="d-block">
+              Signaler la ré-encodage des cartes magnétiques à la réception
+            </mat-slide-toggle>
+          </div>
+        </div>
+
+        <!-- Remarques / Interne -->
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Notes / Remarques internes</mat-label>
+            <textarea matInput rows="2" formControlName="remarques" placeholder="Détails complémentaires sur le transfert..."></textarea>
+          </mat-form-field>
+        </div>
+
+      </div>
+    </form>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button mat-button (click)="closeDialog()">Annuler</button>
+      <button mat-flat-button color="warn" [disabled]="delougerForm.invalid" (click)="confirmDelouger()">
+        Valider le Délogement
+      </button>
+    </div>
+  </div>
+</ng-template>

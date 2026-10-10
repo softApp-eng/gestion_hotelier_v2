@@ -1,0 +1,57 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Utilisateurs & rôles</h5>
+  <button class="btn btn-primary btn-sm" *ngIf="auth.isAdmin()" (click)="newUser()"><i class="fa-solid fa-user-plus me-1"></i>Nouvel utilisateur</button>
+</div>
+
+<div class="alert alert-warning" *ngIf="!auth.isAdmin()">
+  <i class="fa-solid fa-lock me-1"></i>Cette section est réservée à l'administrateur.
+</div>
+
+<ng-container *ngIf="auth.isAdmin()">
+  <div class="card mb-3" *ngIf="showForm">
+    <div class="card-header"><b>{{ form.id ? 'Modifier' : 'Nouvel' }} utilisateur</b></div>
+    <div class="card-body">
+      <div class="row g-2">
+        <div class="col-md-3"><label class="form-label">Identifiant</label>
+          <input class="form-control" [(ngModel)]="form.username" [disabled]="!!form.id"></div>
+        <div class="col-md-3"><label class="form-label">Nom</label><input class="form-control" [(ngModel)]="form.nom"></div>
+        <div class="col-md-2"><label class="form-label">Prénom</label><input class="form-control" [(ngModel)]="form.prenom"></div>
+        <div class="col-md-2"><label class="form-label">Rôle</label>
+          <select class="form-select" [(ngModel)]="form.role">
+            <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+          </select>
+        </div>
+        <div class="col-md-2"><label class="form-label">Mot de passe</label>
+          <input type="password" class="form-control" [(ngModel)]="form.password" [placeholder]="form.id ? '(inchangé)' : ''"></div>
+        <div class="col-md-2 d-flex align-items-end">
+          <div class="form-check"><input class="form-check-input" type="checkbox" id="act" [(ngModel)]="form.actif"><label class="form-check-label" for="act">Actif</label></div>
+        </div>
+      </div>
+      <div class="mt-3">
+        <button class="btn btn-primary btn-sm me-2" (click)="save()">Enregistrer</button>
+        <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-body table-responsive">
+      <table class="table table-hover align-middle">
+        <thead><tr><th>Identifiant</th><th>Nom</th><th>Rôle</th><th>Statut</th><th></th></tr></thead>
+        <tbody>
+          <tr *ngFor="let u of users">
+            <td><b>{{ u.username }}</b></td>
+            <td>{{ u.nom }} {{ u.prenom }}</td>
+            <td><span class="badge bg-primary">{{ u.role }}</span></td>
+            <td><span class="badge" [ngClass]="u.actif ? 'bg-success' : 'bg-secondary'">{{ u.actif ? 'Actif' : 'Inactif' }}</span></td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm me-1" (click)="edit(u)"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn btn-outline-danger btn-sm" (click)="remove(u)"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="!users.length"><td colspan="5" class="text-center text-muted">Aucun utilisateur.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</ng-container>

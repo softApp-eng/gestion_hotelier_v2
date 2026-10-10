@@ -1,0 +1,76 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Chambres</h5>
+  <button class="btn btn-primary btn-sm" (click)="newRoom()"><i class="fa-solid fa-plus me-1"></i>Nouvelle chambre</button>
+</div>
+
+<!-- Add/Edit form -->
+<div class="card mb-3" *ngIf="showForm">
+  <div class="card-header"><b>{{ form.id ? 'Modifier' : 'Nouvelle' }} chambre</b></div>
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-md-2"><label class="form-label">N°</label><input class="form-control" [(ngModel)]="form.numero"></div>
+      <div class="col-md-2"><label class="form-label">Étage</label><input class="form-control" [(ngModel)]="form.etage"></div>
+      <div class="col-md-3">
+        <label class="form-label">Type</label>
+        <select class="form-select" [(ngModel)]="form.typeChambre.id">
+          <option *ngFor="let t of types" [value]="t.id">{{ t.libelle }}</option>
+        </select>
+      </div>
+      <div class="col-md-2"><label class="form-label">Prix / nuit</label><input type="number" class="form-control" [(ngModel)]="form.prix"></div>
+      <div class="col-md-3">
+        <label class="form-label">État</label>
+        <select class="form-select" [(ngModel)]="form.etat">
+          <option>LIBRE</option><option>OCCUPEE</option><option>NETTOYAGE</option><option>HORS_SERVICE</option>
+        </select>
+      </div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary btn-sm me-2" (click)="save()">Enregistrer</button>
+      <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- List -->
+<div class="card mb-3">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead><tr><th>N°</th><th>Type</th><th>Étage</th><th>Prix</th><th>État</th><th style="width:230px;">Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let c of chambres">
+          <td><b>{{ c.numero }}</b></td>
+          <td>{{ c.typeChambre?.libelle || '-' }}</td>
+          <td>{{ c.etage }}</td>
+          <td>{{ c.prix | number:'1.0-0' }} DA</td>
+          <td><span class="badge" [ngClass]="etatBadge(c.etat)">{{ c.etat }}</span></td>
+          <td>
+            <button class="btn btn-xs btn-outline-secondary btn-sm me-1" title="Libre" (click)="setEtat(c,'LIBRE')">Libre</button>
+            <button class="btn btn-outline-warning btn-sm me-1" title="Nettoyage" (click)="setEtat(c,'NETTOYAGE')">Nett.</button>
+            <button class="btn btn-outline-primary btn-sm me-1" (click)="edit(c)"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-outline-danger btn-sm" (click)="remove(c)"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+        <tr *ngIf="!chambres.length"><td colspan="6" class="text-center text-muted">Aucune chambre.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Types -->
+<div class="card">
+  <div class="card-header"><b>Types de chambre</b></div>
+  <div class="card-body">
+    <div class="d-flex flex-wrap gap-2 mb-3">
+      <span *ngFor="let t of types" class="badge bg-light text-dark border p-2">
+        {{ t.libelle }} — {{ t.capacite }} pers. — {{ t.prixBase | number:'1.0-0' }} DA
+      </span>
+    </div>
+    <div class="row g-2">
+      <div class="col-md-3"><input class="form-control" placeholder="Libellé" [(ngModel)]="typeForm.libelle"></div>
+      <div class="col-md-2"><input type="number" class="form-control" placeholder="Capacité" [(ngModel)]="typeForm.capacite"></div>
+      <div class="col-md-2"><input type="number" class="form-control" placeholder="Prix base" [(ngModel)]="typeForm.prixBase"></div>
+      <div class="col-md-3"><input class="form-control" placeholder="Description" [(ngModel)]="typeForm.description"></div>
+      <div class="col-md-2"><button class="btn btn-outline-primary w-100" (click)="saveType()">Ajouter</button></div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,29 @@
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 450px;
+  padding-top: 8px !important;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+
+  .full-width {
+    flex: 1;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.checkbox-row {
+  margin-top: -8px;
+  margin-bottom: 8px;
+}
+
+.btn-icon {
+  margin-right: 6px;
+}

@@ -1,0 +1,491 @@
+<h2 mat-dialog-title class="text-primary fw-bold">
+  Gestion du Profil Client
+</h2>
+
+<mat-dialog-content class="pb-3">
+
+  <!-- TYPE CLIENT -->
+  <div class="alert alert-primary mb-4">
+    <div class="d-flex align-items-center gap-2">
+
+      <i class="fa fa-user fs-3"></i>
+
+      <div>
+        <small class="d-block text-muted">
+          Type de client
+        </small>
+
+        <strong>
+          {{ data?.typeClient?.libelle }}
+        </strong>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="row">
+
+    <!-- ================================================= -->
+    <!-- CLIENT EXISTANT -->
+    <!-- ================================================= -->
+
+    <div class="col-6 border-end pe-4">
+
+      <h6 class="fw-bold mb-3">
+        1. Rechercher un client existant
+      </h6>
+
+      <mat-form-field appearance="outline" class="w-100 mb-2">
+
+        <mat-label>
+          Chercher par nom, CIN ou passeport
+        </mat-label>
+
+        <input
+          matInput
+          [(ngModel)]="searchTerm"
+          (input)="filterClients()"
+          placeholder="Ex: Alami ou AB1234"
+        >
+
+        <mat-icon matSuffix>
+          search
+        </mat-icon>
+
+      </mat-form-field>
+
+
+      <mat-selection-list
+        [multiple]="false"
+        (selectionChange)="onSelectExistingClient($event)"
+      >
+
+        <mat-list-option
+          *ngFor="let client of filteredClients"
+          [value]="client"
+        >
+
+          <div class="fw-bold">
+            {{ client.nom }} {{ client.prenom }}
+          </div>
+
+          <small class="text-muted">
+
+            <span *ngIf="client.cin">
+              CIN: {{ client.cin }}
+            </span>
+
+            <span *ngIf="client.passport">
+              | Passeport: {{ client.passport }}
+            </span>
+
+            <span *ngIf="client.telephone">
+              | Tél: {{ client.telephone }}
+            </span>
+
+          </small>
+
+        </mat-list-option>
+
+      </mat-selection-list>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- NOUVEAU CLIENT -->
+    <!-- ================================================= -->
+
+    <div class="col-6 ps-4">
+
+      <h6 class="fw-bold mb-3">
+        2. Inscrire un nouveau client
+      </h6>
+
+
+      <form [formGroup]="newClientForm">
+
+
+        <!-- NOM -->
+
+        <mat-form-field
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Nom
+          </mat-label>
+
+          <input
+            matInput
+            formControlName="nom"
+          >
+
+          <mat-error
+            *ngIf="newClientForm.get('nom')?.hasError('required')"
+          >
+            Le nom est obligatoire
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- PRÉNOM -->
+
+        <mat-form-field
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Prénom
+          </mat-label>
+
+          <input
+            matInput
+            formControlName="prenom"
+          >
+
+          <mat-error
+            *ngIf="newClientForm.get('prenom')?.hasError('required')"
+          >
+            Le prénom est obligatoire
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- ================================================= -->
+        <!-- CIN -->
+        <!-- ================================================= -->
+
+        <mat-form-field
+          *ngIf="showCin"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            CIN
+          </mat-label>
+
+          <input
+            matInput
+            formControlName="cin"
+            placeholder="Ex: AB123456"
+          >
+
+          <mat-error
+            *ngIf="newClientForm.get('cin')?.hasError('required')"
+          >
+            La CIN est obligatoire
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- ================================================= -->
+        <!-- PASSEPORT -->
+        <!-- ================================================= -->
+
+        <mat-form-field
+          *ngIf="showPassport"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Numéro de passeport
+          </mat-label>
+
+          <input
+            matInput
+            formControlName="passport"
+            placeholder="Ex: MA123456"
+          >
+
+          <mat-error
+            *ngIf="newClientForm.get('passport')?.hasError('required')"
+          >
+            Le passeport est obligatoire
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- ================================================= -->
+        <!-- TÉLÉPHONE -->
+        <!-- ================================================= -->
+
+        <mat-form-field
+          *ngIf="showTelephone"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Téléphone
+          </mat-label>
+
+          <input
+            matInput
+            formControlName="telephone"
+          >
+
+        </mat-form-field>
+
+
+        <!-- ================================================= -->
+        <!-- GRADE -->
+        <!-- ================================================= -->
+
+        <mat-form-field
+          *ngIf="showGrade"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Grade
+          </mat-label>
+
+          <mat-select formControlName="gradeId">
+
+            <mat-option
+              *ngFor="let grade of grades"
+              [value]="grade.id"
+            >
+              {{ grade.libelle }}
+            </mat-option>
+
+          </mat-select>
+
+          <mat-error
+            *ngIf="newClientForm.get('gradeId')?.hasError('required')"
+          >
+            Le grade est obligatoire
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- ================================================= -->
+        <!-- NATIONALITÉ -->
+        <!-- ================================================= -->
+
+        <mat-form-field
+          *ngIf="showNationalite"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Nationalité
+          </mat-label>
+
+          <mat-select formControlName="nationalite">
+
+            <mat-option
+              *ngFor="let nationalite of nationalites"
+              [value]="nationalite.id"
+            >
+              {{ nationalite.libelle }}
+            </mat-option>
+
+          </mat-select>
+
+          <mat-error
+            *ngIf="newClientForm.get('nationaliteId')?.hasError('required')"
+          >
+            La nationalité est obligatoire
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- ================================================= -->
+        <!-- DEGRÉ DE PARENTÉ -->
+        <!-- ================================================= -->
+
+        <mat-form-field
+          *ngIf="showDegreParente"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Degré de parenté
+          </mat-label>
+
+          <mat-select formControlName="degreParente">
+
+            <mat-option
+              *ngFor="let degre of degresParente"
+              [value]="degre.id"
+            >
+              {{ degre.libelle }}
+            </mat-option>
+
+          </mat-select>
+
+          <mat-error
+            *ngIf="newClientForm.get('degreParenteId')?.hasError('required')"
+          >
+            Le degré de parenté est obligatoire
+          </mat-error>
+
+        </mat-form-field>
+
+
+        <!-- ================================================= -->
+        <!-- EMAIL -->
+        <!-- ================================================= -->
+
+        <!-- <mat-form-field
+          *ngIf="showEmail"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Email
+          </mat-label>
+
+          <input
+            matInput
+            type="email"
+            formControlName="email"
+          >
+
+        </mat-form-field> -->
+
+
+        <!-- ================================================= -->
+        <!-- SEXE -->
+        <!-- ================================================= -->
+
+        <!-- <mat-form-field
+          *ngIf="showSexe"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Sexe
+          </mat-label>
+
+          <mat-select formControlName="sexe">
+
+            <mat-option value="M">
+              Homme
+            </mat-option>
+
+            <mat-option value="F">
+              Femme
+            </mat-option>
+
+          </mat-select>
+
+        </mat-form-field> -->
+
+
+        <!-- ================================================= -->
+        <!-- DATE NAISSANCE -->
+        <!-- ================================================= -->
+
+        <!-- <mat-form-field
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Date de naissance
+          </mat-label>
+
+          <input
+            matInput
+            type="date"
+            formControlName="date_naissance"
+          >
+
+        </mat-form-field> -->
+
+
+        <!-- ================================================= -->
+        <!-- ADRESSE -->
+        <!-- ================================================= -->
+
+        <mat-form-field
+          *ngIf="showAdresse"
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Adresse
+          </mat-label>
+
+          <textarea
+            matInput
+            rows="2"
+            formControlName="adresse"
+          ></textarea>
+
+        </mat-form-field>
+
+
+        <!-- ================================================= -->
+        <!-- OBSERVATION -->
+        <!-- ================================================= -->
+
+        <mat-form-field
+          appearance="outline"
+          class="w-100 mb-2"
+        >
+
+          <mat-label>
+            Observation
+          </mat-label>
+
+          <textarea
+            matInput
+            rows="2"
+            formControlName="observation"
+          ></textarea>
+
+        </mat-form-field>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</mat-dialog-content>
+
+
+<mat-dialog-actions align="end">
+
+  <button
+    mat-button
+    mat-dialog-close
+  >
+    Annuler
+  </button>
+
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="newClientForm.invalid"
+    (click)="saveNewClient()"
+  >
+
+    <mat-icon>person_add</mat-icon>
+
+    Créer & Sélectionner
+
+  </button>
+
+</mat-dialog-actions>

@@ -1,0 +1,75 @@
+<h5 class="mb-3">Rapports & statistiques</h5>
+
+<div class="row">
+  <div class="col-md-3 col-6 mb-3">
+    <div class="card"><div class="card-body">
+      <div class="text-muted small">CA du jour</div>
+      <div class="h4 mb-0">{{ dashboard.caJour | number:'1.0-0' }} DA</div>
+    </div></div>
+  </div>
+  <div class="col-md-3 col-6 mb-3">
+    <div class="card"><div class="card-body">
+      <div class="text-muted small">Taux d'occupation</div>
+      <div class="h4 mb-0">{{ dashboard.tauxOccupation }} %</div>
+    </div></div>
+  </div>
+  <div class="col-md-3 col-6 mb-3">
+    <div class="card"><div class="card-body">
+      <div class="text-muted small">Séjours en cours</div>
+      <div class="h4 mb-0">{{ dashboard.sejoursEnCours }}</div>
+    </div></div>
+  </div>
+  <div class="col-md-3 col-6 mb-3">
+    <div class="card"><div class="card-body">
+      <div class="text-muted small">Commandes ouvertes</div>
+      <div class="h4 mb-0">{{ dashboard.commandesOuvertes }}</div>
+    </div></div>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-header"><b>Chiffre d'affaires - 7 derniers jours</b></div>
+  <div class="card-body">
+    <div *ngFor="let d of dashboard.caSemaine" class="d-flex align-items-center mb-2">
+      <div class="text-muted small" style="width:60px;">{{ d.date }}</div>
+      <div class="flex-grow-1 bg-light rounded" style="height:18px;">
+        <div class="bg-primary rounded" [style.width]="barWidth(d.total)" style="height:18px;"></div>
+      </div>
+      <div class="ms-2 small" style="width:90px;text-align:right;">{{ d.total | number:'1.0-0' }} DA</div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header d-flex flex-wrap gap-2 align-items-center justify-content-between">
+    <b>Rapport des ventes</b>
+    <div class="d-flex gap-2 align-items-center">
+      <label class="small mb-0">Du</label><input type="date" class="form-control form-control-sm" [(ngModel)]="from">
+      <label class="small mb-0">Au</label><input type="date" class="form-control form-control-sm" [(ngModel)]="to">
+      <button class="btn btn-primary btn-sm" (click)="search()">Rechercher</button>
+      <button class="btn btn-outline-success btn-sm" (click)="exportCsv()"><i class="fa-solid fa-file-csv me-1"></i>CSV</button>
+    </div>
+  </div>
+  <div class="card-body">
+    <div *ngIf="rapport" class="mb-3">
+      <span class="badge bg-primary me-2">{{ rapport.nombreVentes }} ventes</span>
+      <span class="badge bg-success">Total : {{ rapport.total | number:'1.0-0' }} DA</span>
+    </div>
+    <div class="table-responsive">
+      <table class="table table-sm table-hover align-middle">
+        <thead><tr><th>N°</th><th>Date</th><th>Type</th><th>Paiement</th><th>Total</th><th>Statut</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let v of rapport?.ventes">
+            <td>{{ v.numero }}</td>
+            <td>{{ v.dateVente | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>{{ v.typeVente }}</td>
+            <td>{{ v.modesPaiement }}</td>
+            <td>{{ v.total | number:'1.0-0' }} DA</td>
+            <td><span class="badge" [ngClass]="v.statut==='ANNULEE'?'bg-danger':'bg-success'">{{ v.statut }}</span></td>
+          </tr>
+          <tr *ngIf="!rapport?.ventes?.length"><td colspan="6" class="text-center text-muted">Aucune vente sur la période.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

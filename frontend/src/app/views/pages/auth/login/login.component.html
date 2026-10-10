@@ -1,0 +1,48 @@
+<div class="row w-100 mx-0 auth-page">
+  <div class="col-md-8 col-xl-5 mx-auto">
+    <div class="card">
+      <div class="row">
+        <div class="col-md-4 pe-md-0">
+          <div class="auth-side-wrapper" style="background: linear-gradient(160deg,#556ee4,#2c3e91);height:100%;min-height:340px;display:flex;align-items:center;justify-content:center;">
+            <div class="text-white text-center p-3">
+              <i class="fa-solid fa-hotel" style="font-size:42px;"></i>
+              <h4 class="mt-2 mb-0">Hôtel V2</h4>
+              <small>Gestion hôtelière</small>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 ps-md-0">
+          <div class="auth-form-wrapper px-4 py-5">
+            <a routerLink="." class="nobleui-logo d-block mb-2">Hôtel<span>V2</span></a>
+            <h5 class="text-muted fw-normal mb-4">Content de vous revoir ! Connectez-vous.</h5>
+
+            <div *ngIf="error" class="alert alert-danger py-2">{{ error }}</div>
+
+            <form class="forms-sample" (ngSubmit)="onLoggedin($event)">
+              <div class="mb-3">
+                <label class="form-label">Identifiant</label>
+                <input type="text" class="form-control" name="username"
+                       [(ngModel)]="username" placeholder="admin" autocomplete="username">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Mot de passe</label>
+                <input type="password" class="form-control" name="password"
+                       [(ngModel)]="password" placeholder="••••••" autocomplete="current-password">
+              </div>
+              <div>
+                <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0" [disabled]="loading">
+                  {{ loading ? 'Connexion...' : 'Se connecter' }}
+                </button>
+              </div>
+              <div class="mt-4 small text-muted">
+                <div><b>Comptes de démonstration :</b></div>
+                <div>admin / admin &nbsp;•&nbsp; reception / 1234</div>
+                <div>serveur / 1234 &nbsp;•&nbsp; caisse / 1234 &nbsp;•&nbsp; manager / 1234</div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

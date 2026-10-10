@@ -1,0 +1,121 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Tableau de bord</h5>
+  <button class="btn btn-outline-primary btn-sm" (click)="load()">
+    <i class="fa-solid fa-rotate me-1"></i>Actualiser
+  </button>
+</div>
+
+<div *ngIf="loading" class="text-muted">Chargement…</div>
+
+<div *ngIf="!loading">
+  <!-- KPI cards -->
+  <div class="row">
+    <div class="col-md-3 col-6 mb-3">
+      <div class="card h-100">
+        <div class="card-body d-flex align-items-center">
+          <div class="me-3 text-primary" style="font-size:26px;"><i class="fa-solid fa-sack-dollar"></i></div>
+          <div>
+            <div class="text-muted small">CA du jour</div>
+            <div class="h4 mb-0">{{ data.caJour | number:'1.0-0' }} DA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+      <div class="card h-100">
+        <div class="card-body d-flex align-items-center">
+          <div class="me-3 text-success" style="font-size:26px;"><i class="fa-solid fa-receipt"></i></div>
+          <div>
+            <div class="text-muted small">Ventes du jour</div>
+            <div class="h4 mb-0">{{ data.ventesJour }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+      <div class="card h-100">
+        <div class="card-body d-flex align-items-center">
+          <div class="me-3 text-warning" style="font-size:26px;"><i class="fa-solid fa-bed"></i></div>
+          <div>
+            <div class="text-muted small">Taux d'occupation</div>
+            <div class="h4 mb-0">{{ data.tauxOccupation }} %</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 col-6 mb-3">
+      <div class="card h-100">
+        <div class="card-body d-flex align-items-center">
+          <div class="me-3 text-info" style="font-size:26px;"><i class="fa-solid fa-utensils"></i></div>
+          <div>
+            <div class="text-muted small">Commandes ouvertes</div>
+            <div class="h4 mb-0">{{ data.commandesOuvertes }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Revenue chart -->
+    <div class="col-lg-8 mb-3">
+      <div class="card h-100">
+        <div class="card-header"><b>Chiffre d'affaires - 7 derniers jours</b></div>
+        <div class="card-body">
+          <div *ngFor="let d of data.caSemaine" class="d-flex align-items-center mb-2">
+            <div class="text-muted small" style="width:60px;">{{ d.date }}</div>
+            <div class="flex-grow-1 bg-light rounded" style="height:18px;">
+              <div class="bg-primary rounded" [style.width]="barWidth(d.total)" style="height:18px;transition:width .3s;"></div>
+            </div>
+            <div class="ms-2 small" style="width:90px;text-align:right;">{{ d.total | number:'1.0-0' }} DA</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Secondary stats -->
+    <div class="col-lg-4 mb-3">
+      <div class="card h-100">
+        <div class="card-header"><b>Aujourd'hui</b></div>
+        <div class="card-body">
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span class="text-muted">Arrivées prévues</span><b>{{ data.arriveesJour }}</b>
+          </div>
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span class="text-muted">Séjours en cours</span><b>{{ data.sejoursEnCours }}</b>
+          </div>
+          <div class="d-flex justify-content-between border-bottom py-2">
+            <span class="text-muted">Chambres occupées</span><b>{{ data.chambresOccupees }} / {{ data.totalChambres }}</b>
+          </div>
+          <div class="d-flex justify-content-between py-2">
+            <span class="text-muted">Tickets repas valides</span><b>{{ data.ticketsJour }}</b>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <div class="card h-100">
+        <div class="card-header"><b>Top produits (jour)</b></div>
+        <div class="card-body">
+          <div *ngIf="!data.topProduits?.length" class="text-muted">Aucune vente aujourd'hui.</div>
+          <div *ngFor="let p of data.topProduits" class="d-flex justify-content-between border-bottom py-1">
+            <span>{{ p.produit }}</span><span class="badge bg-primary">{{ p.quantite }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 mb-3">
+      <div class="card h-100">
+        <div class="card-header"><b>État des chambres</b></div>
+        <div class="card-body">
+          <div *ngFor="let r of data.repartition" class="d-flex justify-content-between border-bottom py-1">
+            <span>{{ r.etat }}</span><b>{{ r.nombre }}</b>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

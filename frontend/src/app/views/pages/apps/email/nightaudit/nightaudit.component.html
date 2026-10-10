@@ -1,0 +1,168 @@
+<div class="nightaudit-container p-3">
+
+  <!-- EN-TÊTE DE LA PAGE -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="m-0 fw-bold text-indigo">
+        <i class="fa-solid fa-moon me-2"></i>Clôture Journalière & Night Audit
+      </h2>
+      <p class="text-muted small mb-0">Validation des comptes, facturation des nuitées et changement de date système</p>
+    </div>
+
+    <!-- DATE EXPLOITATION PMS ACTUELLE -->
+    <div class="d-flex align-items-center gap-2 bg-light p-2 px-3 rounded border">
+      <i class="fa-solid fa-calendar-day text-primary fs-5"></i>
+      <div>
+        <small class="text-muted d-block lh-1">Date Exploitation Actuelle</small>
+        <strong class="fs-6">{{ pmsBusinessDate | date:'dd MMMM yyyy' }}</strong>
+      </div>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 1 : STEPS DE PRÉ-CLÔTURE -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3" *ngFor="let step of auditSteps; let i = index">
+      <mat-card class="h-100 shadow-sm border-0 border-top-card" 
+                [class.border-success]="step.status === 'DONE'" 
+                [class.border-warning]="step.status === 'WARNING'" 
+                [class.border-primary]="step.status === 'PENDING'"
+                [class.border-secondary]="step.status === 'BLOCKED'">
+        <mat-card-content class="p-3 d-flex align-items-center gap-3">
+          
+          <!-- Badge Icône -->
+          <div class="step-icon rounded-circle p-2 text-white d-flex align-items-center justify-content-center"
+               [class.bg-success]="step.status === 'DONE'"
+               [class.bg-warning]="step.status === 'WARNING'"
+               [class.text-dark]="step.status === 'WARNING'"
+               [class.bg-primary]="step.status === 'PENDING'"
+               [class.bg-secondary]="step.status === 'BLOCKED'">
+            <i class="fa-solid" [class]="step.icon"></i>
+          </div>
+
+          <div>
+            <small class="text-muted text-uppercase fw-semibold d-block">Étape {{ i + 1 }}</small>
+            <div class="fw-bold">{{ step.title }}</div>
+            
+            <!-- Badge Statut -->
+            <span class="badge mt-1" 
+                  [class.bg-success-subtle]="step.status === 'DONE'"
+                  [class.text-success]="step.status === 'DONE'"
+                  [class.bg-warning-subtle]="step.status === 'WARNING'"
+                  [class.text-dark]="step.status === 'WARNING'"
+                  [class.bg-primary-subtle]="step.status === 'PENDING'"
+                  [class.text-primary]="step.status === 'PENDING'"
+                  [class.bg-secondary-subtle]="step.status === 'BLOCKED'"
+                  [class.text-secondary]="step.status === 'BLOCKED'">
+              {{ step.statusLabel }}
+            </span>
+          </div>
+
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
+  <!-- ÉTAPE 2 : VERIFICATION DES ANOMALIES & DÉTECTEUR PRÉ-AUDIT -->
+  <mat-card class="shadow-sm mb-4">
+    <mat-card-header class="bg-light p-3 border-bottom d-flex justify-content-between align-items-center">
+      <mat-card-title class="fs-6 fw-bold m-0">
+        <i class="fa-solid fa-list-check me-2 text-warning"></i>Contrôles de Pré-Clôture (Anomalies à Résoudre)
+      </mat-card-title>
+      <button mat-stroked-button color="primary" (click)="refreshControls()">
+        <i class="fa-solid fa-rotate me-1"></i> Actualiser les vérifications
+      </button>
+    </mat-card-header>
+
+    <mat-card-content class="p-0">
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" class="w-100">
+
+          <!-- Type d'Anomalie -->
+          <ng-container matColumnDef="type">
+            <th mat-header-cell *matHeaderCellDef> Contrôle </th>
+            <td mat-cell *matCellDef="let row">
+              <div class="d-flex align-items-center gap-2">
+                <i class="fa-solid fs-5" 
+                   [class.fa-circle-exclamation]="row.severity === 'CRITICAL'"
+                   [class.text-danger]="row.severity === 'CRITICAL'"
+                   [class.fa-triangle-exclamation]="row.severity !== 'CRITICAL'"
+                   [class.text-warning]="row.severity !== 'CRITICAL'"></i>
+                <span class="fw-bold">{{ row.controlName }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Description / Détail -->
+          <ng-container matColumnDef="description">
+            <th mat-header-cell *matHeaderCellDef> Détails des éléments concernés </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="text-muted">{{ row.description }}</span>
+              <div *ngIf="row.count > 0" class="mt-1">
+                <span class="badge bg-danger-subtle text-danger border border-danger">
+                  {{ row.count }} élément(s) en attente
+                </span>
+              </div>
+            </td>
+          </ng-container>
+
+          <!-- Gravité -->
+          <ng-container matColumnDef="blocking">
+            <th mat-header-cell *matHeaderCellDef> Impact Clôture </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="badge" 
+                    [class.bg-danger]="row.isBlocking"
+                    [class.bg-warning]="!row.isBlocking"
+                    [class.text-dark]="!row.isBlocking">
+                {{ row.isBlocking ? 'Bloquant (Action Requise)' : 'Avertissement' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <!-- Actions de résolution rapide -->
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef class="text-end pe-3"> Action </th>
+            <td mat-cell *matCellDef="let row" class="text-end pe-3">
+              <button mat-stroked-button color="primary" (click)="resolveControl(row)">
+                {{ row.actionLabel }}
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center p-4 text-success" [attr.colspan]="displayedColumns.length">
+              <i class="fa-solid fa-circle-check fs-2 mb-2 d-block"></i>
+              Tous les contrôles de pré-clôture sont validés ! Vous pouvez lancer le Night Audit.
+            </td>
+          </tr>
+
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- ÉTAPE 3 : RAPPORTS & LANCEMENT DU NIGHT AUDIT -->
+  <mat-card class="shadow-sm border-0 bg-dark text-white p-2">
+    <mat-card-content class="p-3 d-flex justify-content-between align-items-center">
+      <div>
+        <h4 class="fw-bold text-white mb-1">Prêt pour la clôture journalière ?</h4>
+        <p class="text-light-50 small mb-0">
+          Cette action va facturer <strong>42 chambres occupées</strong>, générer le rapport journalier (J-1) et passer la date au <strong>{{ getNextBusinessDate() | date:'dd/MM/yyyy' }}</strong>.
+        </p>
+      </div>
+
+      <div class="d-flex gap-2">
+        <button mat-stroked-button class="text-white border-white" (click)="previewDailyReport()">
+          <i class="fa-solid fa-file-pdf me-2"></i>Aperçu Rapport J-1
+        </button>
+
+        <button mat-flat-button color="warn" class="px-4" [disabled]="hasBlockingIssues" (click)="executeNightAudit()">
+          <i class="fa-solid fa-play me-2"></i>Lancer le Night Audit
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+</div>

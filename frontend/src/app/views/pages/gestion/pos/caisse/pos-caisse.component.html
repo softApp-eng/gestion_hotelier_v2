@@ -1,0 +1,118 @@
+<style>
+  .pos-prod { border:1px solid #e4e6ef; border-radius:10px; background:#fff; padding:10px; text-align:left; width:100%; cursor:pointer; transition:.12s; }
+  .pos-prod:hover { background:#f4f6ff; border-color:#556ee4; }
+</style>
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Point de vente — Caisse</h5>
+  <div>
+    <span *ngIf="session" class="badge bg-success me-2">Caisse ouverte · {{ session.utilisateur }}</span>
+    <span *ngIf="!session" class="badge bg-danger me-2">Caisse fermée</span>
+    <button *ngIf="!session" class="btn btn-success btn-sm" (click)="openCaisse()"><i class="fa-solid fa-lock-open me-1"></i>Ouvrir caisse</button>
+    <button *ngIf="session" class="btn btn-danger btn-sm" (click)="closeCaisse()"><i class="fa-solid fa-lock me-1"></i>Clôturer caisse</button>
+  </div>
+</div>
+
+<div class="row">
+  <!-- Products -->
+  <div class="col-lg-7 mb-3">
+    <div class="card h-100">
+      <div class="card-body">
+        <div class="mb-2 d-flex flex-wrap gap-1">
+          <button class="btn btn-sm" [ngClass]="!selectedCategorieId ? 'btn-primary' : 'btn-outline-primary'" (click)="selectedCategorieId=null">Tout</button>
+          <button *ngFor="let c of categories" class="btn btn-sm"
+                  [ngClass]="selectedCategorieId===c.id ? 'btn-primary' : 'btn-outline-primary'"
+                  (click)="selectedCategorieId=c.id">{{ c.nom }}</button>
+        </div>
+        <div class="row g-2" style="max-height:420px;overflow:auto;">
+          <div class="col-4 col-md-3" *ngFor="let p of filteredProduits()">
+            <button class="pos-prod" (click)="addProduct(p)">
+              <div class="fw-semibold small">{{ p.nom }}</div>
+              <div class="text-primary small fw-bold">{{ p.prix | number:'1.0-0' }} DA</div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Cart -->
+  <div class="col-lg-5 mb-3">
+    <div class="card h-100">
+      <div class="card-header"><b>Panier</b></div>
+      <div class="card-body">
+        <table class="table table-sm align-middle">
+          <tbody>
+            <tr *ngFor="let l of panier">
+              <td>{{ l.produit.nom }}</td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-secondary" (click)="dec(l)">−</button>
+                  <button class="btn btn-outline-secondary disabled">{{ l.quantite }}</button>
+                  <button class="btn btn-outline-secondary" (click)="inc(l)">+</button>
+                </div>
+              </td>
+              <td class="text-end">{{ l.quantite * l.prixUnitaire | number:'1.0-0' }}</td>
+              <td><button class="btn btn-sm text-danger" (click)="remove(l)"><i class="fa-solid fa-xmark"></i></button></td>
+            </tr>
+            <tr *ngIf="!panier.length"><td class="text-center text-muted">Panier vide</td></tr>
+          </tbody>
+        </table>
+
+        <div class="row g-2">
+          <div class="col-6"><label class="form-label small">Client (optionnel)</label>
+            <select class="form-select form-select-sm" [(ngModel)]="clientId">
+              <option [ngValue]="null">—</option>
+              <option *ngFor="let c of clients" [ngValue]="c.id">{{ c.nom }} {{ c.prenom }}</option>
+            </select>
+          </div>
+          <div class="col-3"><label class="form-label small">Remise</label><input type="number" class="form-control form-control-sm" [(ngModel)]="remise"></div>
+          <div class="col-3"><label class="form-label small">Reçu</label><input type="number" class="form-control form-control-sm" [(ngModel)]="montantRecu"></div>
+          <div class="col-12"><label class="form-label small">Mode de paiement</label>
+            <select class="form-select form-select-sm" [(ngModel)]="modePaiement">
+              <option>ESPECES</option><option>CARTE</option><option>MOBILE</option><option>CREDIT</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-between border-top mt-3 pt-2">
+          <div><div class="small text-muted">Sous-total</div><div>{{ sousTotal() | number:'1.0-0' }} DA</div></div>
+          <div class="text-end"><div class="small text-muted">Total</div><div class="h4 mb-0">{{ total() | number:'1.0-0' }} DA</div></div>
+        </div>
+        <div class="text-end small text-success mb-2">Monnaie : {{ monnaie() | number:'1.0-0' }} DA</div>
+
+        <button class="btn btn-success w-100" (click)="encaisser()" [disabled]="!session">
+          <i class="fa-solid fa-check me-1"></i>Encaisser {{ total() | number:'1.0-0' }} DA
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sales of the day -->
+<div class="card">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <b>Ventes du jour</b>
+    <button class="btn btn-outline-secondary btn-sm" (click)="loadVentes()"><i class="fa-solid fa-rotate"></i></button>
+  </div>
+  <div class="card-body table-responsive">
+    <table class="table table-sm table-hover align-middle">
+      <thead><tr><th>N°</th><th>Heure</th><th>Type</th><th>Paiement</th><th>Total</th><th>Statut</th><th></th></tr></thead>
+      <tbody>
+        <tr *ngFor="let v of ventesJour">
+          <td>{{ v.numero }}</td>
+          <td>{{ v.dateVente | date:'HH:mm' }}</td>
+          <td>{{ v.typeVente }}</td>
+          <td>{{ v.modesPaiement }}</td>
+          <td>{{ v.total | number:'1.0-0' }} DA</td>
+          <td><span class="badge" [ngClass]="v.statut==='ANNULEE'?'bg-danger':'bg-success'">{{ v.statut }}</span></td>
+          <td class="text-nowrap">
+            <button class="btn btn-outline-secondary btn-sm me-1" (click)="print(v)"><i class="fa-solid fa-print"></i></button>
+            <button class="btn btn-outline-danger btn-sm" (click)="annuler(v)" [disabled]="v.statut==='ANNULEE'"><i class="fa-solid fa-ban"></i></button>
+          </td>
+        </tr>
+        <tr *ngIf="!ventesJour.length"><td colspan="7" class="text-center text-muted">Aucune vente aujourd'hui.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>

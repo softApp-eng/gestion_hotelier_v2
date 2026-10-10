@@ -1,0 +1,63 @@
+<h2 mat-dialog-title>{{ isEditMode ? 'Modifier le Tarif' : 'Nouveau Tarif' }}</h2>
+
+<form [formGroup]="tarifForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="dialog-content">
+
+    <!-- Type de Chambre -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Type de Chambre</mat-label>
+     <mat-select formControlName="typeChambre">
+  <mat-option *ngFor="let tc of typesChambre" [value]="tc.id" class="custom-option">
+    <span class="option-label">{{ tc.code }}</span>
+    <span class="badge-capacite">{{ tc.capacite }} pers.</span>
+  </mat-option>
+</mat-select>
+      <mat-error *ngIf="tarifForm.get('typeChambre')?.hasError('required')">
+        Le type de chambre est requis
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Type de Client -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Type de Client</mat-label>
+      <mat-select formControlName="typeClient">
+        <mat-option *ngFor="let client of typesClient" [value]="client.id">
+          {{ client.libelle || client.code || client.nom }}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="tarifForm.get('typeClient')?.hasError('required')">
+        Le type de client est requis
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Prix -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Prix</mat-label>
+      <input matInput type="number" formControlName="prix" placeholder="0.00">
+      <span matSuffix>DH &nbsp;</span>
+      <mat-error *ngIf="tarifForm.get('prix')?.hasError('required')">
+        Le prix est requis
+      </mat-error>
+    </mat-form-field>
+ <!-- Prix -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Detail Tarif</mat-label>
+      <input matInput type="text" formControlName="titre" placeholder="0.00">
+      <mat-error *ngIf="tarifForm.get('titre')?.hasError('required')">
+       Detail du tarif est requis
+      </mat-error>
+    </mat-form-field>
+    <!-- Statut Actif -->
+    <div class="checkbox-field">
+      <mat-checkbox formControlName="active" color="primary">Tarif Actif</mat-checkbox>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Annuler</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="tarifForm.invalid">
+      Enregistrer
+    </button>
+  </mat-dialog-actions>
+</form>

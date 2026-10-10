@@ -1,0 +1,87 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Menu & Produits</h5>
+  <button class="btn btn-primary btn-sm" (click)="newProduit()"><i class="fa-solid fa-plus me-1"></i>Nouveau produit</button>
+</div>
+
+<div class="card mb-3" *ngIf="showForm">
+  <div class="card-header"><b>{{ form.id ? 'Modifier' : 'Nouveau' }} produit</b></div>
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-md-3"><label class="form-label">Nom</label><input class="form-control" [(ngModel)]="form.nom"></div>
+      <div class="col-md-2"><label class="form-label">Prix</label><input type="number" class="form-control" [(ngModel)]="form.prix"></div>
+      <div class="col-md-3">
+        <label class="form-label">Catégorie</label>
+        <select class="form-select" [(ngModel)]="form.categorie.id">
+          <option *ngFor="let c of categories" [value]="c.id">{{ c.nom }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Type</label>
+        <select class="form-select" [(ngModel)]="form.type">
+          <option>MENU</option><option>BOISSON</option><option>SUPPLEMENT</option><option>SERVICE</option>
+        </select>
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <div class="form-check"><input class="form-check-input" type="checkbox" id="dispo" [(ngModel)]="form.disponible"><label class="form-check-label" for="dispo">Disponible</label></div>
+      </div>
+      <div class="col-12"><label class="form-label">Description</label><input class="form-control" [(ngModel)]="form.description"></div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary btn-sm me-2" (click)="save()">Enregistrer</button>
+      <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-lg-9 mb-3">
+    <div class="card">
+      <div class="card-body">
+        <div class="row g-2 mb-3">
+          <div class="col-md-5"><input class="form-control" placeholder="Rechercher un produit…" [(ngModel)]="search" (keyup.enter)="load()"></div>
+          <div class="col-md-4">
+            <select class="form-select" [(ngModel)]="filterCategorieId" (change)="load()">
+              <option [ngValue]="null">Toutes catégories</option>
+              <option *ngFor="let c of categories" [ngValue]="c.id">{{ c.nom }}</option>
+            </select>
+          </div>
+          <div class="col-md-3"><button class="btn btn-outline-primary w-100" (click)="load()">Rechercher</button></div>
+        </div>
+        <table class="table table-hover align-middle">
+          <thead><tr><th>Produit</th><th>Catégorie</th><th>Type</th><th>Prix</th><th>Dispo</th><th></th></tr></thead>
+          <tbody>
+            <tr *ngFor="let p of produits">
+              <td><b>{{ p.nom }}</b><div class="small text-muted">{{ p.description }}</div></td>
+              <td>{{ p.categorie?.nom }}</td>
+              <td>{{ p.type }}</td>
+              <td>{{ p.prix | number:'1.0-0' }} DA</td>
+              <td><span class="badge" [ngClass]="p.disponible ? 'bg-success' : 'bg-secondary'">{{ p.disponible ? 'Oui' : 'Non' }}</span></td>
+              <td>
+                <button class="btn btn-outline-primary btn-sm me-1" (click)="edit(p)"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn btn-outline-danger btn-sm" (click)="remove(p)"><i class="fa-solid fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr *ngIf="!produits.length"><td colspan="6" class="text-center text-muted">Aucun produit.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-3 mb-3">
+    <div class="card">
+      <div class="card-header"><b>Catégories</b></div>
+      <div class="card-body">
+        <ul class="list-unstyled mb-3">
+          <li *ngFor="let c of categories" class="d-flex justify-content-between border-bottom py-1">
+            <span><i [class]="c.icon || 'fa-solid fa-tag'" class="me-1"></i>{{ c.nom }}</span>
+            <button class="btn btn-sm text-danger p-0" (click)="api.deleteCategorie(c.id).subscribe(()=>{loadCategories();load()})"><i class="fa-solid fa-xmark"></i></button>
+          </li>
+        </ul>
+        <input class="form-control form-control-sm mb-2" placeholder="Nom" [(ngModel)]="catForm.nom">
+        <input type="number" class="form-control form-control-sm mb-2" placeholder="Ordre" [(ngModel)]="catForm.ordre">
+        <button class="btn btn-outline-primary btn-sm w-100" (click)="saveCategorie()">Ajouter</button>
+      </div>
+    </div>
+  </div>
+</div>

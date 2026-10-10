@@ -1,0 +1,40 @@
+services:
+  # ---------------------------------------------------------------- BACKEND
+  backend:
+    build: ./backend
+    container_name: hotelv2_backend
+    profiles: ["prod"]
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hotelv2_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    ports:
+      - "9090:9090"
+    depends_on:
+      - postgres
+
+  # --------------------------------------------------------------- FRONTEND
+  frontend:
+    build: ./frontend
+    container_name: hotelv2_frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+  # ------------------------------------------------------------- POSTGRESQL
+  postgres:
+    image: postgres:16-alpine
+    container_name: hotelv2_postgres
+    environment:
+      POSTGRES_DB: hotelv2_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - hotelv2_pgdata:/var/lib/postgresql/data
+
+volumes:
+  hotelv2_pgdata:

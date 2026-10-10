@@ -1,0 +1,59 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Clients</h5>
+  <button class="btn btn-primary btn-sm" (click)="newClient()"><i class="fa-solid fa-user-plus me-1"></i>Nouveau client</button>
+</div>
+
+<div class="card mb-3" *ngIf="showForm">
+  <div class="card-header"><b>{{ form.id ? 'Modifier' : 'Nouveau' }} client</b></div>
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-md-3"><label class="form-label">Nom</label><input class="form-control" [(ngModel)]="form.nom"></div>
+      <div class="col-md-3"><label class="form-label">Prénom</label><input class="form-control" [(ngModel)]="form.prenom"></div>
+      <div class="col-md-3"><label class="form-label">Téléphone</label><input class="form-control" [(ngModel)]="form.telephone"></div>
+      <div class="col-md-3"><label class="form-label">Email</label><input class="form-control" [(ngModel)]="form.email"></div>
+      <div class="col-md-3"><label class="form-label">CIN / Passeport</label><input class="form-control" [(ngModel)]="form.cin"></div>
+      <div class="col-md-3">
+        <label class="form-label">Type</label>
+        <select class="form-select" [(ngModel)]="form.typeClient">
+          <option>STANDARD</option><option>MILITAIRE</option><option>ETRANGER</option><option>SOCIETE</option>
+        </select>
+      </div>
+      <div class="col-md-3"><label class="form-label">Nationalité</label><input class="form-control" [(ngModel)]="form.nationalite"></div>
+      <div class="col-md-3 d-flex align-items-end gap-3">
+        <div class="form-check"><input class="form-check-input" type="checkbox" [(ngModel)]="form.vip" id="vip"><label class="form-check-label" for="vip">VIP</label></div>
+        <div class="form-check"><input class="form-check-input" type="checkbox" [(ngModel)]="form.blacklist" id="bl"><label class="form-check-label" for="bl">Blacklist</label></div>
+      </div>
+    </div>
+    <div class="mt-3">
+      <button class="btn btn-primary btn-sm me-2" (click)="save()">Enregistrer</button>
+      <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body">
+    <input class="form-control mb-3" placeholder="Rechercher (nom, téléphone, CIN)…" [(ngModel)]="search">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead><tr><th>Nom</th><th>Téléphone</th><th>Type</th><th>CIN</th><th>Statut</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let c of filtered()">
+            <td><b>{{ c.nom }}</b> {{ c.prenom }}
+              <i *ngIf="c.vip" class="fa-solid fa-crown text-warning ms-1" title="VIP"></i>
+            </td>
+            <td>{{ c.telephone }}</td>
+            <td>{{ c.typeClient }}</td>
+            <td>{{ c.cin }}</td>
+            <td><span *ngIf="c.blacklist" class="badge bg-danger">Blacklist</span><span *ngIf="!c.blacklist" class="badge bg-success">OK</span></td>
+            <td>
+              <button class="btn btn-outline-primary btn-sm me-1" (click)="edit(c)"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn btn-outline-danger btn-sm" (click)="remove(c)"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+          <tr *ngIf="!filtered().length"><td colspan="6" class="text-center text-muted">Aucun client.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

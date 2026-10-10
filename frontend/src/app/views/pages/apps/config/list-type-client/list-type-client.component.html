@@ -1,0 +1,78 @@
+<div class="table-container mat-elevation-z8">
+  
+  <!-- En-tête avec Recherche et Actions -->
+  <div class="header-toolbar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Rechercher un type client...</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Code, libellé, description..." #input>
+      <i class="fa-solid fa-magnifying-glass search-icon" matSuffix></i>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" class="add-button" routerLink="/config/addtypeclients">
+      <i class="fa-solid fa-plus btn-icon"></i> Nouveau Type Client
+    </button>
+  </div>
+
+  <!-- Indicator de Chargement -->
+  <div *ngIf="loading" class="loading-shade">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Table Angular Material -->
+  <div class="responsive-table">
+    <table mat-table [dataSource]="dataSource" matSort class="full-width-table">
+
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+        <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+      </ng-container>
+
+      <!-- Code Column -->
+      <ng-container matColumnDef="code">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
+        <td mat-cell *matCellDef="let element">
+          <span class="code-badge">{{element.code}}</span>
+        </td>
+      </ng-container>
+
+      <!-- Libellé Column -->
+      <ng-container matColumnDef="libelle">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Libellé </th>
+        <td mat-cell *matCellDef="let element" class="font-medium"> {{element.libelle}} </td>
+      </ng-container>
+
+      <!-- Description Column -->
+      <ng-container matColumnDef="description">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+        <td mat-cell *matCellDef="let element"> {{element.description || '-'}} </td>
+      </ng-container>
+
+      <!-- Actions Column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button color="primary" matTooltip="Éditer">
+            <i class="fa-solid fa-pen-to-square action-icon"></i>
+          </button>
+          <button mat-icon-button color="warn" matTooltip="Supprimer">
+            <i class="fa-solid fa-trash-can action-icon"></i>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      <!-- Message si aucune donnée trouvée -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell empty-cell" colspan="5">
+          Aucun enregistrement ne correspond à la recherche "{{input.value}}"
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons aria-label="Sélectionner la page"></mat-paginator>
+</div>

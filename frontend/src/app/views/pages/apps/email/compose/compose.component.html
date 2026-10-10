@@ -1,0 +1,246 @@
+<!-- BARRE DE FILTRES IN-HOUSE -->
+<mat-card class="filter-card mb-3">
+  <mat-card-content class="p-3">
+
+    <!-- Ligne 1 : Recherche Rapide + Filtres Clés -->
+    <div class="row g-2 align-items-center">
+
+      <!-- Recherche textuelle -->
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100" subscriptSizing="dynamic">
+          <mat-label>Recherche rapide</mat-label>
+          <input matInput 
+                 placeholder="Nom, N° Chambre, Résa, CIN, Tél..." 
+                 [(ngModel)]="searchQuery" 
+                 (keyup)="applyFilters()">
+          <span matPrefix class="me-2 text-muted ps-2">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </span>
+          <button mat-icon-button matSuffix *ngIf="searchQuery" type="button" (click)="searchQuery=''; applyFilters()">
+            <i class="fa-solid fa-xmark text-muted"></i>
+          </button>
+        </mat-form-field>
+      </div>
+
+      <!-- Pavillon -->
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100" subscriptSizing="dynamic">
+          <mat-label>Pavillon</mat-label>
+          <mat-select [(ngModel)]="selectedPavillon" (selectionChange)="applyFilters()">
+            <mat-option value="">Tous</mat-option>
+            <mat-option *ngFor="let p of pavillons" [value]="p.id">{{ p.nom }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Statut Séjour -->
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100" subscriptSizing="dynamic">
+          <mat-label>Statut</mat-label>
+          <mat-select [(ngModel)]="selectedStatus" (selectionChange)="applyFilters()">
+            <mat-option value="">Tous</mat-option>
+            <mat-option value="DUE_OUT">Départs du jour (Due Out)</mat-option>
+            <mat-option value="STAY_OVER">En séjour (Stayover)</mat-option>
+            <mat-option value="ARRIVED_TODAY">Arrivés aujourd'hui</mat-option>
+            <mat-option value="LATE_CHECKOUT">Late Check-out</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Type de Client -->
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100" subscriptSizing="dynamic">
+          <mat-label>Type Client</mat-label>
+          <mat-select [(ngModel)]="selectedTypeClient" (selectionChange)="applyFilters()">
+            <mat-option value="">Tous</mat-option>
+            <mat-option value="passage">Passage / Individuel</mat-option>
+            <mat-option value="societe">Société / Corporate</mat-option>
+            <mat-option value="agence">Agence de Voyage</mat-option>
+            <mat-option value="vip">Clients VIP</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Boutons d'Action & Filtres Avancés -->
+      <div class="col-md-2 d-flex gap-2 justify-content-end align-items-center">
+        <button mat-stroked-button color="primary" type="button" class="flex-grow-1" (click)="toggleAdvancedFilters()">
+          <i class="fa-solid fa-sliders me-1"></i> Filtres
+        </button>
+        <button mat-icon-button color="warn" type="button" (click)="resetFilters()" matTooltip="Réinitialiser">
+          <i class="fa-solid fa-rotate-right"></i>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Ligne 2 : Filtres Avancés (Pliables) -->
+    <div class="row g-3 mt-1 pt-2 border-top" *ngIf="showAdvancedFilters">
+
+      <!-- Mode de règlement -->
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100" subscriptSizing="dynamic">
+          <mat-label>Mode de règlement</mat-label>
+          <mat-select [(ngModel)]="selectedPaymentMode" (selectionChange)="applyFilters()">
+            <mat-option value="">Tous</mat-option>
+            <mat-option value="espece">Espèce</mat-option>
+            <mat-option value="carte_bancaire">Carte Bancaire</mat-option>
+            <mat-option value="prise_en_charge">Prise en charge (PEC)</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Etat de Propreté (Housekeeping) -->
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100" subscriptSizing="dynamic">
+          <mat-label>État Chambre</mat-label>
+          <mat-select [(ngModel)]="selectedHousekeeping" (selectionChange)="applyFilters()">
+            <mat-option value="">Tous</mat-option>
+            <mat-option value="CLEAN">Propre</mat-option>
+            <mat-option value="DIRTY">Sale / À faire</mat-option>
+            <mat-option value="IN_PROGRESS">En cours</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Alerte Solde / Débiteurs -->
+      <div class="col-md-4 d-flex align-items-center">
+        <mat-slide-toggle color="warn" [(ngModel)]="onlyHighBalance" (change)="applyFilters()">
+          <span class="fw-bold text-danger">
+            <i class="fa-solid fa-triangle-exclamation me-1"></i>
+            Soldes débiteurs uniquement
+          </span>
+        </mat-slide-toggle>
+      </div>
+
+    </div>
+
+  </mat-card-content>
+</mat-card>
+
+<!-- TABLEAU DES CLIENTS EN SÉJOUR (IN-HOUSE) -->
+<mat-card class="shadow-sm">
+  <mat-card-content class="p-0">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+        <!-- Chambre & Pavillon -->
+        <ng-container matColumnDef="chambre">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Chambre </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="fw-bold fs-6">Ch. {{ element.chambreNumero }}</div>
+            <small class="text-muted">{{ element.pavillonNom }}</small>
+          </td>
+        </ng-container>
+
+        <!-- Client & VIP -->
+        <ng-container matColumnDef="client">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Client </th>
+          <td mat-cell *matCellDef="let element">
+            <div class="d-flex align-items-center gap-2">
+              <span class="fw-semibold">{{ element.clientNom }} {{ element.clientPrenom }}</span>
+              <span *ngIf="element.isVip" class="badge bg-warning text-dark">
+                <i class="fa-solid fa-star me-1"></i>VIP
+              </span>
+            </div>
+            <small class="text-muted d-block">
+              <i class="fa-solid fa-id-card me-1"></i>{{ element.cinOrPassport }} | 
+              <i class="fa-solid fa-phone me-1"></i>{{ element.telephone }}
+            </small>
+          </td>
+        </ng-container>
+
+        <!-- Dates (Arrivée / Départ) -->
+        <ng-container matColumnDef="dates">
+          <th mat-header-cell *matHeaderCellDef> Dates </th>
+          <td mat-cell *matCellDef="let element">
+            <div><small class="text-muted">Arr :</small> {{ element.dateArrivee | date:'dd/MM/yyyy' }}</div>
+            <div><small class="text-muted">Dép :</small> {{ element.dateDepart | date:'dd/MM/yyyy' }}</div>
+          </td>
+        </ng-container>
+
+        <!-- Statut du séjour -->
+        <ng-container matColumnDef="statut">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Statut Séjour </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="badge" [ngClass]="{
+              'bg-danger': element.statut === 'DUE_OUT',
+              'bg-success': element.statut === 'STAY_OVER',
+              'bg-info text-dark': element.statut === 'ARRIVED_TODAY',
+              'bg-warning text-dark': element.statut === 'LATE_CHECKOUT'
+            }">
+              {{ getStatutLabel(element.statut) }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- État Gouvernance (Housekeeping) -->
+        <ng-container matColumnDef="housekeeping">
+          <th mat-header-cell *matHeaderCellDef> État Chambre </th>
+          <td mat-cell *matCellDef="let element">
+            <span class="badge rounded-pill" [ngClass]="{
+              'bg-success-subtle text-success border border-success': element.housekeeping === 'CLEAN',
+              'bg-danger-subtle text-danger border border-danger': element.housekeeping === 'DIRTY',
+              'bg-warning-subtle text-warning border border-warning': element.housekeeping === 'IN_PROGRESS'
+            }">
+              <i class="fa-solid me-1" [ngClass]="{
+                'fa-check': element.housekeeping === 'CLEAN',
+                'fa-broom': element.housekeeping === 'DIRTY',
+                'fa-spinner fa-spin': element.housekeeping === 'IN_PROGRESS'
+              }"></i>
+              {{ element.housekeeping }}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Solde / Comptabilité -->
+        <ng-container matColumnDef="solde">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-end"> Solde </th>
+          <td mat-cell *matCellDef="let element" class="text-end">
+            <span [class.text-danger]="element.solde > 0" [class.fw-bold]="element.solde > 0">
+              {{ element.solde | currency:'EUR':'symbol':'1.2-2' }}
+            </span>
+            <div *ngIf="element.solde > 0" class="small text-danger">
+              <i class="fa-solid fa-triangle-exclamation"></i> Débiteur
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Actions -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef class="text-center"> Actions </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <button mat-icon-button [matMenuTriggerFor]="menu" type="button">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="viewDetails(element)">
+                <i class="fa-solid fa-eye me-2 text-primary"></i> Voir détails
+              </button>
+              <button mat-menu-item (click)="addPayment(element)">
+                <i class="fa-solid fa-credit-card me-2 text-success"></i> Ajouter un règlement
+              </button>
+              <button mat-menu-item (click)="checkout(element)">
+                <i class="fa-solid fa-door-open me-2 text-danger"></i> Check-out
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- Message si aucune donnée -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center p-4" [attr.colspan]="displayedColumns.length">
+            <i class="fa-solid fa-folder-open fs-3 text-muted mb-2 d-block"></i>
+            Aucune donnée ne correspond aux filtres appliqués.
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <!-- Paginator Angular Material -->
+    <mat-paginator [pageSizeOptions]="[10, 25, 50, 100]" showFirstLastButtons></mat-paginator>
+  </mat-card-content>
+</mat-card>

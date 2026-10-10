@@ -1,0 +1,107 @@
+<style>
+  .table-btn { min-height:74px; border-radius:12px; border:2px solid #e4e6ef; background:#fff; cursor:pointer; transition:.15s; padding:6px; }
+  .table-btn:hover { transform:translateY(-2px); box-shadow:0 4px 12px rgba(0,0,0,.08); }
+  .table-btn.libre { border-color:#c9f0d5; }
+  .table-btn.occupee { border-color:#ffd0d0; background:#fff5f5; }
+  .table-btn.active { border-color:#556ee4; box-shadow:0 0 0 3px rgba(85,110,228,.2); }
+  .prod-btn { border:1px solid #e4e6ef; border-radius:10px; background:#fff; padding:10px; text-align:left; width:100%; cursor:pointer; transition:.12s; }
+  .prod-btn:hover { background:#f4f6ff; border-color:#556ee4; }
+  .prod-price { color:#556ee4; font-weight:700; }
+</style>
+
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Plan de salle & prise de commande</h5>
+  <button class="btn btn-outline-secondary btn-sm" (click)="loadTables();loadOpen()"><i class="fa-solid fa-rotate me-1"></i>Actualiser</button>
+</div>
+
+<div class="row">
+  <!-- Left: tables grid -->
+  <div class="col-lg-5 mb-3">
+    <div class="card h-100">
+      <div class="card-header"><b>Tables</b></div>
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-3" *ngFor="let t of tables">
+            <div class="table-btn text-center" [ngClass]="tableClass(t)" (click)="selectTable(t)">
+              <div class="fw-bold">{{ t.numero }}</div>
+              <small class="text-muted">{{ t.capacite }}p</small>
+              <div><small>{{ t.zone }}</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: order panel -->
+  <div class="col-lg-7 mb-3">
+    <div class="card h-100" *ngIf="currentTable">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <b>Table {{ currentTable.numero }} — {{ currentTable.zone }}</b>
+        <span class="badge" [ngClass]="commandeId ? 'bg-warning' : 'bg-secondary'">
+          {{ commandeId ? 'Commande #' + commandeId : 'Nouvelle' }}
+        </span>
+      </div>
+      <div class="card-body">
+        <!-- category filter -->
+        <div class="mb-2 d-flex flex-wrap gap-1">
+          <button class="btn btn-sm" [ngClass]="!selectedCategorieId ? 'btn-primary' : 'btn-outline-primary'" (click)="selectCategorie(null)">Tout</button>
+          <button *ngFor="let c of categories" class="btn btn-sm"
+                  [ngClass]="selectedCategorieId===c.id ? 'btn-primary' : 'btn-outline-primary'"
+                  (click)="selectCategorie(c.id)">{{ c.nom }}</button>
+        </div>
+
+        <!-- products grid -->
+        <div class="row g-2 mb-3" style="max-height:230px;overflow:auto;">
+          <div class="col-4" *ngFor="let p of filteredProduits()">
+            <button class="prod-btn" (click)="addProduct(p)">
+              <div class="fw-semibold small">{{ p.nom }}</div>
+              <div class="prod-price small">{{ p.prix | number:'1.0-0' }} DA</div>
+            </button>
+          </div>
+        </div>
+
+        <!-- cart -->
+        <table class="table table-sm align-middle">
+          <thead><tr><th>Article</th><th style="width:110px;">Qté</th><th class="text-end">Montant</th><th></th></tr></thead>
+          <tbody>
+            <tr *ngFor="let l of panier">
+              <td>{{ l.produit.nom }}</td>
+              <td>
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-secondary" (click)="dec(l)">−</button>
+                  <button class="btn btn-outline-secondary disabled">{{ l.quantite }}</button>
+                  <button class="btn btn-outline-secondary" (click)="inc(l)">+</button>
+                </div>
+              </td>
+              <td class="text-end">{{ l.quantite * l.prixUnitaire | number:'1.0-0' }}</td>
+              <td><button class="btn btn-sm text-danger" (click)="remove(l)"><i class="fa-solid fa-xmark"></i></button></td>
+            </tr>
+            <tr *ngIf="!panier.length"><td colspan="4" class="text-center text-muted">Cliquez sur un produit pour l'ajouter.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="mb-2">
+          <input class="form-control form-control-sm" placeholder="N° chambre (facturer au client, optionnel)" [(ngModel)]="chambre">
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center border-top pt-3">
+          <div class="h5 mb-0">Total : {{ total() | number:'1.0-0' }} DA</div>
+          <div>
+            <button class="btn btn-primary btn-sm me-2" (click)="envoyer()"><i class="fa-solid fa-paper-plane me-1"></i>Envoyer</button>
+            <button class="btn btn-success btn-sm me-2" (click)="payer()"><i class="fa-solid fa-cash-register me-1"></i>Encaisser</button>
+            <button class="btn btn-light btn-sm" (click)="reset()">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card h-100" *ngIf="!currentTable">
+      <div class="card-body text-center text-muted py-5">
+        <i class="fa-solid fa-hand-pointer" style="font-size:32px;"></i>
+        <p class="mt-2 mb-0">Sélectionnez une table pour prendre une commande.</p>
+        <small>Vert = libre · Rouge = occupée</small>
+      </div>
+    </div>
+  </div>
+</div>

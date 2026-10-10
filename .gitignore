@@ -1,0 +1,22 @@
+# ---- Backend (Java / Maven)
+backend/target/
+backend/.mvn/wrapper/maven-wrapper.jar
+*.class
+*.jar
+!backend/.mvn/wrapper/maven-wrapper.jar
+
+# ---- Frontend (Node / Angular)
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.cache/
+
+# ---- IDE
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# ---- Uploads / logs
+uploads/
+*.log

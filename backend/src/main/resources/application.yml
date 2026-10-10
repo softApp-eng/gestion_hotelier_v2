@@ -1,0 +1,79 @@
+# =====================================================================
+#  Gestion Hotel V2 - Application configuration
+#  Default profile: "demo" => H2 in-memory + seed data (zero install)
+#  Production profile: "prod" => PostgreSQL
+# =====================================================================
+spring:
+  application:
+    name: hotelv2
+  profiles:
+    active: demo
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+    date-format: yyyy-MM-dd'T'HH:mm:ss
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+server:
+  port: 9090
+
+# --- JWT ---
+application:
+  security:
+    jwt:
+      secret-key: 9a4f2c8d7b6e1f3a5c0d9e8b7a6f4c2d1e3b5a7c9d0f2e4a6b8c1d3f5a7e9b0c
+      expiration: 86400000            # 24h access token
+      refresh-token:
+        expiration: 604800000         # 7 days refresh token
+  upload:
+    directory: ${user.home}/hotelv2-uploads/
+
+---
+# ============================ DEMO PROFILE ============================
+spring:
+  config:
+    activate:
+      on-profile: demo
+  datasource:
+    url: jdbc:h2:mem:hotelv2;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ''
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: false
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+logging:
+  level:
+    com.softappeng.hotelv2: INFO
+
+---
+# ============================ PROD PROFILE ============================
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hotelv2_db}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false

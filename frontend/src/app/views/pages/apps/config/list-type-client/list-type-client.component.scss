@@ -1,0 +1,77 @@
+/* Alignement des icônes FontAwesome dans les boutons et la recherche */
+.search-icon {
+  margin-right: 8px;
+  color: #666;
+}
+
+.btn-icon {
+  margin-right: 8px;
+}
+
+.action-icon {
+  font-size: 1.1rem;
+}
+
+/* Styles précédents conservés */
+.table-container {
+  margin: 24px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  overflow: hidden;
+  position: relative;
+}
+
+.header-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px 0 24px;
+  gap: 16px;
+
+  .search-field {
+    width: 350px;
+    margin-bottom: -1.25em;
+  }
+}
+
+.loading-shade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.7);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.responsive-table {
+  overflow-x: auto;
+}
+
+.full-width-table {
+  width: 100%;
+}
+
+.font-medium {
+  font-weight: 500;
+}
+
+.code-badge {
+  background-color: #e8f0fe;
+  color: #1a73e8;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.empty-cell {
+  text-align: center;
+  padding: 24px !important;
+  color: #666;
+  font-style: italic;
+}

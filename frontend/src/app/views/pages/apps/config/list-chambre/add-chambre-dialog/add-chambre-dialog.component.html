@@ -1,0 +1,67 @@
+<h2 mat-dialog-title>
+  <i class="fa-solid fa-bed me-2"></i> Ajouter un Type de Chambre
+</h2>
+
+<form [formGroup]="typeChambreForm" (ngSubmit)="onSubmit()">
+  <mat-dialog-content class="dialog-content">
+    
+    <div class="form-row">
+      <!-- Code -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Code</mat-label>
+        <input 
+          matInput 
+          formControlName="code" 
+          placeholder="Ex: SINGLE, VIP, DBL" 
+          style="text-transform: uppercase;"
+          (input)="onCodeInput($event)"
+          required>
+        <mat-error *ngIf="typeChambreForm.get('code')?.hasError('required')">
+          Le code est obligatoire
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Capacité -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Capacité (personnes)</mat-label>
+        <input matInput type="number" formControlName="capacite" min="1" required>
+        <mat-error *ngIf="typeChambreForm.get('capacite')?.hasError('required')">
+          La capacité est obligatoire
+        </mat-error>
+        <mat-error *ngIf="typeChambreForm.get('capacite')?.hasError('min')">
+          La capacité doit être d'au moins 1
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Libellé -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Libellé</mat-label>
+      <input matInput formControlName="libelle" placeholder="Ex: Chambre Simple Standard" required>
+      <mat-error *ngIf="typeChambreForm.get('libelle')?.hasError('required')">
+        Le libellé est obligatoire
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput formControlName="description" rows="3" placeholder="Description du type de chambre..."></textarea>
+    </mat-form-field>
+
+    <!-- Statut Actif -->
+    <div class="checkbox-row">
+      <mat-checkbox formControlName="active" color="primary">Type de chambre actif</mat-checkbox>
+    </div>
+
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button type="button" (click)="onCancel()">Annuler</button>
+    <button mat-raised-button color="primary" type="submit" [disabled]="typeChambreForm.invalid || isSubmitting">
+      <i class="fa-solid fa-floppy-disk btn-icon" *ngIf="!isSubmitting"></i>
+      <mat-spinner diameter="20" *ngIf="isSubmitting"></mat-spinner>
+      Enregistrer
+    </button>
+  </mat-dialog-actions>
+</form>

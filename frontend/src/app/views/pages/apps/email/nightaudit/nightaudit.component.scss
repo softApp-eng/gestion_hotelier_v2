@@ -1,0 +1,36 @@
+.nightaudit-container {
+  .text-indigo {
+    color: #4b39b5;
+  }
+
+  .step-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .border-top-card {
+    border-top: 4px solid #ccc !important;
+
+    &.border-success {
+      border-top-color: #198754 !important;
+    }
+    &.border-warning {
+      border-top-color: #ffc107 !important;
+    }
+    &.border-primary {
+      border-top-color: #0d6efd !important;
+    }
+  }
+
+  .mat-column-type {
+    width: 320px;
+  }
+
+  .mat-column-blocking {
+    width: 180px;
+  }
+
+  .mat-column-action {
+    width: 180px;
+  }
+}

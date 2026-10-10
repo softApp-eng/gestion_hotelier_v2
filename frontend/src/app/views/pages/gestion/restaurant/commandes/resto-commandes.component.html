@@ -1,0 +1,53 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Commandes ouvertes</h5>
+  <button class="btn btn-outline-secondary btn-sm" (click)="load()"><i class="fa-solid fa-rotate me-1"></i>Actualiser</button>
+</div>
+
+<div class="row">
+  <div class="col-lg-6 mb-3">
+    <div class="card">
+      <div class="card-body table-responsive">
+        <table class="table table-hover align-middle">
+          <thead><tr><th>N°</th><th>Table</th><th>Serveur</th><th>Total</th><th></th></tr></thead>
+          <tbody>
+            <tr *ngFor="let c of commandes" (click)="select(c)" style="cursor:pointer" [class.table-active]="selected?.id===c.id">
+              <td><b>{{ c.numero }}</b></td>
+              <td>{{ c.table?.numero || '-' }}</td>
+              <td>{{ c.serveur }}</td>
+              <td>{{ c.total | number:'1.0-0' }} DA</td>
+              <td class="text-nowrap">
+                <button class="btn btn-success btn-sm me-1" (click)="$event.stopPropagation();payer(c)">Encaisser</button>
+                <button class="btn btn-outline-danger btn-sm" (click)="$event.stopPropagation();annuler(c)"><i class="fa-solid fa-trash"></i></button>
+              </td>
+            </tr>
+            <tr *ngIf="!commandes.length"><td colspan="5" class="text-center text-muted">Aucune commande ouverte.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6 mb-3">
+    <div class="card" *ngIf="selected">
+      <div class="card-header"><b>Détail {{ selected.numero }}</b></div>
+      <div class="card-body">
+        <div class="text-muted mb-2">Table {{ selected.table?.numero }} · Serveur {{ selected.serveur }} · {{ selected.dateCommande | date:'dd/MM HH:mm' }}</div>
+        <table class="table table-sm">
+          <thead><tr><th>Article</th><th>Qté</th><th class="text-end">Montant</th></tr></thead>
+          <tbody>
+            <tr *ngFor="let l of selected.lignes">
+              <td>{{ l.produit?.nom }}</td>
+              <td>{{ l.quantite }}</td>
+              <td class="text-end">{{ l.quantite * l.prixUnitaire | number:'1.0-0' }}</td>
+            </tr>
+          </tbody>
+          <tfoot><tr><th colspan="2">Total</th><th class="text-end">{{ total() | number:'1.0-0' }} DA</th></tr></tfoot>
+        </table>
+        <button class="btn btn-success btn-sm" (click)="payer(selected)"><i class="fa-solid fa-cash-register me-1"></i>Encaisser</button>
+      </div>
+    </div>
+    <div class="card" *ngIf="!selected">
+      <div class="card-body text-muted text-center py-5">Sélectionnez une commande pour voir le détail.</div>
+    </div>
+  </div>
+</div>

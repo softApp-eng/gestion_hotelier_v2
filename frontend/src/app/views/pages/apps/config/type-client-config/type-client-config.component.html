@@ -1,0 +1,70 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Créer un type client</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="save()">
+
+        <!-- Code -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Code</mat-label>
+          <input
+            matInput
+            formControlName="code"
+            placeholder="Ex: CLI"
+          />
+
+          <mat-error *ngIf="form.get('code')?.hasError('required')">
+            Le code est obligatoire
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Libellé -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Libellé</mat-label>
+          <input
+            matInput
+            formControlName="libelle"
+            placeholder="Ex: Client particulier"
+          />
+
+          <mat-error *ngIf="form.get('libelle')?.hasError('required')">
+            Le libellé est obligatoire
+          </mat-error>
+        </mat-form-field>
+
+        <!-- Description -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Description</mat-label>
+          <textarea
+            matInput
+            rows="4"
+            formControlName="description"
+            placeholder="Description du type client">
+          </textarea>
+        </mat-form-field>
+
+        <!-- Buttons -->
+        <div class="actions">
+          <button
+            mat-button
+            type="button"
+            (click)="cancel()">
+            Annuler
+          </button>
+
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="form.invalid || loading">
+            {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
+          </button>
+        </div>
+
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,217 @@
+<div class="compte-container p-3">
+
+  <!-- EN-TÊTE : RECHERCHE ET SÉLECTION DU COMPTE -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="m-0 fw-bold text-primary">
+        <i class="fa-solid fa-file-invoice-dollar me-2"></i>Compte Client & Facturation (Folio)
+      </h2>
+      <p class="text-muted small mb-0">Gestion des consommations, encaissements et éditeur de factures</p>
+    </div>
+
+    <div class="d-flex gap-2">
+      <mat-form-field appearance="outline" class="search-field" subscriptSizing="dynamic">
+        <mat-label>Rechercher Chambre ou Client...</mat-label>
+        <input matInput [(ngModel)]="searchQuery" (keyup)="applySearch()" placeholder="Chambre, Nom, Facture #...">
+        <i matPrefix class="fa-solid fa-magnifying-glass me-2 text-muted ps-2"></i>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- INFOS CLIENT & RÉSUMÉ FINANCIER -->
+  <mat-card class="shadow-sm mb-4" *ngIf="activeFolio">
+    <mat-card-content class="p-3">
+      <div class="row align-items-center">
+        <!-- Infos Client -->
+        <div class="col-md-5 border-end">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar-badge bg-primary text-white fw-bold fs-4 rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+              {{ activeFolio.chambreNumero }}
+            </div>
+            <div>
+              <h5 class="fw-bold mb-0">{{ activeFolio.clientNom }} {{ activeFolio.clientPrenom }}</h5>
+              <small class="text-muted">
+                Réservation <strong>#{{ activeFolio.numeroResa }}</strong> • Séjour: {{ activeFolio.dateArrivee | date:'dd/MM' }} au {{ activeFolio.dateDepart | date:'dd/MM/yyyy' }}
+              </small>
+              <div class="mt-1">
+                <span class="badge bg-secondary me-1">Société: {{ activeFolio.societe || 'Particulier' }}</span>
+                <span class="badge bg-info text-dark">Tarif: {{ activeFolio.codeTarif }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Métriques Financières -->
+        <div class="col-md-7">
+          <div class="row text-center">
+            <div class="col-4">
+              <small class="text-muted d-block text-uppercase fw-semibold">Total Prestations</small>
+              <span class="fs-4 fw-bold text-dark">{{ activeFolio.totalDebits | currency:'EUR':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="col-4">
+              <small class="text-muted d-block text-uppercase fw-semibold">Total Encaissé</small>
+              <span class="fs-4 fw-bold text-success">{{ activeFolio.totalCredits | currency:'EUR':'symbol':'1.2-2' }}</span>
+            </div>
+            <div class="col-4">
+              <small class="text-muted d-block text-uppercase fw-semibold">Solde Dû</small>
+              <span class="fs-4 fw-bold" [class.text-danger]="activeFolio.solde > 0" [class.text-success]="activeFolio.solde <= 0">
+                {{ activeFolio.solde | currency:'EUR':'symbol':'1.2-2' }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- BARRE D'ACTIONS RAPIDES -->
+  <div class="d-flex justify-content-between align-items-center mb-3" *ngIf="activeFolio">
+    <div class="d-flex gap-2">
+      <button mat-flat-button color="primary" (click)="openPaiementModal()">
+        <i class="fa-solid fa-credit-card me-2"></i>Encaisser Règlement
+      </button>
+      <button mat-stroked-button color="primary" (click)="openPrestationModal()">
+        <i class="fa-solid fa-plus me-2"></i>Ajouter une Prestation
+      </button>
+      <button mat-stroked-button color="warn" (click)="openAjustementModal()">
+        <i class="fa-solid fa-percent me-2"></i>Remise / Ajustement
+      </button>
+    </div>
+
+    <div class="d-flex gap-2">
+      <button mat-stroked-button (click)="imprimerProforma()">
+        <i class="fa-solid fa-print me-2"></i>Pro-Forma
+      </button>
+      <button mat-flat-button class="bg-success text-white" [disabled]="activeFolio.solde > 0" (click)="cloturerEtFacturer()">
+        <i class="fa-solid fa-file-invoice me-2"></i>Clôturer & Editer Facture
+      </button>
+    </div>
+  </div>
+
+  <!-- TABLEAU DU DÉTAIL DU FOLIO (LIGNES DE COMPTE) -->
+  <mat-card class="shadow-sm">
+    <mat-card-header class="bg-light p-3 border-bottom d-flex justify-content-between align-items-center">
+      <mat-card-title class="fs-6 fw-bold m-0">Détail des opérations du compte</mat-card-title>
+      <small class="text-muted">Folio Principal (#F-{{ activeFolio?.numeroResa }})</small>
+    </mat-card-header>
+
+    <mat-card-content class="p-0">
+      <div class="table-responsive">
+        <table mat-table [dataSource]="dataSource" matSort class="w-100">
+
+          <!-- Date -->
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date & Heure </th>
+            <td mat-cell *matCellDef="let row">
+              <small class="fw-semibold">{{ row.dateOp | date:'dd/MM/yyyy HH:mm' }}</small>
+            </td>
+          </ng-container>
+
+          <!-- Libellé -->
+          <ng-container matColumnDef="libelle">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Designation / Prestation </th>
+            <td mat-cell *matCellDef="let row">
+              <div class="fw-bold">{{ row.libelle }}</div>
+              <small class="text-muted" *ngIf="row.reference">Ref: {{ row.reference }}</small>
+            </td>
+          </ng-container>
+
+          <!-- Categorie / Departement -->
+          <ng-container matColumnDef="departement">
+            <th mat-header-cell *matHeaderCellDef> Département </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="badge bg-light text-dark border">{{ row.departement }}</span>
+            </td>
+          </ng-container>
+
+          <!-- Débit (Consommation) -->
+          <ng-container matColumnDef="debit">
+            <th mat-header-cell *matHeaderCellDef class="text-end"> Débit (€) </th>
+            <td mat-cell *matCellDef="let row" class="text-end fw-semibold text-dark">
+              {{ row.debit > 0 ? (row.debit | currency:'EUR':'symbol':'1.2-2') : '-' }}
+            </td>
+          </ng-container>
+
+          <!-- Crédit (Paiement) -->
+          <ng-container matColumnDef="credit">
+            <th mat-header-cell *matHeaderCellDef class="text-end"> Crédit (€) </th>
+            <td mat-cell *matCellDef="let row" class="text-end fw-bold text-success">
+              {{ row.credit > 0 ? (row.credit | currency:'EUR':'symbol':'1.2-2') : '-' }}
+            </td>
+          </ng-container>
+
+          <!-- Utilisateur -->
+          <ng-container matColumnDef="agent">
+            <th mat-header-cell *matHeaderCellDef class="text-end pe-3"> Agent </th>
+            <td mat-cell *matCellDef="let row" class="text-end pe-3">
+              <small class="text-muted">{{ row.agentInitiales }}</small>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.bg-light-success]="row.credit > 0"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell text-center p-4" [attr.colspan]="displayedColumns.length">
+              <i class="fa-solid fa-receipt fs-3 text-muted mb-2 d-block"></i>
+              Aucune opération enregistrée sur ce compte.
+            </td>
+          </tr>
+
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+</div>
+
+<!-- DIALOG MODAL: ENCAISSEMENT -->
+<ng-template #paiementDialog>
+  <div class="p-3">
+    <h3 class="fw-bold text-primary mb-1">
+      <i class="fa-solid fa-cash-register me-2"></i>Encaisser un Règlement
+    </h3>
+    <p class="text-muted small mb-3">Solde restant à régler: <strong class="text-danger">{{ activeFolio?.solde | currency:'EUR':'symbol':'1.2-2' }}</strong></p>
+
+    <mat-divider class="mb-3"></mat-divider>
+
+    <form [formGroup]="paiementForm">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Mode de Règlement</mat-label>
+            <mat-select formControlName="modePaiement">
+              <mat-option value="CB">Carte Bancaire (TPE)</mat-option>
+              <mat-option value="ESP">Espèces</mat-option>
+              <mat-option value="VIR">Virement Bancaire</mat-option>
+              <mat-option value="CHQ">Chèque</mat-option>
+              <mat-option value="PEC">Prise en Charge (PEC / Facture)</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Montant (€)</mat-label>
+            <input matInput type="number" formControlName="montant">
+            <span matPrefix class="ps-2 me-1">€</span>
+          </mat-form-field>
+        </div>
+
+        <div class="col-md-12">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Référence / Numéro TPE / Transaction</mat-label>
+            <input matInput formControlName="reference" placeholder="Ex: Auth 883921 / Chèque #1209">
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
+      <button mat-button (click)="closeDialog()">Annuler</button>
+      <button mat-flat-button color="primary" [disabled]="paiementForm.invalid" (click)="confirmPaiement()">
+        Valider le Règlement
+      </button>
+    </div>
+  </div>
+</ng-template>

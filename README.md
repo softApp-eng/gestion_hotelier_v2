@@ -111,13 +111,15 @@ Ouvrez **http://localhost:4200**.
 | **Chellah** | 5 | 7 | Simple, Chambre double, Mini suite, Suite |
 | **Oudayas** | 4 | 7 | Suite Junior, Suite Senior, Chambre de luxe |
 
+> **Numérotation des chambres :** Pavillon **Chellah** = 101-107 … 501-507 ; Pavillon **Oudayas** = 601-607, 701-707, 801-807, 901-907 (la numérotation continue après Chellah, sans doublon). L'**étage** logique reste 1…4.
+
 | Fonction | Détail |
 |---|---|
 | **État des chambres** | Tableau **matriciel** : une ligne par **étage**, une colonne par **chambre** (numéro + type + état de ménage + situation). États : **Clean / À vérifier / Dirty / Bloquée**, séparés de la *disponibilité* (Libre / Occupée / Bloquée). Clic sur une chambre pour changer l'état. Filtres pavillon / type / étage / état. Impression |
 | **Vérification quotidienne** | Onglet listant les chambres à nettoyer/vérifier du jour (départ, recouché, dirty) avec **affectation de la femme de chambre** puis validation (→ Clean). Colonne **Chambre occupée** (Occupée / Libre) — **pas de nom de client** |
-| **Problèmes techniques** | Onglet de signalement/traitement des pannes : chambre, description, priorité (basse/moyenne/haute), statut (signalé → en cours → résolu) |
-| **Planning gouvernante** | Tableau **matriciel** identique (étages × 7 chambres). Chaque chambre affiche **une seule situation** : **RECOUCHÉ** *ou* **DÉPART** *ou* **ARRIVÉE** (calculée automatiquement depuis séjours & réservations), en plus de l'état de ménage et du badge « occupée ». **Imprimable** (paysage) |
-| **Tour de la semaine** | **Roulement hebdomadaire des femmes de chambre** : une ligne par femme, une colonne par jour (Lundi → Dimanche). Chaque case = étage affecté ou **Repos** (dimanche par défaut) ; clic pour modifier. Navigation semaine précédente / suivante. **Imprimable** (paysage) |
+| **Problèmes techniques** | Onglet de signalement/traitement des pannes : chambre, description, priorité (basse/moyenne/haute), statut (signalé → en cours → résolu). **Impression de la liste** |
+| **Planning gouvernante** | Tableau **matriciel** identique (étages × 7 chambres). Chaque chambre affiche **une seule situation** : **RECOUCHÉ** *ou* **DÉPART** *ou* **ARRIVÉE** (calculée automatiquement depuis séjours & réservations), en plus de l'état de ménage et du badge « occupée ». **Imprimable** (paysage) : uniquement **n° de chambre + situation** |
+| **Tour de la semaine** | **Roulement hebdomadaire des femmes de chambre** : une ligne par femme, une colonne par jour (Lundi → Dimanche). Chaque case = étage affecté ou **Repos** (dimanche par défaut) ; clic pour modifier. Ligne **Permanence** : chaque jour **une seule** femme de chambre « reste en retard », tout l'hôtel. Navigation semaine précédente / suivante. **Imprimable** (paysage) |
 | **Gouvernantes** | Liste paramétrable avec **rôle** : **GOUVERNANTE** (responsable de pavillon, 1 par pavillon) ou **FEMME_DE_CHAMBRE** (3 par pavillon). Nom, prénom, téléphone, pavillon, actif — dans Configuration |
 | **Ajout de chambre** | **Modal d'insertion** professionnel : identification, état de ménage, gouvernante affectée, blocage (période + motif) |
 
@@ -150,7 +152,7 @@ Ouvrez **http://localhost:4200**.
 | GET/POST | `/api/housekeeping/etat-chambres`, `/api/housekeeping/{id}/etat-menage` | État des chambres |
 | GET | `/api/housekeeping/planning-gouvernante` | Planning gouvernante (par étage/type, départ/recouché/arrivée) |
 | GET | `/api/housekeeping/planning-occupation?date=` | Planning d'occupation **matriciel** (étages × chambres, situation unique, sans client) |
-| GET/POST | `/api/tour-menage?debut=`, `/api/tour-menage` | Tour de la semaine des femmes de chambre (roulement / repos) |
+| GET/POST | `/api/tour-menage?debut=`, `/api/tour-menage`, `/api/tour-menage/permanence` | Tour de la semaine des femmes de chambre (roulement / repos) + permanence du jour |
 | GET/POST | `/api/housekeeping/problemes`, `/api/housekeeping/problemes/{id}/statut` | Problèmes techniques |
 | GET | `/api/reports/ventes?from=&to=` | Rapport des ventes |
 

@@ -12,4 +12,8 @@ public interface GouvernanteRepo extends JpaRepository<Gouvernante, Long> {
     List<Gouvernante> findByActifTrueOrderByNomAsc();
 
     List<Gouvernante> findByPavillonIdOrderByNomAsc(Long pavillonId);
+
+    List<Gouvernante> findByRoleAndActifTrueOrderByNomAsc(String role);
+
+    List<Gouvernante> findByRoleOrderByNomAsc(String role);
 }

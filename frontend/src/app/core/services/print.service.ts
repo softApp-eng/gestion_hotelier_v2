@@ -50,6 +50,8 @@ export class PrintService {
         table.matrix .sit-tag.s-recouche { background: #dbeafe; }
         table.matrix .sit-tag.s-depart { background: #f8d7da; }
         table.matrix .sit-tag.s-arrivee { background: #d1e7dd; }
+        table.matrix td.s-etage { background: #d1e7dd; font-weight: bold; }
+        table.matrix td.s-repos { background: #e2e3e5; }
         .legend { margin-top: 12px; font-size: 11px; }
         .legend .lg { display: inline-block; padding: 2px 8px; border: 1px solid #ccc; margin-right: 6px; }
         .legend .lg.m-clean { background: #e8f6ec; }

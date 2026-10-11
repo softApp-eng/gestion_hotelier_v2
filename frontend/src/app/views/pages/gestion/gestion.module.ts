@@ -28,6 +28,7 @@ import { GestionFacturesComponent } from './factures/gestion-factures.component'
 import { NightAuditComponent } from './night-audit/night-audit.component';
 import { EtatChambresComponent } from './etat-chambres/etat-chambres.component';
 import { PlanningGouvernanteComponent } from './planning-gouvernante/planning-gouvernante.component';
+import { TourMenageComponent } from './tour-menage/tour-menage.component';
 import { GestionGouvernantesComponent } from './config/gouvernantes/gestion-gouvernantes.component';
 
 const routes: Routes = [
@@ -45,6 +46,7 @@ const routes: Routes = [
   { path: 'night-audit', component: NightAuditComponent },
   { path: 'etat-chambres', component: EtatChambresComponent },
   { path: 'planning-gouvernante', component: PlanningGouvernanteComponent },
+  { path: 'tour-menage', component: TourMenageComponent },
   { path: 'config/pavillons', component: GestionPavillonsComponent },
   { path: 'config/categories-clients', component: GestionCategoriesClientsComponent },
   { path: 'config/tarifs', component: GestionTarifsComponent },
@@ -78,6 +80,7 @@ const routes: Routes = [
     NightAuditComponent,
     EtatChambresComponent,
     PlanningGouvernanteComponent,
+    TourMenageComponent,
     GestionGouvernantesComponent,
     RestoTablesComponent,
     RestoCommandesComponent,

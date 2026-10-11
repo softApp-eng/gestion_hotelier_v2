@@ -303,4 +303,15 @@ export class ApiService {
     if (date) params = params.set('date', date);
     return this.http.get(`${this.base}/housekeeping/planning-occupation`, { params });
   }
+
+  // ---------- Tour de la semaine (roulement des femmes de chambre) ----------
+  tourMenageSemaine(debut?: string): Observable<any> {
+    let params = new HttpParams();
+    if (debut) params = params.set('debut', debut);
+    return this.http.get(`${this.base}/tour-menage`, { params });
+  }
+
+  saveTourMenage(a: any): Observable<any> {
+    return this.http.post(`${this.base}/tour-menage`, a);
+  }
 }

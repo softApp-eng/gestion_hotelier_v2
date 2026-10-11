@@ -41,7 +41,8 @@ export const MENU: MenuItem[] = [
     subItems: [
       { label: 'Chambres', link: '/gestion/chambres' },
       { label: 'État des chambres', link: '/gestion/etat-chambres' },
-      { label: 'Planning gouvernante', link: '/gestion/planning-gouvernante' }
+      { label: 'Planning gouvernante', link: '/gestion/planning-gouvernante' },
+      { label: 'Tour de la semaine', link: '/gestion/tour-menage' }
     ]
   },
   {

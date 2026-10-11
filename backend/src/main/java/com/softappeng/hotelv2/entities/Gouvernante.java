@@ -1,5 +1,6 @@
 package com.softappeng.hotelv2.entities;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -37,6 +38,8 @@ public class Gouvernante extends Auditable {
 
     private String observation;
 
+    /** Read-only: computed for display, ignored when the client sends the object back. */
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     public String getNomComplet() {
         if (prenom == null || prenom.isBlank()) return nom;
         return nom + " " + prenom;

@@ -205,7 +205,7 @@ export class EtatChambresComponent implements OnInit {
       + '<span class="lg m-verif">À vérifier</span><span class="lg m-dirty">Dirty</span>'
       + '<span class="lg m-block">Bloquée</span></div>';
 
-    this.print.print('Planning d\'occupation', html);
+    this.print.print('Planning d\'occupation', html, 'landscape');
   }
 
   private matrixHtml(pav: any): string {

@@ -83,6 +83,6 @@ export class PlanningChambresComponent implements OnInit {
       html += '</tr>';
     });
     html += '</tbody></table>';
-    this.printService.print('Planning des chambres', html);
+    this.printService.print('Planning des chambres', html, 'landscape');
   }
 }

@@ -22,7 +22,6 @@ export const MENU: MenuItem[] = [
     label: 'Hôtel',
     icon: 'fa-solid fa-hotel',
     subItems: [
-      { label: 'Chambres', link: '/gestion/chambres' },
       { label: 'Réservations', link: '/gestion/reservations' },
       { label: 'Check-in / Séjours', link: '/gestion/sejours' },
       { label: 'Clients', link: '/gestion/clients' }
@@ -40,6 +39,7 @@ export const MENU: MenuItem[] = [
     label: 'Gouvernante',
     icon: 'fa-solid fa-broom',
     subItems: [
+      { label: 'Chambres', link: '/gestion/chambres' },
       { label: 'État des chambres', link: '/gestion/etat-chambres' },
       { label: 'Planning gouvernante', link: '/gestion/planning-gouvernante' }
     ]

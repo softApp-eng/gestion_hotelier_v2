@@ -7,11 +7,15 @@ import { Injectable } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class PrintService {
 
-  print(title: string, body: string): void {
+  print(title: string, body: string, orientation: 'portrait' | 'landscape' = 'portrait'): void {
     const w = window.open('', '_blank', 'width=1200,height=800');
     if (!w) return;
+    const page = orientation === 'landscape'
+      ? '@page { size: A4 landscape; margin: 8mm; }'
+      : '@page { size: A4 portrait; margin: 10mm; }';
     w.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title>
       <style>
+        ${page}
         * { box-sizing: border-box; }
         body { font-family: Arial, Helvetica, sans-serif; padding: 16px; color: #111; }
         h2 { margin: 0 0 2px; font-size: 18px; }

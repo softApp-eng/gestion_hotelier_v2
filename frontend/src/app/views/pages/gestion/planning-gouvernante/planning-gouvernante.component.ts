@@ -96,7 +96,7 @@ export class PlanningGouvernanteComponent implements OnInit {
       + '<span class="lg m-verif">À vérifier</span><span class="lg m-dirty">Dirty</span>'
       + '<span class="lg m-block">Bloquée</span></div>';
 
-    this.print.print('Planning d\'occupation ' + this.fmt(this.data.date), html);
+    this.print.print('Planning d\'occupation ' + this.fmt(this.data.date), html, 'landscape');
   }
 
   private matrixHtml(pav: any): string {

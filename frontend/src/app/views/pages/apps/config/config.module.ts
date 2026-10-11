@@ -27,6 +27,7 @@ import { MatChipsModule } from '@angular/material/chips';
 
 // Pour l'option 2 (matBadge)
 import { MatBadgeModule } from '@angular/material/badge';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 // Ajouter MatSelectModule dans l'array imports: []
 const routes: Routes = [
@@ -86,7 +87,8 @@ const routes: Routes = [
         MatDialogModule,
         MatCheckboxModule,
         MatChipsModule, // Pour l'option 1 (<mat-chip>)
-        MatBadgeModule // Pour l'option 2 (matBadge)
+        MatBadgeModule, // Pour l'option 2 (matBadge)
+        MaterialModule
   ]
 })
 export class ConfigModule { }

@@ -3,13 +3,13 @@
     <h4 class="mb-3 mb-md-0">Welcome to Dashboard</h4>
   </div>
   <div class="d-flex align-items-center flex-wrap text-nowrap">
-    <div class="input-group wd-200 me-2 mb-2 mb-md-0">
-      <button class="btn btn-outline-primary btn-icon calendar" type="button" (click)="d.toggle()">
-        <i data-feather="calendar" appFeatherIcon></i>
-      </button>
-      <input class="form-control border-primary bg-transparent" placeholder="yyyy-mm-dd"
+    <button class="btn btn-outline-primary btn-icon calendar" type="button" (click)="d.toggle()">
+      <i data-feather="calendar" appFeatherIcon></i>
+    </button>
+    <mat-form-field appearance="outline" class="wd-200 me-2 mb-2 mb-md-0">
+      <input matInput placeholder="yyyy-mm-dd"
           name="dp" [(ngModel)]="currentDate" ngbDatepicker #d="ngbDatepicker">
-    </div>
+    </mat-form-field>
     <button type="button" class="btn btn-outline-primary btn-icon-text me-2 mb-2 mb-md-0">
       <i class="btn-icon-prepend" data-feather="printer" appFeatherIcon></i>
       Print

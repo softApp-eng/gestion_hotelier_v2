@@ -60,18 +60,37 @@
         </table>
 
         <div class="row g-2">
-          <div class="col-6"><label class="form-label small">Client (optionnel)</label>
-            <select class="form-select form-select-sm" [(ngModel)]="clientId">
-              <option [ngValue]="null">—</option>
-              <option *ngFor="let c of clients" [ngValue]="c.id">{{ c.nom }} {{ c.prenom }}</option>
-            </select>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Client (optionnel)</mat-label>
+              <mat-select [(ngModel)]="clientId">
+                <mat-option [value]="null">—</mat-option>
+                <mat-option *ngFor="let c of clients" [value]="c.id">{{ c.nom }} {{ c.prenom }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
-          <div class="col-3"><label class="form-label small">Remise</label><input type="number" class="form-control form-control-sm" [(ngModel)]="remise"></div>
-          <div class="col-3"><label class="form-label small">Reçu</label><input type="number" class="form-control form-control-sm" [(ngModel)]="montantRecu"></div>
-          <div class="col-12"><label class="form-label small">Mode de paiement</label>
-            <select class="form-select form-select-sm" [(ngModel)]="modePaiement">
-              <option>ESPECES</option><option>CARTE</option><option>MOBILE</option><option>CREDIT</option>
-            </select>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Remise</mat-label>
+              <input matInput type="number" [(ngModel)]="remise">
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Reçu</mat-label>
+              <input matInput type="number" [(ngModel)]="montantRecu">
+            </mat-form-field>
+          </div>
+          <div class="col-12">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Mode de paiement</mat-label>
+              <mat-select [(ngModel)]="modePaiement">
+                <mat-option>ESPECES</mat-option>
+                <mat-option>CARTE</mat-option>
+                <mat-option>MOBILE</mat-option>
+                <mat-option>CREDIT</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
         </div>
 

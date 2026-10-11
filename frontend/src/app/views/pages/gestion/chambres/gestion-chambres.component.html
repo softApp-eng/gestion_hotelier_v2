@@ -12,29 +12,37 @@
   <div class="card-body">
     <div class="row g-2 align-items-end mb-3">
       <div class="col-md-3">
-        <label class="form-label mb-1">Pavillon</label>
-        <select class="form-select form-select-sm" [(ngModel)]="pavillonFiltre">
-          <option [ngValue]="null">Tous les pavillons</option>
-          <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Pavillon</mat-label>
+          <mat-select [(ngModel)]="pavillonFiltre">
+            <mat-option [value]="null">Tous les pavillons</mat-option>
+            <mat-option *ngFor="let p of pavillons" [value]="p.id">{{ p.nom }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-3">
-        <label class="form-label mb-1">Type de chambre</label>
-        <select class="form-select form-select-sm" [(ngModel)]="typeFiltre">
-          <option [ngValue]="null">Tous les types</option>
-          <option *ngFor="let t of types" [ngValue]="t.id">{{ t.libelle }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Type de chambre</mat-label>
+          <mat-select [(ngModel)]="typeFiltre">
+            <mat-option [value]="null">Tous les types</mat-option>
+            <mat-option *ngFor="let t of types" [value]="t.id">{{ t.libelle }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-2">
-        <label class="form-label mb-1">État</label>
-        <select class="form-select form-select-sm" [(ngModel)]="etatFiltre">
-          <option value="">Tous</option>
-          <option *ngFor="let e of etats" [value]="e">{{ e }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>État</mat-label>
+          <mat-select [(ngModel)]="etatFiltre">
+            <mat-option value="">Tous</mat-option>
+            <mat-option *ngFor="let e of etats" [value]="e">{{ e }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-3">
-        <label class="form-label mb-1">Recherche (n°)</label>
-        <input class="form-control form-control-sm" placeholder="Rechercher un n°…" [(ngModel)]="recherche">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Recherche (n°)</mat-label>
+          <input matInput placeholder="Rechercher un n°…" [(ngModel)]="recherche">
+        </mat-form-field>
       </div>
       <div class="col-md-1">
         <button class="btn btn-outline-secondary btn-sm w-100" (click)="resetFiltres()" title="Réinitialiser">
@@ -95,10 +103,26 @@
       </span>
     </div>
     <div class="row g-2">
-      <div class="col-md-3"><input class="form-control" placeholder="Libellé" [(ngModel)]="typeForm.libelle"></div>
-      <div class="col-md-2"><input type="number" class="form-control" placeholder="Capacité" [(ngModel)]="typeForm.capacite"></div>
-      <div class="col-md-2"><input type="number" class="form-control" placeholder="Prix base" [(ngModel)]="typeForm.prixBase"></div>
-      <div class="col-md-3"><input class="form-control" placeholder="Description" [(ngModel)]="typeForm.description"></div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput placeholder="Libellé" [(ngModel)]="typeForm.libelle">
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" placeholder="Capacité" [(ngModel)]="typeForm.capacite">
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput type="number" placeholder="Prix base" [(ngModel)]="typeForm.prixBase">
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <input matInput placeholder="Description" [(ngModel)]="typeForm.description">
+        </mat-form-field>
+      </div>
       <div class="col-md-2"><button class="btn btn-outline-primary w-100" (click)="saveType()">Ajouter</button></div>
     </div>
   </div>
@@ -117,28 +141,38 @@
         <h6 class="text-uppercase text-muted small mb-2">Identification</h6>
         <div class="row g-3">
           <div class="col-md-3">
-            <label class="form-label">N° de chambre <span class="text-danger">*</span></label>
-            <input class="form-control" [(ngModel)]="form.numero" placeholder="101">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>N° de chambre <span class="text-danger">*</span></mat-label>
+              <input matInput [(ngModel)]="form.numero" placeholder="101">
+            </mat-form-field>
           </div>
           <div class="col-md-2">
-            <label class="form-label">Étage</label>
-            <input class="form-control" [(ngModel)]="form.etage" placeholder="1">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Étage</mat-label>
+              <input matInput [(ngModel)]="form.etage" placeholder="1">
+            </mat-form-field>
           </div>
           <div class="col-md-3">
-            <label class="form-label">Pavillon</label>
-            <select class="form-select" [(ngModel)]="form.pavillon.id">
-              <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
-            </select>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Pavillon</mat-label>
+              <mat-select [(ngModel)]="form.pavillon.id">
+                <mat-option *ngFor="let p of pavillons" [value]="p.id">{{ p.nom }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
           <div class="col-md-4">
-            <label class="form-label">Type de chambre</label>
-            <select class="form-select" [(ngModel)]="form.typeChambre.id" (ngModelChange)="onTypeChange()">
-              <option *ngFor="let t of types" [ngValue]="t.id">{{ t.libelle }}</option>
-            </select>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Type de chambre</mat-label>
+              <mat-select [(ngModel)]="form.typeChambre.id" (ngModelChange)="onTypeChange()">
+                <mat-option *ngFor="let t of types" [value]="t.id">{{ t.libelle }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
           <div class="col-md-3">
-            <label class="form-label">Prix / nuit (DA)</label>
-            <input type="number" class="form-control" [(ngModel)]="form.prix">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Prix / nuit (DA)</mat-label>
+              <input matInput type="number" [(ngModel)]="form.prix">
+            </mat-form-field>
           </div>
         </div>
 
@@ -146,23 +180,29 @@
         <h6 class="text-uppercase text-muted small mb-2">État & housekeeping</h6>
         <div class="row g-3">
           <div class="col-md-3">
-            <label class="form-label">Disponibilité</label>
-            <select class="form-select" [(ngModel)]="form.etat">
-              <option *ngFor="let e of etats" [value]="e">{{ e }}</option>
-            </select>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Disponibilité</mat-label>
+              <mat-select [(ngModel)]="form.etat">
+                <mat-option *ngFor="let e of etats" [value]="e">{{ e }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
           <div class="col-md-3">
-            <label class="form-label">État de ménage</label>
-            <select class="form-select" [(ngModel)]="form.etatMenage">
-              <option *ngFor="let e of etatsMenage" [value]="e.code">{{ e.label }}</option>
-            </select>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>État de ménage</mat-label>
+              <mat-select [(ngModel)]="form.etatMenage">
+                <mat-option *ngFor="let e of etatsMenage" [value]="e.code">{{ e.label }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Femme de chambre / Gouvernante</label>
-            <select class="form-select" [(ngModel)]="form.gouvernante.id">
-              <option [ngValue]="null">— Non affectée —</option>
-              <option *ngFor="let g of gouvernantes" [ngValue]="g.id">{{ g.nom }} {{ g.prenom }}</option>
-            </select>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Femme de chambre / Gouvernante</mat-label>
+              <mat-select [(ngModel)]="form.gouvernante.id">
+                <mat-option [value]="null">— Non affectée —</mat-option>
+                <mat-option *ngFor="let g of gouvernantes" [value]="g.id">{{ g.nom }} {{ g.prenom }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
         </div>
 
@@ -170,23 +210,26 @@
         <h6 class="text-uppercase text-muted small mb-2">Blocage éventuel</h6>
         <div class="row g-3">
           <div class="col-md-3 d-flex align-items-center">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" id="blk" [(ngModel)]="form.bloque">
-              <label class="form-check-label" for="blk">Chambre bloquée</label>
-            </div>
+            <mat-checkbox id="blk" [(ngModel)]="form.bloque">Chambre bloquée</mat-checkbox>
           </div>
           <ng-container *ngIf="form.bloque">
             <div class="col-md-4">
-              <label class="form-label">Motif</label>
-              <input class="form-control" [(ngModel)]="form.motifBlocage" placeholder="Travaux, maintenance…">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Motif</mat-label>
+                <input matInput [(ngModel)]="form.motifBlocage" placeholder="Travaux, maintenance…">
+              </mat-form-field>
             </div>
             <div class="col-md-2">
-              <label class="form-label">Du</label>
-              <input type="date" class="form-control" [(ngModel)]="form.blocageDebut">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Du</mat-label>
+                <input matInput type="date" [(ngModel)]="form.blocageDebut">
+              </mat-form-field>
             </div>
             <div class="col-md-2">
-              <label class="form-label">Au</label>
-              <input type="date" class="form-control" [(ngModel)]="form.blocageFin">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Au</mat-label>
+                <input matInput type="date" [(ngModel)]="form.blocageFin">
+              </mat-form-field>
             </div>
           </ng-container>
         </div>

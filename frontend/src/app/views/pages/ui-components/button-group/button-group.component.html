@@ -22,14 +22,11 @@
     <p class="mb-3">Combine button-like checkbox and radio <a href="https://getbootstrap.com/docs/5.2/forms/checks-radios/" target="_blank">toggle buttons</a> into a seamless looking button group. <a href="https://ng-bootstrap.github.io/#/components/buttons/examples" target="_blank">more examples</a>.</p>
     <div class="example">
       <div class="btn-group" role="group" aria-label="Basic checkbox toggle button group">
-        <input type="checkbox" [(ngModel)]="modelCheckbox.left" class="btn-check" id="btncheck1" autocomplete="off">
-        <label class="btn btn-outline-primary" for="btncheck1">Left (pre-checked)</label>
+        <mat-checkbox [(ngModel)]="modelCheckbox.left" id="btncheck1" autocomplete="off">Left (pre-checked)</mat-checkbox>
       
-        <input type="checkbox" [(ngModel)]="modelCheckbox.middle" class="btn-check" id="btncheck2" autocomplete="off">
-        <label class="btn btn-outline-primary" for="btncheck2">Middle</label>
+        <mat-checkbox [(ngModel)]="modelCheckbox.middle" id="btncheck2" autocomplete="off">Middle</mat-checkbox>
       
-        <input type="checkbox" [(ngModel)]="modelCheckbox.right" class="btn-check" id="btncheck3" autocomplete="off">
-        <label class="btn btn-outline-primary" for="btncheck3">Right</label>
+        <mat-checkbox [(ngModel)]="modelCheckbox.right" id="btncheck3" autocomplete="off">Right</mat-checkbox>
       </div>
       <hr>
       <pre>{{modelCheckbox | json}}</pre>
@@ -40,14 +37,13 @@
 
     <div class="example">
       <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
-        <input type="radio"  class="btn-check" [(ngModel)]="modelRadio" [value]="1" name="btnradio" id="btnradio1" autocomplete="off">
-        <label class="btn btn-outline-primary" for="btnradio1">Left (pre-checked)</label>
-      
-        <input type="radio" class="btn-check" [(ngModel)]="modelRadio" [value]="'middle'" name="btnradio" id="btnradio2" autocomplete="off">
-        <label class="btn btn-outline-primary" for="btnradio2">Middle</label>
-      
-        <input type="radio" class="btn-check" [(ngModel)]="modelRadio" [value]="false" name="btnradio" id="btnradio3" autocomplete="off">
-        <label class="btn btn-outline-primary" for="btnradio3">Right</label>
+        <mat-radio-group [(ngModel)]="modelRadio" name="btnradio">
+          <mat-radio-button [value]="1" id="btnradio1" autocomplete="off">Left (pre-checked)</mat-radio-button>
+        
+          <mat-radio-button [value]="'middle'" id="btnradio2" autocomplete="off">Middle</mat-radio-button>
+        
+          <mat-radio-button [value]="false" id="btnradio3" autocomplete="off">Right</mat-radio-button>
+        </mat-radio-group>
       </div>
       <hr>
       <pre>{{modelRadio}}</pre>
@@ -87,12 +83,10 @@
           <button type="button" class="btn btn-primary">3</button>
           <button type="button" class="btn btn-primary">4</button>
         </div>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="btnGroupAddon">@</div>
-          </div>
-          <input type="text" class="form-control" placeholder="Input group example" aria-label="Input group example" aria-describedby="btnGroupAddon">
-        </div>
+        <mat-form-field appearance="outline" class="w-100">
+          <span matPrefix id="btnGroupAddon">@&nbsp;</span>
+          <input matInput type="text" placeholder="Input group example" aria-label="Input group example" aria-describedby="btnGroupAddon">
+        </mat-form-field>
       </div>
       <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
         <div class="btn-group mb-1 mb-md-0" role="group" aria-label="First group">
@@ -101,12 +95,10 @@
           <button type="button" class="btn btn-primary">3</button>
           <button type="button" class="btn btn-primary">4</button>
         </div>
-        <div class="input-group">
-          <div class="input-group-prepend">
-            <div class="input-group-text" id="btnGroupAddon2">@</div>
-          </div>
-          <input type="text" class="form-control" placeholder="Input group example" aria-label="Input group example" aria-describedby="btnGroupAddon2">
-        </div>
+        <mat-form-field appearance="outline" class="w-100">
+          <span matPrefix id="btnGroupAddon2">@&nbsp;</span>
+          <input matInput type="text" placeholder="Input group example" aria-label="Input group example" aria-describedby="btnGroupAddon2">
+        </mat-form-field>
       </div>
     </div>
     <app-code-preview [codeContent]="mixedToolbarCode"></app-code-preview>

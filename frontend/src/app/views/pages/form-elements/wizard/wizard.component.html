@@ -25,21 +25,27 @@
         <aw-wizard>
           <aw-wizard-step stepTitle="step 1">
             <div class="row mb-3">
-              <label for="firstName1" class="col-sm-3 col-form-label">First name</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="firstName1" placeholder="First name">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>First name</mat-label>
+                  <input matInput type="text" id="firstName1" placeholder="First name">
+                </mat-form-field>
               </div>
             </div>
             <div class="row mb-3">
-              <label for="lastName1" class="col-sm-3 col-form-label">Last name</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="lastName1" placeholder="Last name">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Last name</mat-label>
+                  <input matInput type="text" id="lastName1" placeholder="Last name">
+                </mat-form-field>
               </div>
             </div>
             <div class="row mb-3">
-              <label for="userName1" class="col-sm-3 col-form-label">User name</label>
               <div class="col-sm-9">
-                <input type="text" class="form-control" id="userName1" placeholder="User name">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>User name</mat-label>
+                  <input matInput type="text" id="userName1" placeholder="User name">
+                </mat-form-field>
               </div>
             </div>
             <div class="d-flex justify-content-center mt-2">
@@ -48,21 +54,27 @@
           </aw-wizard-step>
           <aw-wizard-step stepTitle="step 2">
             <div class="row mb-3">
-              <label for="email1" class="col-sm-3 col-form-label">Email</label>
               <div class="col-sm-9">
-                <input type="email" class="form-control" id="email1" autocomplete="off" placeholder="Email">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Email</mat-label>
+                  <input matInput type="email" id="email1" autocomplete="off" placeholder="Email">
+                </mat-form-field>
               </div>
             </div>
             <div class="row mb-3">
-              <label for="mobileNumber1" class="col-sm-3 col-form-label">Mobile</label>
               <div class="col-sm-9">
-                <input type="number" class="form-control" id="mobileNumber1" placeholder="Mobile number">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Mobile</mat-label>
+                  <input matInput type="number" id="mobileNumber1" placeholder="Mobile number">
+                </mat-form-field>
               </div>
             </div>
             <div class="row mb-3">
-              <label for="password1" class="col-sm-3 col-form-label">Password</label>
               <div class="col-sm-9">
-                <input type="password" class="form-control" id="password1" autocomplete="off" placeholder="Password">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Password</mat-label>
+                  <input matInput type="password" id="password1" autocomplete="off" placeholder="Password">
+                </mat-form-field>
               </div>
             </div>
             <div class="d-flex justify-content-center mt-2">
@@ -98,10 +110,12 @@
             <form (ngSubmit)="form1Submit()" [formGroup]="validationForm1">
 
               <div class="row mb-3">
-                <label for="firstName" class="col-sm-3 col-form-label">First name</label>
                 <div class="col-sm-9">
-                  <input type="text" class="form-control" id="firstName" formControlName="firstName" 
-                  [ngClass]="{'is-invalid': isForm1Submitted && form1.firstName.errors}" placeholder="First name">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>First name</mat-label>
+                    <input matInput type="text" id="firstName" formControlName="firstName" 
+                    [ngClass]="{'is-invalid': isForm1Submitted && form1.firstName.errors}" placeholder="First name">
+                  </mat-form-field>
                   <div *ngIf="isForm1Submitted && form1.firstName.errors?.required" class="invalid-feedback">
                     Required
                   </div>
@@ -109,10 +123,12 @@
               </div>
 
               <div class="row mb-3">
-                <label for="lastName" class="col-sm-3 col-form-label">Last name</label>
                 <div class="col-sm-9">
-                  <input type="text" class="form-control" id="lastName" formControlName="lastName" 
-                    [ngClass]="{'is-invalid': isForm1Submitted && form1.lastName.errors}" placeholder="Last name">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Last name</mat-label>
+                    <input matInput type="text" id="lastName" formControlName="lastName" 
+                      [ngClass]="{'is-invalid': isForm1Submitted && form1.lastName.errors}" placeholder="Last name">
+                  </mat-form-field>
                   <div *ngIf="isForm1Submitted && form1.lastName.errors?.required" class="invalid-feedback">
                     Required
                   </div>
@@ -120,10 +136,12 @@
               </div>
 
               <div class="row mb-3">
-                <label for="userName" class="col-sm-3 col-form-label">User name</label>
                 <div class="col-sm-9">
-                  <input type="text" class="form-control" id="userName" formControlName="userName" 
-                  [ngClass]="{'is-invalid': isForm1Submitted && form1.userName.errors}" placeholder="User name">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>User name</mat-label>
+                    <input matInput type="text" id="userName" formControlName="userName" 
+                    [ngClass]="{'is-invalid': isForm1Submitted && form1.userName.errors}" placeholder="User name">
+                  </mat-form-field>
                   <div *ngIf="isForm1Submitted && form1.userName.errors?.required" class="invalid-feedback">
                     Required
                   </div>
@@ -138,24 +156,30 @@
           <aw-wizard-step stepTitle="step 2">
             <form (ngSubmit)="form2Submit()" [formGroup]="validationForm2">
               <div class="row mb-3">
-                <label for="email" class="col-sm-3 col-form-label">Email</label>
                 <div class="col-sm-9">
-                  <input type="email" class="form-control" id="email" formControlName="email"
-                  [ngClass]="{'is-invalid': isForm2Submitted && form2.email.errors}" placeholder="Email">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Email</mat-label>
+                    <input matInput type="email" id="email" formControlName="email"
+                    [ngClass]="{'is-invalid': isForm2Submitted && form2.email.errors}" placeholder="Email">
+                  </mat-form-field>
                 </div>
               </div>
               <div class="row mb-3">
-                <label for="mobileNumber" class="col-sm-3 col-form-label">Mobile</label>
                 <div class="col-sm-9">
-                  <input type="number" class="form-control" id="mobileNumber" formControlName="mobileNumber"
-                  [ngClass]="{'is-invalid': isForm2Submitted && form2.mobileNumber.errors}" placeholder="Mobile number">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Mobile</mat-label>
+                    <input matInput type="number" id="mobileNumber" formControlName="mobileNumber"
+                    [ngClass]="{'is-invalid': isForm2Submitted && form2.mobileNumber.errors}" placeholder="Mobile number">
+                  </mat-form-field>
                 </div>
               </div>
               <div class="row mb-3">
-                <label for="password" class="col-sm-3 col-form-label">Password</label>
                 <div class="col-sm-9">
-                  <input type="password" class="form-control" id="password" formControlName="password"
-                  [ngClass]="{'is-invalid': isForm2Submitted && form2.password.errors}" placeholder="Password">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Password</mat-label>
+                    <input matInput type="password" id="password" formControlName="password"
+                    [ngClass]="{'is-invalid': isForm2Submitted && form2.password.errors}" placeholder="Password">
+                  </mat-form-field>
                 </div>
               </div>
               <div class="d-flex justify-content-center mt-2">

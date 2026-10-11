@@ -1,8 +1,10 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
   <h5 class="mb-0">Bons repas</h5>
   <div class="d-flex">
-    <div class="input-group input-group-sm me-2" style="width:260px;">
-      <input class="form-control" placeholder="Contrôler un code..." [(ngModel)]="code" (keyup.enter)="controler()">
+    <div class="d-flex align-items-start me-2" style="width:260px;">
+      <mat-form-field appearance="outline" class="w-100">
+        <input matInput placeholder="Contrôler un code..." [(ngModel)]="code" (keyup.enter)="controler()">
+      </mat-form-field>
       <button class="btn btn-outline-secondary" (click)="controler()"><i class="fa-solid fa-qrcode"></i></button>
     </div>
     <button class="btn btn-primary btn-sm" (click)="nouveau()"><i class="fa-solid fa-plus me-1"></i>Nouveau bon</button>
@@ -13,27 +15,35 @@
   <div class="card-body">
     <div class="row g-2">
       <div class="col-md-3">
-        <label class="form-label">Séjour (client in-house)</label>
-        <select class="form-select" [(ngModel)]="form.sejourId">
-          <option [ngValue]="null">— Aucun —</option>
-          <option *ngFor="let s of sejoursEnCours" [ngValue]="s.id">
-            {{ s.client?.nom }} {{ s.client?.prenom }} — ch. {{ s.chambre?.numero }}
-          </option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Séjour (client in-house)</mat-label>
+          <mat-select [(ngModel)]="form.sejourId">
+            <mat-option [value]="null">— Aucun —</mat-option>
+            <mat-option *ngFor="let s of sejoursEnCours" [value]="s.id">
+              {{ s.client?.nom }} {{ s.client?.prenom }} — ch. {{ s.chambre?.numero }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-2">
-        <label class="form-label">Type</label>
-        <select class="form-select" [(ngModel)]="form.typeRepas">
-          <option *ngFor="let t of typesRepas" [value]="t">{{ label(t) }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="form.typeRepas">
+            <mat-option *ngFor="let t of typesRepas" [value]="t">{{ label(t) }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-2">
-        <label class="form-label">Personnes</label>
-        <input type="number" class="form-control" [(ngModel)]="form.nbPersonnes" min="1">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Personnes</mat-label>
+          <input matInput type="number" [(ngModel)]="form.nbPersonnes" min="1">
+        </mat-form-field>
       </div>
       <div class="col-md-3">
-        <label class="form-label">Observation</label>
-        <input class="form-control" [(ngModel)]="form.observation">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Observation</mat-label>
+          <input matInput [(ngModel)]="form.observation">
+        </mat-form-field>
       </div>
       <div class="col-md-2 d-flex align-items-end">
         <button class="btn btn-primary btn-sm me-1" (click)="save()">Créer & imprimer</button>

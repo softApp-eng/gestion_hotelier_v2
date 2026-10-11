@@ -13,22 +13,25 @@
             <h5 class="text-muted fw-normal mb-4">Create a free account.</h5>
             <form class="forms-sample">
               <div class="mb-3">
-                <label for="exampleInputUsername1" class="form-label">Username</label>
-                <input type="text" class="form-control" id="exampleInputUsername1" autocomplete="Username" placeholder="Username">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Username</mat-label>
+                  <input matInput type="text" id="exampleInputUsername1" autocomplete="Username" placeholder="Username">
+                </mat-form-field>
               </div>
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Email address</mat-label>
+                  <input matInput type="email" id="exampleInputEmail1" placeholder="Email">
+                </mat-form-field>
               </div>
               <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" autocomplete="current-password" placeholder="Password">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Password</mat-label>
+                  <input matInput type="password" id="exampleInputPassword1" autocomplete="current-password" placeholder="Password">
+                </mat-form-field>
               </div>
-              <div class="form-check mb-3">
-                <input type="checkbox" class="form-check-input" id="authCheck">
-                <label class="form-check-label" for="authCheck">
-                  Remember me
-                </label>
+              <div class="mb-3">
+                <mat-checkbox id="authCheck">Remember me</mat-checkbox>
               </div>
               <div>
                 <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0" (click)="onRegister($event)">Sign up</button>

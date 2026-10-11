@@ -118,9 +118,9 @@ export class SidebarComponent implements OnInit, AfterViewInit {
   /**
    * Switching sidebar light/dark
    */
-  onSidebarThemeChange(event: Event) {
+  onSidebarThemeChange(theme: string) {
     this.document.body.classList.remove('sidebar-light', 'sidebar-dark');
-    this.document.body.classList.add((<HTMLInputElement>event.target).value);
+    this.document.body.classList.add(theme);
     this.document.body.classList.remove('settings-open');
   }
 

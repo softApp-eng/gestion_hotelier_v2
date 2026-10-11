@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 // Pages
 import { GestionDashboardComponent } from './dashboard/gestion-dashboard.component';
@@ -97,6 +98,7 @@ const routes: Routes = [
   imports: [
     CommonModule,
     FormsModule,
+    MaterialModule,
     NgbModalModule,
     RouterModule.forChild(routes)
   ]

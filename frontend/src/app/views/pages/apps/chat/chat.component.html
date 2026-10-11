@@ -30,12 +30,10 @@
                   </div>
                 </div>
                 <form class="search-form">
-                  <div class="input-group">
-                    <div class="input-group-text">
-                      <i class="feather icon-search icon-md cursor-pointer"></i>
-                    </div>
-                    <input type="text" class="form-control" id="searchForm" placeholder="Search here...">
-                  </div>
+                  <mat-form-field appearance="outline" class="w-100">
+                    <i matPrefix class="feather icon-search icon-md cursor-pointer"></i>
+                    <input matInput type="text" id="searchForm" placeholder="Search here...">
+                  </mat-form-field>
                 </form>
               </div>
               <div class="aside-body">
@@ -627,9 +625,9 @@
                 </button>
               </div>
               <form class="search-form flex-grow-1 me-2">
-                <div class="input-group">
-                  <input type="text" class="form-control rounded-pill" id="chatForm" placeholder="Type a message">
-                </div>
+                <mat-form-field appearance="outline" class="w-100">
+                  <input matInput type="text" class="rounded-pill" id="chatForm" placeholder="Type a message">
+                </mat-form-field>
               </form>
               <div>
                 <button type="button" class="btn btn-primary btn-icon rounded-circle">

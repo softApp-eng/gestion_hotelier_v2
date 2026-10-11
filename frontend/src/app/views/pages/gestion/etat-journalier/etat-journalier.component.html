@@ -17,12 +17,16 @@
   <div class="card-body">
     <div class="row g-2 align-items-end">
       <div class="col-md-3">
-        <label class="form-label">Mois</label>
-        <input type="month" class="form-control" [(ngModel)]="mois" (ngModelChange)="load()">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Mois</mat-label>
+          <input matInput type="month" [(ngModel)]="mois" (ngModelChange)="load()">
+        </mat-form-field>
       </div>
       <div class="col-md-3">
-        <label class="form-label">État statistique du</label>
-        <input type="date" class="form-control" [(ngModel)]="refDate" (ngModelChange)="load()">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>État statistique du</mat-label>
+          <input matInput type="date" [(ngModel)]="refDate" (ngModelChange)="load()">
+        </mat-form-field>
       </div>
       <div class="col-md-6 text-md-end">
         <span class="me-3"><span class="lg-dot bg-transparent border"></span>Libre</span>

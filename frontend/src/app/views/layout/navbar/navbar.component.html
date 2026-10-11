@@ -4,12 +4,10 @@
   </a>
   <div class="navbar-content">
     <form class="search-form">
-      <div class="input-group">
-        <div class="input-group-text">
-          <i class="feather icon-search"></i>
-        </div>
-        <input type="text" class="form-control" id="navbarForm" placeholder="Search here...">
-      </div>
+      <mat-form-field appearance="outline" class="w-100">
+        <i class="feather icon-search" matPrefix></i>
+        <input matInput type="text" id="navbarForm" placeholder="Search here...">
+      </mat-form-field>
     </form>
     <ul class="navbar-nav">
       <li class="nav-item" ngbDropdown>

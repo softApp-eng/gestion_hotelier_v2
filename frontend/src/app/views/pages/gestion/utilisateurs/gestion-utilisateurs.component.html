@@ -12,19 +12,40 @@
     <div class="card-header"><b>{{ form.id ? 'Modifier' : 'Nouvel' }} utilisateur</b></div>
     <div class="card-body">
       <div class="row g-2">
-        <div class="col-md-3"><label class="form-label">Identifiant</label>
-          <input class="form-control" [(ngModel)]="form.username" [disabled]="!!form.id"></div>
-        <div class="col-md-3"><label class="form-label">Nom</label><input class="form-control" [(ngModel)]="form.nom"></div>
-        <div class="col-md-2"><label class="form-label">Prénom</label><input class="form-control" [(ngModel)]="form.prenom"></div>
-        <div class="col-md-2"><label class="form-label">Rôle</label>
-          <select class="form-select" [(ngModel)]="form.role">
-            <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
-          </select>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Identifiant</mat-label>
+            <input matInput [(ngModel)]="form.username" [disabled]="!!form.id">
+          </mat-form-field>
         </div>
-        <div class="col-md-2"><label class="form-label">Mot de passe</label>
-          <input type="password" class="form-control" [(ngModel)]="form.password" [placeholder]="form.id ? '(inchangé)' : ''"></div>
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nom</mat-label>
+            <input matInput [(ngModel)]="form.nom">
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Prénom</mat-label>
+            <input matInput [(ngModel)]="form.prenom">
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Rôle</mat-label>
+            <mat-select [(ngModel)]="form.role">
+              <mat-option *ngFor="let r of roles" [value]="r">{{ r }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-2">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput type="password" [(ngModel)]="form.password" [placeholder]="form.id ? '(inchangé)' : ''">
+          </mat-form-field>
+        </div>
         <div class="col-md-2 d-flex align-items-end">
-          <div class="form-check"><input class="form-check-input" type="checkbox" id="act" [(ngModel)]="form.actif"><label class="form-check-label" for="act">Actif</label></div>
+          <mat-checkbox id="act" [(ngModel)]="form.actif">Actif</mat-checkbox>
         </div>
       </div>
       <div class="mt-3">

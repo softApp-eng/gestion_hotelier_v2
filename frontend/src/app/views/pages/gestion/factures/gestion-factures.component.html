@@ -6,13 +6,15 @@
   <div class="card-body">
     <div class="row g-2 align-items-end">
       <div class="col-md-6">
-        <label class="form-label">Générer les factures d'un séjour</label>
-        <select class="form-select" [(ngModel)]="sejourId">
-          <option [ngValue]="null">— Choisir un séjour —</option>
-          <option *ngFor="let s of sejours" [ngValue]="s.id">
-            {{ s.client?.nom }} {{ s.client?.prenom }} — ch. {{ s.chambre?.numero }} ({{ s.modePaiement }})
-          </option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Générer les factures d'un séjour</mat-label>
+          <mat-select [(ngModel)]="sejourId">
+            <mat-option [value]="null">— Choisir un séjour —</mat-option>
+            <mat-option *ngFor="let s of sejours" [value]="s.id">
+              {{ s.client?.nom }} {{ s.client?.prenom }} — ch. {{ s.chambre?.numero }} ({{ s.modePaiement }})
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-3">
         <button class="btn btn-primary" (click)="generer()"><i class="fa-solid fa-file-invoice me-1"></i>Générer</button>

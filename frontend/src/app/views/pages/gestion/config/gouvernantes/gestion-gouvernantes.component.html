@@ -37,40 +37,49 @@
       <div class="modal-body">
         <div class="row g-3">
           <div class="col-md-6">
-            <label class="form-label">Nom <span class="text-danger">*</span></label>
-            <input class="form-control" [(ngModel)]="form.nom" placeholder="Nom de famille">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Nom <span class="text-danger">*</span></mat-label>
+              <input matInput [(ngModel)]="form.nom" placeholder="Nom de famille">
+            </mat-form-field>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Prénom</label>
-            <input class="form-control" [(ngModel)]="form.prenom">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Prénom</mat-label>
+              <input matInput [(ngModel)]="form.prenom">
+            </mat-form-field>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Téléphone</label>
-            <input class="form-control" [(ngModel)]="form.telephone">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Téléphone</mat-label>
+              <input matInput [(ngModel)]="form.telephone">
+            </mat-form-field>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Rôle</label>
-            <select class="form-select" [(ngModel)]="form.role">
-              <option value="GOUVERNANTE">Gouvernante (responsable pavillon)</option>
-              <option value="FEMME_DE_CHAMBRE">Femme de chambre</option>
-            </select>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Rôle</mat-label>
+              <mat-select [(ngModel)]="form.role">
+                <mat-option value="GOUVERNANTE">Gouvernante (responsable pavillon)</mat-option>
+                <mat-option value="FEMME_DE_CHAMBRE">Femme de chambre</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
           <div class="col-md-6">
-            <label class="form-label">Pavillon affecté</label>
-            <select class="form-select" [(ngModel)]="form.pavillon.id">
-              <option [ngValue]="null">Tous les pavillons</option>
-              <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
-            </select>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Pavillon affecté</mat-label>
+              <mat-select [(ngModel)]="form.pavillon.id">
+                <mat-option [value]="null">Tous les pavillons</mat-option>
+                <mat-option *ngFor="let p of pavillons" [value]="p.id">{{ p.nom }}</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
           <div class="col-12">
-            <label class="form-label">Observation</label>
-            <input class="form-control" [(ngModel)]="form.observation">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Observation</mat-label>
+              <input matInput [(ngModel)]="form.observation">
+            </mat-form-field>
           </div>
           <div class="col-12">
-            <div class="form-check">
-              <input class="form-check-input" type="checkbox" id="gactif" [(ngModel)]="form.actif">
-              <label class="form-check-label" for="gactif">Active</label>
-            </div>
+            <mat-checkbox id="gactif" [(ngModel)]="form.actif">Active</mat-checkbox>
           </div>
         </div>
       </div>

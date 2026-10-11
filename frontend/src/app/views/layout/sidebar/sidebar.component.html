@@ -86,20 +86,10 @@
     </a>
     <h6 class="text-muted mb-2">Sidebar:</h6>
     <div class="mb-3 pb-3 border-bottom">
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="sidebarThemeSettings" (change)="onSidebarThemeChange($event)" id="sidebarLight" value="sidebar-light" checked>
-          <i class="input-frame"></i>
-          Light
-        </label>
-      </div>
-      <div class="form-check form-check-inline">
-        <label class="form-check-label">
-          <input type="radio" class="form-check-input" name="sidebarThemeSettings" (change)="onSidebarThemeChange($event)" id="sidebarDark" value="sidebar-dark">
-          <i class="input-frame"></i>
-          Dark
-        </label>
-      </div>
+      <mat-radio-group name="sidebarThemeSettings" value="sidebar-light" (change)="onSidebarThemeChange($event.value)">
+        <mat-radio-button value="sidebar-light">Light</mat-radio-button>
+        <mat-radio-button value="sidebar-dark">Dark</mat-radio-button>
+      </mat-radio-group>
     </div>
     <div class="theme-wrapper">
       <h6 class="text-muted mb-2">Light Theme:</h6>

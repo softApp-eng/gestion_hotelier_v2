@@ -16,6 +16,7 @@ import { FormElementsComponent } from './form-elements.component';
 import { BasicElementsComponent } from './basic-elements/basic-elements.component';
 import { EditorsComponent } from './editors/editors.component';
 import { WizardComponent } from './wizard/wizard.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 const routes: Routes = [
   {
@@ -53,6 +54,7 @@ const routes: Routes = [
     FeatherIconModule,
     QuillModule.forRoot(), // ngx-quill
     ArchwizardModule, // angular-archwizard
+    MaterialModule,
   ]
 })
 export class FormElementsModule { }

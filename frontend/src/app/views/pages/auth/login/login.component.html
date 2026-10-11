@@ -20,14 +20,18 @@
 
             <form class="forms-sample" (ngSubmit)="onLoggedin($event)">
               <div class="mb-3">
-                <label class="form-label">Identifiant</label>
-                <input type="text" class="form-control" name="username"
-                       [(ngModel)]="username" placeholder="admin" autocomplete="username">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Identifiant</mat-label>
+                  <input matInput type="text" name="username"
+                         [(ngModel)]="username" placeholder="admin" autocomplete="username">
+                </mat-form-field>
               </div>
               <div class="mb-3">
-                <label class="form-label">Mot de passe</label>
-                <input type="password" class="form-control" name="password"
-                       [(ngModel)]="password" placeholder="••••••" autocomplete="current-password">
+                <mat-form-field appearance="outline" class="w-100">
+                  <mat-label>Mot de passe</mat-label>
+                  <input matInput type="password" name="password"
+                         [(ngModel)]="password" placeholder="••••••" autocomplete="current-password">
+                </mat-form-field>
               </div>
               <div>
                 <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0" [disabled]="loading">

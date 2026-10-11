@@ -30,66 +30,112 @@
   <div class="card-body">
     <div class="row g-2">
       <div class="col-md-4">
-        <label class="form-label">Client</label>
-        <select class="form-select" [(ngModel)]="form.client.id">
-          <option *ngFor="let c of clients" [value]="c.id">{{ c.nom }} {{ c.prenom }} — {{ c.categorieClient?.libelle || 'sans catégorie' }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Client</mat-label>
+          <mat-select [(ngModel)]="form.client.id">
+            <mat-option *ngFor="let c of clients" [value]="c.id">{{ c.nom }} {{ c.prenom }} — {{ c.categorieClient?.libelle || 'sans catégorie' }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-2">
-        <label class="form-label">Pavillon (filtre)</label>
-        <select class="form-select" [(ngModel)]="pavillonFiltre">
-          <option [ngValue]="null">Tous</option>
-          <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Pavillon (filtre)</mat-label>
+          <mat-select [(ngModel)]="pavillonFiltre">
+            <mat-option [value]="null">Tous</mat-option>
+            <mat-option *ngFor="let p of pavillons" [value]="p.id">{{ p.nom }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-3">
-        <label class="form-label">Chambre</label>
-        <select class="form-select" [(ngModel)]="form.chambre.id" (ngModelChange)="onChambreOrCategorieChange()">
-          <option *ngFor="let c of chambresFiltrees()" [value]="c.id">{{ c.numero }} — {{ c.typeChambre?.libelle }} ({{ c.prix | number:'1.0-0' }} DA)</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Chambre</mat-label>
+          <mat-select [(ngModel)]="form.chambre.id" (ngModelChange)="onChambreOrCategorieChange()">
+            <mat-option *ngFor="let c of chambresFiltrees()" [value]="c.id">{{ c.numero }} — {{ c.typeChambre?.libelle }} ({{ c.prix | number:'1.0-0' }} DA)</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-3">
-        <label class="form-label">Catégorie client (tarif)</label>
-        <select class="form-select" [(ngModel)]="form.categorieClient.id" (ngModelChange)="onChambreOrCategorieChange()">
-          <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Catégorie client (tarif)</mat-label>
+          <mat-select [(ngModel)]="form.categorieClient.id" (ngModelChange)="onChambreOrCategorieChange()">
+            <mat-option *ngFor="let cat of categories" [value]="cat.id">{{ cat.libelle }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
     </div>
 
     <div class="row g-2 mt-1">
-      <div class="col-md-2"><label class="form-label">Arrivée</label><input type="date" class="form-control" [(ngModel)]="form.dateArrivee" (ngModelChange)="recalcMontant()"></div>
-      <div class="col-md-2"><label class="form-label">Départ</label><input type="date" class="form-control" [(ngModel)]="form.dateDepart" (ngModelChange)="recalcMontant()"></div>
-      <div class="col-md-1"><label class="form-label">Pers.</label><input type="number" class="form-control" [(ngModel)]="form.nbPersonnes"></div>
-      <div class="col-md-3"><label class="form-label">Accompagnants (famille)</label><input class="form-control" [(ngModel)]="form.accompagnants" placeholder="Épouse + 2 enfants"></div>
       <div class="col-md-2">
-        <label class="form-label">Mode de paiement</label>
-        <select class="form-select" [(ngModel)]="form.modePaiement">
-          <option *ngFor="let m of modesPaiement" [value]="m">{{ m }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Arrivée</mat-label>
+          <input matInput type="date" [(ngModel)]="form.dateArrivee" (ngModelChange)="recalcMontant()">
+        </mat-form-field>
       </div>
-      <div class="col-md-2"><label class="form-label">Tarif / nuit</label><input type="number" class="form-control" [(ngModel)]="form.tarifNuitee" readonly></div>
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Départ</mat-label>
+          <input matInput type="date" [(ngModel)]="form.dateDepart" (ngModelChange)="recalcMontant()">
+        </mat-form-field>
+      </div>
+      <div class="col-md-1">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Pers.</mat-label>
+          <input matInput type="number" [(ngModel)]="form.nbPersonnes">
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Accompagnants (famille)</mat-label>
+          <input matInput [(ngModel)]="form.accompagnants" placeholder="Épouse + 2 enfants">
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Mode de paiement</mat-label>
+          <mat-select [(ngModel)]="form.modePaiement">
+            <mat-option *ngFor="let m of modesPaiement" [value]="m">{{ m }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Tarif / nuit</mat-label>
+          <input matInput type="number" [(ngModel)]="form.tarifNuitee" readonly>
+        </mat-form-field>
+      </div>
     </div>
 
     <div class="row g-2 mt-1" *ngIf="isPec()">
       <div class="col-md-4">
-        <label class="form-label">Organisme payeur (PEC)</label>
-        <select class="form-select" [(ngModel)]="form.organisme.id">
-          <option [ngValue]="null">— choisir —</option>
-          <option *ngFor="let o of organismes" [ngValue]="o.id">{{ o.nom }} ({{ o.type }})</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Organisme payeur (PEC)</mat-label>
+          <mat-select [(ngModel)]="form.organisme.id">
+            <mat-option [value]="null">— choisir —</mat-option>
+            <mat-option *ngFor="let o of organismes" [value]="o.id">{{ o.nom }} ({{ o.type }})</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-      <div class="col-md-4"><label class="form-label">Référence PEC</label><input class="form-control" [(ngModel)]="form.referencePec" placeholder="PEC-2026-001"></div>
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Référence PEC</mat-label>
+          <input matInput [(ngModel)]="form.referencePec" placeholder="PEC-2026-001">
+        </mat-form-field>
+      </div>
       <div class="col-md-4 d-flex align-items-end"><span class="badge bg-warning text-dark">Prise en charge</span></div>
     </div>
 
     <div class="row g-2 mt-1">
       <div class="col-md-4">
-        <label class="form-label">Observation</label>
-        <input class="form-control" [(ngModel)]="form.observation">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Observation</mat-label>
+          <input matInput [(ngModel)]="form.observation">
+        </mat-form-field>
       </div>
       <div class="col-md-3">
-        <label class="form-label">Montant prévu ({{ nbNuits() }} nuit(s))</label>
-        <input type="number" class="form-control" [(ngModel)]="form.montantPrevu">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Montant prévu ({{ nbNuits() }} nuit(s))</mat-label>
+          <input matInput type="number" [(ngModel)]="form.montantPrevu">
+        </mat-form-field>
       </div>
     </div>
 

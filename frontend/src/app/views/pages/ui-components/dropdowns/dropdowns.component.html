@@ -373,12 +373,16 @@
         <button class="btn btn-secondary" id="dropdownFormExample" ngbDropdownToggle>Dropdown button</button>
         <form ngbDropdownMenu class="p-4" aria-labelledby="dropdownFormExample">
           <div class="mb-3">
-            <label for="exampleDropdownFormEmail2" class="form-label">Email address</label>
-            <input type="email" class="form-control" id="exampleDropdownFormEmail2" placeholder="email@example.com">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Email address</mat-label>
+              <input matInput type="email" id="exampleDropdownFormEmail2" placeholder="email@example.com">
+            </mat-form-field>
           </div>
           <div class="mb-3">
-            <label for="exampleDropdownFormPassword2" class="form-label">Password</label>
-            <input type="password" class="form-control" id="exampleDropdownFormPassword2" placeholder="Password">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Password</mat-label>
+              <input matInput type="password" id="exampleDropdownFormPassword2" placeholder="Password">
+            </mat-form-field>
           </div>
           <button type="submit" class="btn btn-primary">Sign in</button>
         </form>

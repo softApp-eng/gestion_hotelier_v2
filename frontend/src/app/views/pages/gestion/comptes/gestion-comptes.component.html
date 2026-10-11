@@ -40,14 +40,31 @@
   <div class="card-body">
     <div class="row g-2 mb-2" *ngIf="showForm">
       <div class="col-md-3">
-        <label class="form-label">Type</label>
-        <select class="form-select" [(ngModel)]="prestaForm.type">
-          <option *ngFor="let t of typesManuels" [value]="t">{{ t }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="prestaForm.type">
+            <mat-option *ngFor="let t of typesManuels" [value]="t">{{ t }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
-      <div class="col-md-4"><label class="form-label">Libellé</label><input class="form-control" [(ngModel)]="prestaForm.libelle" placeholder="Ex : Boissons minibar"></div>
-      <div class="col-md-1"><label class="form-label">Qté</label><input type="number" class="form-control" [(ngModel)]="prestaForm.quantite"></div>
-      <div class="col-md-2"><label class="form-label">Prix unitaire</label><input type="number" class="form-control" [(ngModel)]="prestaForm.prixUnitaire"></div>
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Libellé</mat-label>
+          <input matInput [(ngModel)]="prestaForm.libelle" placeholder="Ex : Boissons minibar">
+        </mat-form-field>
+      </div>
+      <div class="col-md-1">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Qté</mat-label>
+          <input matInput type="number" [(ngModel)]="prestaForm.quantite">
+        </mat-form-field>
+      </div>
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Prix unitaire</mat-label>
+          <input matInput type="number" [(ngModel)]="prestaForm.prixUnitaire">
+        </mat-form-field>
+      </div>
       <div class="col-md-2 d-flex align-items-end">
         <button class="btn btn-primary btn-sm me-1" (click)="savePrestation()">Ajouter</button>
         <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>

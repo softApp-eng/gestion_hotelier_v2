@@ -18,29 +18,37 @@
     <div class="card-body">
       <div class="row g-2 align-items-end">
         <div class="col-md-3">
-          <label class="form-label">Pavillon</label>
-          <select class="form-select" [(ngModel)]="filtres.pavillonId" (change)="load()">
-            <option [ngValue]="undefined">Tous</option>
-            <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
-          </select>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Pavillon</mat-label>
+            <mat-select [(ngModel)]="filtres.pavillonId" (change)="load()">
+              <mat-option [value]="undefined">Tous</mat-option>
+              <mat-option *ngFor="let p of pavillons" [value]="p.id">{{ p.nom }}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="col-md-3">
-          <label class="form-label">Type de chambre</label>
-          <select class="form-select" [(ngModel)]="filtres.typeChambreId" (change)="load()">
-            <option [ngValue]="undefined">Tous</option>
-            <option *ngFor="let t of types" [ngValue]="t.id">{{ t.libelle }}</option>
-          </select>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Type de chambre</mat-label>
+            <mat-select [(ngModel)]="filtres.typeChambreId" (change)="load()">
+              <mat-option [value]="undefined">Tous</mat-option>
+              <mat-option *ngFor="let t of types" [value]="t.id">{{ t.libelle }}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="col-md-3">
-          <label class="form-label">État de ménage</label>
-          <select class="form-select" [(ngModel)]="filtres.etatMenage" (change)="load()">
-            <option [ngValue]="undefined">Tous</option>
-            <option *ngFor="let e of etatsMenage" [value]="e.code">{{ e.label }}</option>
-          </select>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>État de ménage</mat-label>
+            <mat-select [(ngModel)]="filtres.etatMenage" (change)="load()">
+              <mat-option [value]="undefined">Tous</mat-option>
+              <mat-option *ngFor="let e of etatsMenage" [value]="e.code">{{ e.label }}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="col-md-3">
-          <label class="form-label">Étage</label>
-          <input class="form-control" [(ngModel)]="filtres.etage" (change)="load()" placeholder="ex : 1">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Étage</mat-label>
+            <input matInput [(ngModel)]="filtres.etage" (change)="load()" placeholder="ex : 1">
+          </mat-form-field>
         </div>
       </div>
     </div>
@@ -124,10 +132,12 @@
             <td><span class="badge bg-{{ etatInfo(c.etatMenage).cls }}">{{ etatInfo(c.etatMenage).label }}</span></td>
             <td><span class="badge" [ngClass]="c.occupe ? 'bg-danger' : 'bg-light text-dark border'">{{ c.occupe ? 'Occupée' : 'Libre' }}</span></td>
             <td>
-              <select class="form-select form-select-sm" [(ngModel)]="c.gouvernanteId" (change)="affecter(c)">
-                <option [ngValue]="null">— Sélectionner —</option>
-                <option *ngFor="let g of gouvernantes" [ngValue]="g.id">{{ g.nom }} {{ g.prenom }}</option>
-              </select>
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-select [(ngModel)]="c.gouvernanteId" (change)="affecter(c)">
+                  <mat-option [value]="null">— Sélectionner —</mat-option>
+                  <mat-option *ngFor="let g of gouvernantes" [value]="g.id">{{ g.nom }} {{ g.prenom }}</mat-option>
+                </mat-select>
+              </mat-form-field>
             </td>
             <td><button class="btn btn-success btn-sm" (click)="verifier(c)"><i class="fa-solid fa-check me-1"></i>Vérifier (Clean)</button></td>
           </tr>
@@ -144,22 +154,28 @@
     <div class="card-body">
       <div class="row g-2 align-items-end">
         <div class="col-md-3">
-          <label class="form-label">Chambre</label>
-          <select class="form-select" [(ngModel)]="problemeForm.chambreId">
-            <option *ngFor="let c of chambres" [ngValue]="c.id">{{ c.numero }} — {{ c.typeChambre }}</option>
-          </select>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Chambre</mat-label>
+            <mat-select [(ngModel)]="problemeForm.chambreId">
+              <mat-option *ngFor="let c of chambres" [value]="c.id">{{ c.numero }} — {{ c.typeChambre }}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="col-md-3">
-          <label class="form-label">Priorité</label>
-          <select class="form-select" [(ngModel)]="problemeForm.priorite">
-            <option value="BASSE">Basse</option>
-            <option value="MOYENNE">Moyenne</option>
-            <option value="HAUTE">Haute</option>
-          </select>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Priorité</mat-label>
+            <mat-select [(ngModel)]="problemeForm.priorite">
+              <mat-option value="BASSE">Basse</mat-option>
+              <mat-option value="MOYENNE">Moyenne</mat-option>
+              <mat-option value="HAUTE">Haute</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="col-md-4">
-          <label class="form-label">Description</label>
-          <input class="form-control" [(ngModel)]="problemeForm.description" placeholder="ex : fuite d'eau salle de bain">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Description</mat-label>
+            <input matInput [(ngModel)]="problemeForm.description" placeholder="ex : fuite d'eau salle de bain">
+          </mat-form-field>
         </div>
         <div class="col-md-2">
           <button class="btn btn-primary btn-sm me-1" (click)="saveProbleme()">Signaler</button>

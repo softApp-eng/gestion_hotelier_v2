@@ -13,8 +13,10 @@
         <li>limits to 10 results</li>
       </ul>
       
-      <label for="typeahead-basic" class="form-label">Search for a state:</label>
-      <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"/>
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Search for a state:</mat-label>
+        <input matInput id="typeahead-basic" type="text" [(ngModel)]="model" [ngbTypeahead]="search"/>
+      </mat-form-field>
       <p class="text-muted mt-2">Model: {{ model | json }}</p>
     </div>
     <app-code-preview [codeContent]="defaultTypeaheadCode"></app-code-preview>
@@ -28,9 +30,11 @@
         <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
       </ng-template>
       
-      <label for="typeahead-template" class="form-label">Search for a state:</label>
-      <input id="typeahead-template" type="text" class="form-control" [(ngModel)]="resultTemplatemodel" [ngbTypeahead]="resultTemplateSearch" [resultTemplate]="rt"
-        [inputFormatter]="formatter" />
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Search for a state:</mat-label>
+        <input matInput id="typeahead-template" type="text" [(ngModel)]="resultTemplatemodel" [ngbTypeahead]="resultTemplateSearch" [resultTemplate]="rt"
+          [inputFormatter]="formatter" />
+      </mat-form-field>
 
       <p class="text-muted mt-2">Model: {{ resultTemplatemodel | json }}</p>
     </div>

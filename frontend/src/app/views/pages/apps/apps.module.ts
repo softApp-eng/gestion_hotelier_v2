@@ -57,6 +57,7 @@ import { ListRerservationComponent } from './email/inbox/list-rerservation/list-
 import { TypeClientConfigComponent } from './config/type-client-config/type-client-config.component';
 import { ConfigComponent } from './config/config.component';
 import { ReservationlistComponent } from './email/reservationlist/reservationlist.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -147,6 +148,7 @@ const routes: Routes = [
     MatSlideToggleModule,
     MatTooltipModule,
     MatMenuModule,         // <--- AJOUTÉ (Résout l'erreur matMenuTriggerFor)
+    MaterialModule,
 
     // Bootstrap & Plugins
     FullCalendarModule,

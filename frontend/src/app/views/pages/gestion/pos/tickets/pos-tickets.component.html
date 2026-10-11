@@ -9,11 +9,11 @@
     <div class="card mb-3">
       <div class="card-header"><b>Contrôle d'accès</b></div>
       <div class="card-body">
-        <label class="form-label small">Saisir / scanner le code du ticket</label>
-        <div class="input-group">
-          <input class="form-control" placeholder="Ex: DEMO1000" [(ngModel)]="codeToCheck" (keyup.enter)="controler()">
-          <button class="btn btn-success" (click)="controler()"><i class="fa-solid fa-check"></i></button>
-        </div>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Saisir / scanner le code du ticket</mat-label>
+          <input matInput placeholder="Ex: DEMO1000" [(ngModel)]="codeToCheck" (keyup.enter)="controler()">
+        </mat-form-field>
+        <button class="btn btn-success" (click)="controler()"><i class="fa-solid fa-check"></i></button>
       </div>
     </div>
 
@@ -21,26 +21,49 @@
       <div class="card-header"><b>Nouveau ticket</b></div>
       <div class="card-body">
         <div class="mb-2">
-          <label class="form-label small">Bénéficiaire (client lié, optionnel)</label>
-          <select class="form-select" [(ngModel)]="form.client.id">
-            <option [ngValue]="undefined">— Saisie libre —</option>
-            <option *ngFor="let c of clients" [ngValue]="c.id">{{ c.nom }} {{ c.prenom }}</option>
-          </select>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Bénéficiaire (client lié, optionnel)</mat-label>
+            <mat-select [(ngModel)]="form.client.id">
+              <mat-option [value]="undefined">— Saisie libre —</mat-option>
+              <mat-option *ngFor="let c of clients" [value]="c.id">{{ c.nom }} {{ c.prenom }}</mat-option>
+            </mat-select>
+          </mat-form-field>
         </div>
         <div class="mb-2" *ngIf="!form.client?.id">
-          <label class="form-label small">Nom du bénéficiaire</label>
-          <input class="form-control" [(ngModel)]="form.beneficiaire">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nom du bénéficiaire</mat-label>
+            <input matInput [(ngModel)]="form.beneficiaire">
+          </mat-form-field>
         </div>
         <div class="row g-2">
           <div class="col-6">
-            <label class="form-label small">Type</label>
-            <select class="form-select" [(ngModel)]="form.typeRepas">
-              <option>PETIT_DEJEUNER</option><option>DEJEUNER</option><option>DINER</option>
-            </select>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Type</mat-label>
+              <mat-select [(ngModel)]="form.typeRepas">
+                <mat-option>PETIT_DEJEUNER</mat-option>
+                <mat-option>DEJEUNER</mat-option>
+                <mat-option>DINER</mat-option>
+              </mat-select>
+            </mat-form-field>
           </div>
-          <div class="col-6"><label class="form-label small">Personnes</label><input type="number" class="form-control" [(ngModel)]="form.nbPersonnes"></div>
-          <div class="col-6"><label class="form-label small">Date</label><input type="date" class="form-control" [(ngModel)]="form.dateRepas"></div>
-          <div class="col-6"><label class="form-label small">Montant (auto si 0)</label><input type="number" class="form-control" [(ngModel)]="form.montant"></div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Personnes</mat-label>
+              <input matInput type="number" [(ngModel)]="form.nbPersonnes">
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Date</mat-label>
+              <input matInput type="date" [(ngModel)]="form.dateRepas">
+            </mat-form-field>
+          </div>
+          <div class="col-6">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Montant (auto si 0)</mat-label>
+              <input matInput type="number" [(ngModel)]="form.montant">
+            </mat-form-field>
+          </div>
         </div>
         <button class="btn btn-primary btn-sm w-100 mt-3" (click)="save()">Créer le ticket</button>
       </div>
@@ -53,7 +76,9 @@
       <div class="card-header d-flex justify-content-between align-items-center">
         <b>Liste des tickets</b>
         <div class="d-flex gap-2">
-          <input type="date" class="form-control form-control-sm" [(ngModel)]="filterDate" (change)="load()">
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="date" [(ngModel)]="filterDate" (change)="load()">
+          </mat-form-field>
           <button class="btn btn-outline-secondary btn-sm" (click)="filterDate='';load()">Tout</button>
         </div>
       </div>

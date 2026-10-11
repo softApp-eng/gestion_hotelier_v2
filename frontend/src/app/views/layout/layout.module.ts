@@ -13,6 +13,7 @@ import { ContentAnimateDirective } from '../../core/content-animate/content-anim
 import { NgbDropdownModule, NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { FeatherIconModule } from '../../core/feather-icon/feather-icon.module';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
@@ -32,7 +33,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbDropdownModule,
     NgbCollapseModule,
     PerfectScrollbarModule,
-    FeatherIconModule
+    FeatherIconModule,
+    MaterialModule
   ],
   providers: [
     {

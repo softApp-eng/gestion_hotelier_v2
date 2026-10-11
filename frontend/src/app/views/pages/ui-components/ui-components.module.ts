@@ -41,6 +41,7 @@ import { RatingComponent } from './rating/rating.component';
 import { TimepickerComponent } from './timepicker/timepicker.component';
 import { DatepickerComponent } from './datepicker/datepicker.component';
 import { TypeaheadComponent } from './typeahead/typeahead.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 const routes: Routes = [
   {
@@ -165,7 +166,8 @@ const routes: Routes = [
     NgbModule,
     PerfectScrollbarModule,
     FormsModule,
-    FeatherIconModule
+    FeatherIconModule,
+    MaterialModule
   ],
   providers: [
     {

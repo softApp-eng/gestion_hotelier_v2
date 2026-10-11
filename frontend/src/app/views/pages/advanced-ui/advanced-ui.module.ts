@@ -14,6 +14,7 @@ import { ImageCropperComponent } from './image-cropper/cropper.component';
 import { OwlCarouselComponent } from './owl-carousel/owl-carousel.component';
 import { SweetAlertComponent } from './sweet-alert/sweet-alert.component';
 import { SortablejsComponent } from './sortablejs/sortablejs.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 const routes: Routes = [
   {
@@ -58,6 +59,7 @@ const routes: Routes = [
       ghostClass: 'bg-light',
     }),
     SweetAlert2Module.forRoot(),
+    MaterialModule,
   ]
 })
 export class AdvancedUiModule { }

@@ -23,63 +23,87 @@
       <div class="card">
         <div class="card-body">
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Required</label>
-            <input class="form-control" type="text" placeholder="required" ngModel name="requried" #requried="ngModel" required/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Required</mat-label>
+              <input matInput type="text" placeholder="required" ngModel name="requried" #requried="ngModel" required/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="requried?.errors?.required">required error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Minimum Length</label>
-            <input class="form-control" type="text" placeholder="minimum length: 5" ngModel name="minlength" #minlength="ngModel" minlength="5"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Minimum Length</mat-label>
+              <input matInput type="text" placeholder="minimum length: 5" ngModel name="minlength" #minlength="ngModel" minlength="5"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="minlength?.errors?.minlength">minlength error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Maximum Length</label>
-            <input class="form-control" type="text" placeholder="maximum length: 5" ngModel name="maxlength" #maxlength="ngModel" maxlength="5"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Maximum Length</mat-label>
+              <input matInput type="text" placeholder="maximum length: 5" ngModel name="maxlength" #maxlength="ngModel" maxlength="5"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="maxlength?.errors?.maxlength">maxlength error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Pattern</label>
-            <input class="form-control" type="text" placeholder="pattern: [a-z]{6}" ngModel name="pattern" #pattern="ngModel" pattern="[a-z]{6}"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Pattern</mat-label>
+              <input matInput type="text" placeholder="pattern: [a-z]{6}" ngModel name="pattern" #pattern="ngModel" pattern="[a-z]{6}"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="pattern?.errors?.pattern">pattern error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Base64</label>
-            <input class="form-control" type="text" placeholder="base64" ngModel name="base64" #base64="ngModel" base64/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Base64</mat-label>
+              <input matInput type="text" placeholder="base64" ngModel name="base64" #base64="ngModel" base64/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="base64?.errors?.base64">base64 error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Date</label>
-            <input class="form-control" type="text" placeholder="date" ngModel name="date" #date="ngModel" date/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Date</mat-label>
+              <input matInput type="text" placeholder="date" ngModel name="date" #date="ngModel" date/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="date?.errors?.date">date error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Date ISO</label>
-            <input class="form-control" type="text" placeholder="date ISO" ngModel name="dateISO" #dateISO="ngModel" dateISO/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Date ISO</mat-label>
+              <input matInput type="text" placeholder="date ISO" ngModel name="dateISO" #dateISO="ngModel" dateISO/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="dateISO?.errors?.dateISO">dateISO error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Digits</label>
-            <input class="form-control" type="text" placeholder="digits" ngModel name="digits" #digits="ngModel" digits/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Digits</mat-label>
+              <input matInput type="text" placeholder="digits" ngModel name="digits" #digits="ngModel" digits/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="digits?.errors?.digits">digits error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Email</label>
-            <input class="form-control" type="text" placeholder="email" ngModel name="email" #email="ngModel" ngvemail/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Email</mat-label>
+              <input matInput type="text" placeholder="email" ngModel name="email" #email="ngModel" ngvemail/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="email?.errors?.email">email error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Equal</label>
-            <input class="form-control" type="text" placeholder="should be equlal to 'aabbcc'" ngModel name="equal" #equal="ngModel" [equal]="'aabbcc'"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Equal</mat-label>
+              <input matInput type="text" placeholder="should be equlal to 'aabbcc'" ngModel name="equal" #equal="ngModel" [equal]="'aabbcc'"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="equal?.errors?.equal">equal error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Not Equal</label>
-            <input class="form-control" type="text" placeholder="shouldn't be equal to 'aabbcc'" ngModel name="notEqual" #notEqual="ngModel" [notEqual]="'aabbcc'"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Not Equal</mat-label>
+              <input matInput type="text" placeholder="shouldn't be equal to 'aabbcc'" ngModel name="notEqual" #notEqual="ngModel" [notEqual]="'aabbcc'"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="notEqual?.errors?.notEqual">notEqual error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Credit Card</label>
-            <input class="form-control" type="text" placeholder="credit card" ngModel name="creditCard" #creditCard="ngModel" creditCard/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Credit Card</mat-label>
+              <input matInput type="text" placeholder="credit card" ngModel name="creditCard" #creditCard="ngModel" creditCard/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="creditCard?.errors?.creditCard">creditCard error</p>
           </div>
         </div>
@@ -89,63 +113,87 @@
       <div class="card">
         <div class="card-body">
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Maximum Date</label>
-            <input class="form-control" type="text" placeholder="Maximum date: 2024-12-12" ngModel name="maxDate" #maxDate="ngModel" maxDate="2024-12-12"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Maximum Date</mat-label>
+              <input matInput type="text" placeholder="Maximum date: 2024-12-12" ngModel name="maxDate" #maxDate="ngModel" maxDate="2024-12-12"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="maxDate?.errors?.maxDate">maxDate error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Minimum Date</label>
-            <input class="form-control" type="text" placeholder="minimum date: 2022-12-12" ngModel name="minDate" #minDate="ngModel" minDate="2022-12-12"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Minimum Date</mat-label>
+              <input matInput type="text" placeholder="minimum date: 2022-12-12" ngModel name="minDate" #minDate="ngModel" minDate="2022-12-12"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="minDate?.errors?.minDate">minDate error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Greater Than</label>
-            <input class="form-control" type="text" placeholder="greater than: 10" ngModel name="gt" #gt="ngModel" [gt]="10"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Greater Than</mat-label>
+              <input matInput type="text" placeholder="greater than: 10" ngModel name="gt" #gt="ngModel" [gt]="10"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="gt?.errors?.gt">greater than error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Greater Than Equal</label>
-            <input class="form-control" type="text" placeholder="greater than equal: 10" ngModel name="gte" #gte="ngModel" [gte]="10"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Greater Than Equal</mat-label>
+              <input matInput type="text" placeholder="greater than equal: 10" ngModel name="gte" #gte="ngModel" [gte]="10"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="gte?.errors?.gte">greater than equal error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Less Than</label>
-            <input class="form-control" type="text" placeholder="less than: 5" ngModel name="lt" #lt="ngModel" [lt]="5"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Less Than</mat-label>
+              <input matInput type="text" placeholder="less than: 5" ngModel name="lt" #lt="ngModel" [lt]="5"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="lt?.errors?.lt">less than error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Less Than Equal</label>
-            <input class="form-control" type="text" placeholder="less than equal: 5" ngModel name="lte" #lte="ngModel" [lte]="5"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Less Than Equal</mat-label>
+              <input matInput type="text" placeholder="less than equal: 5" ngModel name="lte" #lte="ngModel" [lte]="5"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="lte?.errors?.lte">less than equal error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Json</label>
-            <input class="form-control" type="text" placeholder="json" ngModel name="json" #json="ngModel" json/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Json</mat-label>
+              <input matInput type="text" placeholder="json" ngModel name="json" #json="ngModel" json/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="json?.errors?.json">json error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Maximum</label>
-            <input class="form-control" type="text" placeholder="maximum: 5" ngModel name="max" #max="ngModel" [max]="5"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Maximum</mat-label>
+              <input matInput type="text" placeholder="maximum: 5" ngModel name="max" #max="ngModel" [max]="5"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="max?.errors?.max">max error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Minimum</label>
-            <input class="form-control" type="text" placeholder="minimum: 5" ngModel name="min" #min="ngModel" [min]="5"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Minimum</mat-label>
+              <input matInput type="text" placeholder="minimum: 5" ngModel name="min" #min="ngModel" [min]="5"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="min?.errors?.min">min error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">Number</label>
-            <input class="form-control" type="text" placeholder="number" ngModel name="number" #number="ngModel" number/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Number</mat-label>
+              <input matInput type="text" placeholder="number" ngModel name="number" #number="ngModel" number/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="number?.errors?.number">number error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">URL</label>
-            <input class="form-control" type="text" placeholder="url" ngModel name="url" #url="ngModel" url/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>URL</mat-label>
+              <input matInput type="text" placeholder="url" ngModel name="url" #url="ngModel" url/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="url?.errors?.url">url error</p>
           </div>
           <div class="mb-3">
-            <label for="exampleInputUsername1" class="form-label">UUID</label>
-            <input class="form-control" type="text" placeholder="uuid: 3" ngModel name="uuid" #uuid="ngModel" uuid="3"/>
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>UUID</mat-label>
+              <input matInput type="text" placeholder="uuid: 3" ngModel name="uuid" #uuid="ngModel" uuid="3"/>
+            </mat-form-field>
             <p class="text-danger mt-1" *ngIf="uuid?.errors?.uuid">uuid error</p>
           </div>
         </div>

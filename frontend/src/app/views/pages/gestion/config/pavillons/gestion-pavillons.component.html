@@ -7,11 +7,26 @@
   <div class="card-header"><b>{{ form.id ? 'Modifier' : 'Nouveau' }} pavillon</b></div>
   <div class="card-body">
     <div class="row g-2">
-      <div class="col-md-2"><label class="form-label">Code</label><input class="form-control" [(ngModel)]="form.code"></div>
-      <div class="col-md-4"><label class="form-label">Nom</label><input class="form-control" [(ngModel)]="form.nom"></div>
-      <div class="col-md-4"><label class="form-label">Description</label><input class="form-control" [(ngModel)]="form.description"></div>
+      <div class="col-md-2">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Code</mat-label>
+          <input matInput [(ngModel)]="form.code">
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Nom</mat-label>
+          <input matInput [(ngModel)]="form.nom">
+        </mat-form-field>
+      </div>
+      <div class="col-md-4">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Description</mat-label>
+          <input matInput [(ngModel)]="form.description">
+        </mat-form-field>
+      </div>
       <div class="col-md-2 d-flex align-items-end">
-        <div class="form-check"><input class="form-check-input" type="checkbox" id="actif" [(ngModel)]="form.actif"><label class="form-check-label" for="actif">Actif</label></div>
+        <mat-checkbox id="actif" [(ngModel)]="form.actif">Actif</mat-checkbox>
       </div>
     </div>
     <div class="mt-3">

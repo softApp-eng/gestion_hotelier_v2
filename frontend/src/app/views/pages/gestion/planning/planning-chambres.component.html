@@ -17,15 +17,19 @@
   <div class="card-body">
     <div class="row g-2 align-items-end">
       <div class="col-md-3">
-        <label class="form-label">Pavillon</label>
-        <select class="form-select" [(ngModel)]="pavillonId" (ngModelChange)="load()">
-          <option [ngValue]="null">Tous les pavillons</option>
-          <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
-        </select>
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Pavillon</mat-label>
+          <mat-select [(ngModel)]="pavillonId" (ngModelChange)="load()">
+            <mat-option [value]="null">Tous les pavillons</mat-option>
+            <mat-option *ngFor="let p of pavillons" [value]="p.id">{{ p.nom }}</mat-option>
+          </mat-select>
+        </mat-form-field>
       </div>
       <div class="col-md-3">
-        <label class="form-label">Mois</label>
-        <input type="month" class="form-control" [(ngModel)]="mois" (ngModelChange)="load()">
+        <mat-form-field appearance="outline" class="w-100">
+          <mat-label>Mois</mat-label>
+          <input matInput type="month" [(ngModel)]="mois" (ngModelChange)="load()">
+        </mat-form-field>
       </div>
       <div class="col-md-6 text-md-end">
         <span class="me-3"><span class="lg-dot bg-transparent border"></span>Libre</span>

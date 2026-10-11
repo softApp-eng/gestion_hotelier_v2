@@ -24,52 +24,72 @@
         <form class="forms-sample">
           <div class="row mb-3">
             <div class="col">
-              <label class="form-label">Date:</label>
-              <input class="form-control mb-4 mb-md-0" mask="d0/M0/0000" placeholder="dd/mm/yyyy"/>
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Date:</mat-label>
+                <input matInput mask="d0/M0/0000" placeholder="dd/mm/yyyy"/>
+              </mat-form-field>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Hour:</label>
-              <input class="form-control" mask="Hh:m0:s0" placeholder="hh:mm:ss"/>
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Date hour:</label>
-              <input class="form-control mb-4 mb-md-0" mask="d0/M0/0000 Hh:m0:s0" placeholder="dd/mm/yyyy hh:mm:ss"/>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Mixed types:</label>
-              <input class="form-control" mask="AAA 000-S0S" placeholder="AAA 000-S0S" />
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Hour:</mat-label>
+                <input matInput mask="Hh:m0:s0" placeholder="hh:mm:ss"/>
+              </mat-form-field>
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <label class="form-label">Prefix:</label>
-              <input class="form-control mb-4 mb-md-0" prefix="+7 " mask="(000) 000 00 00" [showMaskTyped] = "true" />
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Date hour:</mat-label>
+                <input matInput mask="d0/M0/0000 Hh:m0:s0" placeholder="dd/mm/yyyy hh:mm:ss"/>
+              </mat-form-field>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Suffix (eg: $):</label>
-              <input class="form-control" suffix=" $" mask="0000" />
-            </div>
-          </div>
-          <div class="row mb-3">
-            <div class="col-md-6">
-              <label class="form-label">Thousand separator:</label>
-              <input class="form-control mb-4 mb-md-0" mask="separator"/>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Dot separator:</label>
-              <input class="form-control mb-4 mb-md-0" mask="separator.2" thousandSeparator="." />
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Mixed types:</mat-label>
+                <input matInput mask="AAA 000-S0S" placeholder="AAA 000-S0S" />
+              </mat-form-field>
             </div>
           </div>
           <div class="row mb-3">
             <div class="col-md-6">
-              <label class="form-label">Comma separator:</label>
-              <input class="form-control" mask="separator.2" thousandSeparator="," />
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Prefix:</mat-label>
+                <input matInput prefix="+7 " mask="(000) 000 00 00" [showMaskTyped] = "true" />
+              </mat-form-field>
             </div>
             <div class="col-md-6">
-              <label class="form-label">Secure input:</label>
-              <input class="form-control mb-4 mb-md-0" [hiddenInput]="true" mask="XXX/X0/0000" placeholder="XXX/X0/0000"/>
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Suffix (eg: $):</mat-label>
+                <input matInput suffix=" $" mask="0000" />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Thousand separator:</mat-label>
+                <input matInput mask="separator"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Dot separator:</mat-label>
+                <input matInput mask="separator.2" thousandSeparator="." />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Comma separator:</mat-label>
+                <input matInput mask="separator.2" thousandSeparator="," />
+              </mat-form-field>
+            </div>
+            <div class="col-md-6">
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-label>Secure input:</mat-label>
+                <input matInput [hiddenInput]="true" mask="XXX/X0/0000" placeholder="XXX/X0/0000"/>
+              </mat-form-field>
             </div>
           </div>
         </form>

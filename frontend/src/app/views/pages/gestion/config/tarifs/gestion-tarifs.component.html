@@ -16,9 +16,11 @@
         <tr *ngFor="let cat of categories">
           <td><b>{{ cat.libelle }}</b><br><small class="text-muted">{{ cat.code }}</small></td>
           <td *ngFor="let t of types">
-            <div class="input-group input-group-sm">
-              <input type="number" class="form-control" [ngModel]="prix(cat.id, t.id)"
-                     (ngModelChange)="setPrix(cat.id, t.id, $event)">
+            <div class="d-flex align-items-center">
+              <mat-form-field appearance="outline" class="w-100">
+                <input matInput type="number" [ngModel]="prix(cat.id, t.id)"
+                       (ngModelChange)="setPrix(cat.id, t.id, $event)">
+              </mat-form-field>
               <button class="btn btn-outline-primary" (click)="saveCell(cat.id, t.id)" title="Enregistrer"><i class="fa-solid fa-check"></i></button>
             </div>
           </td>

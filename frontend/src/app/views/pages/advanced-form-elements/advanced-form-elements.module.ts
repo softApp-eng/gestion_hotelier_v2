@@ -36,6 +36,7 @@ import { NgSelectComponent } from './ng-select/ng-select.component';
 import { NgxChipsComponent } from './ngx-chips/ngx-chips.component';
 import { NgxColorPickerComponent } from './ngx-color-picker/ngx-color-picker.component';
 import { NgxDropzoneWrapperComponent } from './ngx-dropzone-wrapper/ngx-dropzone-wrapper.component';
+import { MaterialModule } from 'src/app/shared/material.module';
 
 const routes: Routes = [
   {
@@ -88,6 +89,7 @@ const routes: Routes = [
     TagInputModule, // Ngx-chips
     ColorPickerModule, // Ngx-color-picker
     DropzoneModule, // Ngx-dropzone-wrapper
+    MaterialModule,
   ],
   providers: [
     {

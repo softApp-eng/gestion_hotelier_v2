@@ -34,8 +34,20 @@ export class GestionConfigChambresComponent implements OnInit {
   ];
 
   showForm = false;
-  form: any = {};
+  form: any = this.formVide();
   typeForm: any = { capacite: 2 };
+
+  /** Forme vierge sûre (sous-objets présents) pour la modale. */
+  private formVide(): any {
+    return {
+      etat: 'LIBRE',
+      etatMenage: 'A_VERIFIER',
+      bloque: false,
+      typeChambre: { id: null },
+      pavillon: { id: null },
+      gouvernante: { id: null }
+    };
+  }
 
   constructor(private api: ApiService) {}
 
@@ -80,12 +92,9 @@ export class GestionConfigChambresComponent implements OnInit {
   // ---- Chambres ----
   newRoom(): void {
     this.form = {
-      etat: 'LIBRE',
-      etatMenage: 'A_VERIFIER',
-      bloque: false,
+      ...this.formVide(),
       typeChambre: { id: this.types[0] ? this.types[0].id : null },
-      pavillon: { id: this.pavillonFiltre || (this.pavillons[0] ? this.pavillons[0].id : null) },
-      gouvernante: { id: null }
+      pavillon: { id: this.pavillonFiltre || (this.pavillons[0] ? this.pavillons[0].id : null) }
     };
     this.showForm = true;
   }

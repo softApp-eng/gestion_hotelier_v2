@@ -123,15 +123,13 @@
   </div>
 </div>
 
-<!-- ==================== MODAL CHAMBRE ==================== -->
-<div class="modal fade show d-block" tabindex="-1" *ngIf="showForm" style="background: rgba(0,0,0,.5)">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title"><i class="fa-solid fa-bed me-2"></i>{{ form.id ? 'Modifier la chambre' : 'Nouvelle chambre' }}</h5>
-        <button type="button" class="btn-close" (click)="showForm=false"></button>
-      </div>
-      <div class="modal-body">
+<!-- ==================== MODAL CHAMBRE (ng-bootstrap) ==================== -->
+<ng-template #roomModal let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title"><i class="fa-solid fa-bed me-2"></i>{{ form.id ? 'Modifier la chambre' : 'Nouvelle chambre' }}</h5>
+    <button type="button" class="btn-close" (click)="fermerModal()"></button>
+  </div>
+  <div class="modal-body">
 
         <h6 class="text-uppercase text-muted small mb-2">Identification</h6>
         <div class="row g-3">
@@ -211,10 +209,8 @@
         </div>
 
       </div>
-      <div class="modal-footer">
-        <button class="btn btn-light" (click)="showForm=false">Annuler</button>
-        <button class="btn btn-primary" (click)="save()"><i class="fa-solid fa-floppy-disk me-1"></i>Enregistrer</button>
-      </div>
-    </div>
+  <div class="modal-footer">
+    <button class="btn btn-light" (click)="fermerModal()">Annuler</button>
+    <button class="btn btn-primary" (click)="save()"><i class="fa-solid fa-floppy-disk me-1"></i>Enregistrer</button>
   </div>
-</div>
+</ng-template>

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService } from 'src/app/core/services/api.service';
 import Swal from 'sweetalert2';
 
@@ -33,7 +34,9 @@ export class GestionConfigChambresComponent implements OnInit {
     { code: 'BLOQUEE', label: 'Bloquée' }
   ];
 
-  showForm = false;
+  @ViewChild('roomModal') roomModal!: TemplateRef<any>;
+  private modalRef: NgbModalRef | null = null;
+
   form: any = this.formVide();
   typeForm: any = { capacite: 2 };
 
@@ -49,7 +52,7 @@ export class GestionConfigChambresComponent implements OnInit {
     };
   }
 
-  constructor(private api: ApiService) {}
+  constructor(private api: ApiService, private modalService: NgbModal) {}
 
   ngOnInit(): void {
     this.load();
@@ -96,7 +99,19 @@ export class GestionConfigChambresComponent implements OnInit {
       typeChambre: { id: this.types[0] ? this.types[0].id : null },
       pavillon: { id: this.pavillonFiltre || (this.pavillons[0] ? this.pavillons[0].id : null) }
     };
-    this.showForm = true;
+    this.ouvrirModal();
+  }
+
+  /** Ouvre la modale au niveau du body (ng-bootstrap) : centrée et défilable. */
+  private ouvrirModal(): void {
+    this.modalRef = this.modalService.open(this.roomModal, {
+      size: 'lg', centered: true, scrollable: true, backdrop: 'static'
+    });
+  }
+
+  /** Fermeture depuis le template. */
+  fermerModal(): void {
+    this.modalRef?.close();
   }
 
   edit(c: any): void {
@@ -106,7 +121,7 @@ export class GestionConfigChambresComponent implements OnInit {
       pavillon: c.pavillon ? { id: c.pavillon.id } : { id: null },
       gouvernante: c.gouvernante ? { id: c.gouvernante.id } : { id: null }
     };
-    this.showForm = true;
+    this.ouvrirModal();
   }
 
   onTypeChange(): void {
@@ -122,7 +137,7 @@ export class GestionConfigChambresComponent implements OnInit {
     this.api.saveChambre(this.form).subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Chambre enregistrée', timer: 1200, showConfirmButton: false });
-        this.showForm = false;
+        this.fermerModal();
         this.load();
       },
       error: (e) => Swal.fire('Erreur', e.error?.message || 'Enregistrement impossible', 'error')

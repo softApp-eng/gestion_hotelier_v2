@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api.service';
 import Swal from 'sweetalert2';
+import { dateToIso, isoToDate } from 'src/app/shared/utils/date-utils';
 
 @Component({
   selector: 'app-gestion-rapports',
   templateUrl: './gestion-rapports.component.html'
 })
 export class GestionRapportsComponent implements OnInit {
+
+  /** Helpers de conversion ISO ↔ Date pour les sélecteurs Material. */
+  readonly isoToDate = isoToDate;
+  readonly dateToIso = dateToIso;
 
   from: string = new Date().toISOString().substring(0, 10);
   to: string = new Date().toISOString().substring(0, 10);

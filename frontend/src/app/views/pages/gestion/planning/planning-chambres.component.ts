@@ -1,7 +1,9 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import Swal from 'sweetalert2';
 import { ApiService } from 'src/app/core/services/api.service';
 import { PrintService } from 'src/app/core/services/print.service';
+import { isoToDate } from 'src/app/shared/utils/date-utils';
 
 /**
  * Planning des chambres au format « resource timeline » (maison, sans dépendance) :
@@ -51,6 +53,12 @@ import { PrintService } from 'src/app/core/services/print.service';
   `]
 })
 export class PlanningChambresComponent implements OnInit, OnDestroy {
+
+  /** Conversion pour le sélecteur de mois Material. */
+  readonly isoToDate = isoToDate;
+
+  /** Déclencheur du menu contenant le calendrier de choix du mois. */
+  @ViewChild('moisTrigger') moisTrigger: MatMenuTrigger;
 
   pavillons: any[] = [];
   pavillonId: number | null = null;
@@ -109,6 +117,27 @@ export class PlanningChambresComponent implements OnInit, OnDestroy {
     const p = (mois || '').split('-');
     const d = new Date(Number(p[0]), Number(p[1]) - 1 + delta, 1);
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+
+  // ---------------------------------------- sélecteur de mois Material
+  /** Libellé « MM/AAAA » affiché dans le champ Material du mois. */
+  moisLabel(): string {
+    if (!this.mois) return '';
+    const p = this.mois.split('-');
+    return p[1] + '/' + p[0];
+  }
+
+  /** Mois positionné dans le calendrier de choix du mois. */
+  moisStartAt(): Date {
+    return isoToDate(this.mois) || new Date();
+  }
+
+  /** Sélection d'un mois dans le calendrier Material. */
+  onMoisChoisi(d: Date): void {
+    if (!d) return;
+    this.mois = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    if (this.moisTrigger) this.moisTrigger.closeMenu();
+    this.load();
   }
 
   colW(): number { return Math.round(34 * this.zoom); }

@@ -2,6 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ApiService } from 'src/app/core/services/api.service';
 import Swal from 'sweetalert2';
+import { dateToIso, isoToDate } from 'src/app/shared/utils/date-utils';
 
 /**
  * Configuration des chambres (écran « Paramètres hôtel »).
@@ -13,6 +14,10 @@ import Swal from 'sweetalert2';
   templateUrl: './gestion-config-chambres.component.html'
 })
 export class GestionConfigChambresComponent implements OnInit {
+
+  /** Helpers de conversion ISO ↔ Date pour les sélecteurs Material. */
+  readonly isoToDate = isoToDate;
+  readonly dateToIso = dateToIso;
 
   chambres: any[] = [];
   types: any[] = [];

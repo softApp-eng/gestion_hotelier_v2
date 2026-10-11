@@ -6,7 +6,7 @@
 <!-- Arrivées du jour -->
 <div class="card mb-3 border-primary" *ngIf="arrivees.length">
   <div class="card-header bg-primary text-white"><b>Arrivées prévues aujourd'hui ({{ arrivees.length }})</b></div>
-  <div class="card-body p-0">
+  <div class="card-body p-0 table-responsive">
     <table class="table mb-0 align-middle">
       <tbody>
         <tr *ngFor="let a of arrivees">
@@ -68,13 +68,21 @@
       <div class="col-md-2">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Arrivée</mat-label>
-          <input matInput type="date" [(ngModel)]="form.dateArrivee" (ngModelChange)="recalcMontant()">
+          <input matInput [matDatepicker]="pkArrivee" [ngModel]="isoToDate(form.dateArrivee)" (ngModelChange)="form.dateArrivee = dateToIso($event); recalcMontant()">
+          <mat-datepicker-toggle matSuffix [for]="pkArrivee" aria-label="Choisir une date">
+            <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+          </mat-datepicker-toggle>
+          <mat-datepicker #pkArrivee></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="col-md-2">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Départ</mat-label>
-          <input matInput type="date" [(ngModel)]="form.dateDepart" (ngModelChange)="recalcMontant()">
+          <input matInput [matDatepicker]="pkDepart" [ngModel]="isoToDate(form.dateDepart)" (ngModelChange)="form.dateDepart = dateToIso($event); recalcMontant()">
+          <mat-datepicker-toggle matSuffix [for]="pkDepart" aria-label="Choisir une date">
+            <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+          </mat-datepicker-toggle>
+          <mat-datepicker #pkDepart></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="col-md-1">

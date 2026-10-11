@@ -222,13 +222,21 @@
             <div class="col-md-2">
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Du</mat-label>
-                <input matInput type="date" [(ngModel)]="form.blocageDebut">
+                <input matInput [matDatepicker]="pkBlocDebut" [ngModel]="isoToDate(form.blocageDebut)" (ngModelChange)="form.blocageDebut = dateToIso($event)">
+                <mat-datepicker-toggle matSuffix [for]="pkBlocDebut" aria-label="Choisir une date">
+                  <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+                </mat-datepicker-toggle>
+                <mat-datepicker #pkBlocDebut></mat-datepicker>
               </mat-form-field>
             </div>
             <div class="col-md-2">
               <mat-form-field appearance="outline" class="w-100">
                 <mat-label>Au</mat-label>
-                <input matInput type="date" [(ngModel)]="form.blocageFin">
+                <input matInput [matDatepicker]="pkBlocFin" [ngModel]="isoToDate(form.blocageFin)" (ngModelChange)="form.blocageFin = dateToIso($event)">
+                <mat-datepicker-toggle matSuffix [for]="pkBlocFin" aria-label="Choisir une date">
+                  <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+                </mat-datepicker-toggle>
+                <mat-datepicker #pkBlocFin></mat-datepicker>
               </mat-form-field>
             </div>
           </ng-container>

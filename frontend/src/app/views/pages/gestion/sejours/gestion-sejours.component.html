@@ -11,25 +11,41 @@
       <div class="col-md-2">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Check-in du</mat-label>
-          <input matInput type="date" [(ngModel)]="filtres.checkinFrom">
+          <input matInput [matDatepicker]="pkCinFrom" [ngModel]="isoToDate(filtres.checkinFrom)" (ngModelChange)="filtres.checkinFrom = dateToIso($event)">
+          <mat-datepicker-toggle matSuffix [for]="pkCinFrom" aria-label="Choisir une date">
+            <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+          </mat-datepicker-toggle>
+          <mat-datepicker #pkCinFrom></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="col-md-2">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Check-in au</mat-label>
-          <input matInput type="date" [(ngModel)]="filtres.checkinTo">
+          <input matInput [matDatepicker]="pkCinTo" [ngModel]="isoToDate(filtres.checkinTo)" (ngModelChange)="filtres.checkinTo = dateToIso($event)">
+          <mat-datepicker-toggle matSuffix [for]="pkCinTo" aria-label="Choisir une date">
+            <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+          </mat-datepicker-toggle>
+          <mat-datepicker #pkCinTo></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="col-md-2">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Check-out du</mat-label>
-          <input matInput type="date" [(ngModel)]="filtres.checkoutFrom">
+          <input matInput [matDatepicker]="pkCoutFrom" [ngModel]="isoToDate(filtres.checkoutFrom)" (ngModelChange)="filtres.checkoutFrom = dateToIso($event)">
+          <mat-datepicker-toggle matSuffix [for]="pkCoutFrom" aria-label="Choisir une date">
+            <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+          </mat-datepicker-toggle>
+          <mat-datepicker #pkCoutFrom></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="col-md-2">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Check-out au</mat-label>
-          <input matInput type="date" [(ngModel)]="filtres.checkoutTo">
+          <input matInput [matDatepicker]="pkCoutTo" [ngModel]="isoToDate(filtres.checkoutTo)" (ngModelChange)="filtres.checkoutTo = dateToIso($event)">
+          <mat-datepicker-toggle matSuffix [for]="pkCoutTo" aria-label="Choisir une date">
+            <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+          </mat-datepicker-toggle>
+          <mat-datepicker #pkCoutTo></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="col-md-2">
@@ -79,7 +95,11 @@
       <div class="col-md-2">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Départ prévu</mat-label>
-          <input matInput type="date" [(ngModel)]="form.dateDepartPrevue">
+          <input matInput [matDatepicker]="pkDepart" [ngModel]="isoToDate(form.dateDepartPrevue)" (ngModelChange)="form.dateDepartPrevue = dateToIso($event)">
+          <mat-datepicker-toggle matSuffix [for]="pkDepart" aria-label="Choisir une date">
+            <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+          </mat-datepicker-toggle>
+          <mat-datepicker #pkDepart></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="col-md-3">

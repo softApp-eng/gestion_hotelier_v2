@@ -55,7 +55,11 @@
           <div class="col-6">
             <mat-form-field appearance="outline" class="w-100">
               <mat-label>Date</mat-label>
-              <input matInput type="date" [(ngModel)]="form.dateRepas">
+              <input matInput [matDatepicker]="pkRepas" [ngModel]="isoToDate(form.dateRepas)" (ngModelChange)="form.dateRepas = dateToIso($event)">
+              <mat-datepicker-toggle matSuffix [for]="pkRepas" aria-label="Choisir une date">
+                <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+              </mat-datepicker-toggle>
+              <mat-datepicker #pkRepas></mat-datepicker>
             </mat-form-field>
           </div>
           <div class="col-6">
@@ -73,11 +77,16 @@
   <!-- List -->
   <div class="col-lg-8 mb-3">
     <div class="card">
-      <div class="card-header d-flex justify-content-between align-items-center">
+      <div class="card-header d-flex flex-wrap gap-2 justify-content-between align-items-center">
         <b>Liste des tickets</b>
-        <div class="d-flex gap-2">
-          <mat-form-field appearance="outline" class="w-100">
-            <input matInput type="date" [(ngModel)]="filterDate" (change)="load()">
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+          <mat-form-field appearance="outline" class="mb-0" style="width: 170px;">
+            <mat-label>Filtrer par date</mat-label>
+            <input matInput [matDatepicker]="pkFilter" [ngModel]="isoToDate(filterDate)" (ngModelChange)="filterDate = dateToIso($event); load()">
+            <mat-datepicker-toggle matSuffix [for]="pkFilter" aria-label="Choisir une date">
+              <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+            </mat-datepicker-toggle>
+            <mat-datepicker #pkFilter></mat-datepicker>
           </mat-form-field>
           <button class="btn btn-outline-secondary btn-sm" (click)="filterDate='';load()">Tout</button>
         </div>

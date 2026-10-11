@@ -43,14 +43,22 @@
 <div class="card">
   <div class="card-header d-flex flex-wrap gap-2 align-items-center justify-content-between">
     <b>Rapport des ventes</b>
-    <div class="d-flex gap-2 align-items-center">
-      <mat-form-field appearance="outline" class="w-100">
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+      <mat-form-field appearance="outline" class="mb-0" style="width: 160px;">
         <mat-label>Du</mat-label>
-        <input matInput type="date" [(ngModel)]="from">
+        <input matInput [matDatepicker]="pickerFrom" [ngModel]="isoToDate(from)" (ngModelChange)="from = dateToIso($event)">
+        <mat-datepicker-toggle matSuffix [for]="pickerFrom" aria-label="Choisir une date">
+          <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+        </mat-datepicker-toggle>
+        <mat-datepicker #pickerFrom></mat-datepicker>
       </mat-form-field>
-      <mat-form-field appearance="outline" class="w-100">
+      <mat-form-field appearance="outline" class="mb-0" style="width: 160px;">
         <mat-label>Au</mat-label>
-        <input matInput type="date" [(ngModel)]="to">
+        <input matInput [matDatepicker]="pickerTo" [ngModel]="isoToDate(to)" (ngModelChange)="to = dateToIso($event)">
+        <mat-datepicker-toggle matSuffix [for]="pickerTo" aria-label="Choisir une date">
+          <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+        </mat-datepicker-toggle>
+        <mat-datepicker #pickerTo></mat-datepicker>
       </mat-form-field>
       <button class="btn btn-primary btn-sm" (click)="search()">Rechercher</button>
       <button class="btn btn-outline-success btn-sm" (click)="exportCsv()"><i class="fa-solid fa-file-csv me-1"></i>CSV</button>

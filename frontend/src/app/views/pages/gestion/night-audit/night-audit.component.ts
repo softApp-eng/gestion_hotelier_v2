@@ -2,12 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api.service';
 import { PrintService } from 'src/app/core/services/print.service';
 import Swal from 'sweetalert2';
+import { dateToIso, isoToDate } from 'src/app/shared/utils/date-utils';
 
 @Component({
   selector: 'app-night-audit',
   templateUrl: './night-audit.component.html'
 })
 export class NightAuditComponent implements OnInit {
+
+  /** Helpers de conversion ISO ↔ Date pour le sélecteur Material. */
+  readonly isoToDate = isoToDate;
+  readonly dateToIso = dateToIso;
 
   date: string;
   apercu: any = null;

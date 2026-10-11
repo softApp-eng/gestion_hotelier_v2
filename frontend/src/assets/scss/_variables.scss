@@ -4,15 +4,15 @@
 
 // Bootstrap base colors
 $white:        #fff !default;
-$gray-100:     #f5efe6 !default;   // ivoire
-$gray-200:     #ece3d5 !default;   // sable clair
-$gray-300:     #ded2bf !default;
-$gray-400:     #c7b9a2 !default;
-$gray-500:     #a99a84 !default;   // taupe
-$gray-600:     #877b6a !default;   // taupe foncé
-$gray-700:     #5c5344 !default;
-$gray-800:     #3a342a !default;
-$gray-900:     #26221b !default;   // charbon profond
+$gray-100:     #f8f9fa !default;
+$gray-200:     #e9ecef !default;
+$gray-300:     #dee2e6 !default;
+$gray-400:     #ced4da !default;
+$gray-500:     #adb5bd !default;
+$gray-600:     #7987a1 !default;
+$gray-700:     #495057 !default;
+$gray-800:     #212a3a !default;
+$gray-900:     #060c17 !default;
 $black:        #000 !default;
 $text-muted:   $gray-600 !default;
 
@@ -33,14 +33,12 @@ $cyan:    #0dcaf0 !default;
 
 // --- Bootstrap Theme Colors --- //
 //
-$green-deep:      #123c35 !default;  // vert profond (navbar, footer)
-$gold:            #d6b779 !default;  // or champagne (accent / CTA)
-$primary:         #123c35 !default;  // couleur principale
-$secondary:       #8a7d6b !default;  // taupe
-$success:         #5f7d5a !default;  // sauge
-$info:            #6f8ba3 !default;  // bleu ardoise poudré
-$warning:         #c39a4a !default;  // or antique
-$danger:          #b0503e !default;  // terre cuite
+$primary:         #6571ff !default;
+$secondary:       $gray-600 !default;
+$success:         #05a34a !default;
+$info:            #66d1d1 !default;
+$warning:         #fbbc06 !default;
+$danger:          #ff3366 !default;
 $light:           $gray-200 !default;
 $dark:            $gray-900 !default;
 //
@@ -118,8 +116,8 @@ $position-values: (
 // Body
 //
 // Settings for the `<body>` element.
-$body-bg:                      #f7f3eb !default;   // ivoire (fond principal)
-$body-color:                   #222724 !default;   // charbon (titres & textes)
+$body-bg:                      #f9fafb !default;
+$body-color:                   $black !default;
 
 
 // Links
@@ -144,10 +142,10 @@ $grid-gutter-width:           1.5rem !default;
 // Define common padding and border radius sizes and more.
 
 // Border
-$border-color:                #e5ded1 !default;   // beige doux
+$border-color:                $gray-200 !default;
 
 // Border Radiues
-$border-radius:					.4rem !default;
+$border-radius:					.25rem !default;
 
 
 $action-transition-duration: 0.2s;
@@ -160,7 +158,6 @@ $action-transition-timing-function: ease;
 
 // Font family
 $font-family-sans-serif:           "Roboto", Helvetica, sans-serif !default;
-$headings-font-family:             "Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif !default;
 
 $font-size-base:              		 0.875rem !default;   // 14px
 $font-size-lg:               	 		 1rem !default;       // 16px
@@ -254,9 +251,9 @@ $input-padding-y-xs:                    $input-btn-padding-y-xs !default;
 $input-padding-x-xs:                    $input-btn-padding-x-xs !default;
 $input-font-size-xs:                    $input-btn-font-size-xs !default;
 
-$input-bg:                              #ffffff !default;
-$input-border-color:                    #e5ded1 !default;
-$input-focus-border-color:              $primary !default;
+$input-bg:                              $white !default;
+$input-border-color:                    $border-color !default;
+$input-focus-border-color:              $gray-400 !default;
 
 $input-border-radius:                   $btn-border-radius !default;
 $input-border-radius-sm:                $btn-border-radius-sm !default;
@@ -282,8 +279,8 @@ $nav-tabs-link-active-bg:             $white;
 
 
 // Dropdowns
-$dropdown-border-color:            #e5ded1;
-$dropdown-box-shadow:              0 14px 34px -14px rgba(34,39,36,.28);
+$dropdown-border-color:            #f2f4f9;
+$dropdown-box-shadow:              0 5px 10px 0 rgba(183,192,206,.2);
 
 
 // Pagination
@@ -299,15 +296,14 @@ $pagination-active-border-color:    $primary;
 
 
 // Cards
-$card-bg:                           #ffffff !default; // cartes : blanc
-$card-box-shadow:                   0 1px 2px rgba(34,39,36,.04), 0 14px 34px -20px rgba(34,39,36,.18); // custom variable
+$card-box-shadow:                   0 0 10px 0 rgba(183,192,206,.2); // custom variable
 $card-spacer-y:                     1.5rem !default;
 $card-spacer-x:                     1.5rem !default;
 $card-title-spacer-y:               .875rem !default;
-$card-border-color:                 #e5ded1 !default;
+$card-border-color:                 #f2f4f9 !default;
 $card-cap-padding-y:                .875rem !default;
 $card-cap-padding-x:                $card-spacer-x !default;
-$card-cap-bg:                       rgba($primary, .05) !default;
+$card-cap-bg:                       rgba($black, .01) !default;
 
 
 // Accordion
@@ -357,4 +353,4 @@ $navbar-height: 60px;
 // Sidebar
 $sidebar-width-lg: 240px;
 $sidebar-folded-width: 70px;
-$sidebar-dark-bg: #0e2f2a;
+$sidebar-dark-bg: #0c1427;

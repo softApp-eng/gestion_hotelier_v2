@@ -1,12 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { ApiService } from 'src/app/core/services/api.service';
 import Swal from 'sweetalert2';
+import { dateToIso, isoToDate } from 'src/app/shared/utils/date-utils';
 
 @Component({
   selector: 'app-gestion-chambres',
   templateUrl: './gestion-chambres.component.html'
 })
 export class GestionChambresComponent implements OnInit {
+
+  /** Helpers de conversion ISO ↔ Date pour les sélecteurs Material. */
+  readonly isoToDate = isoToDate;
+  readonly dateToIso = dateToIso;
 
   chambres: any[] = [];
   types: any[] = [];

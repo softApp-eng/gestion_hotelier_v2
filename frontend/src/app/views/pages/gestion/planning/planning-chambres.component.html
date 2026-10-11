@@ -28,8 +28,12 @@
       <div class="col-md-3">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Mois</mat-label>
-          <input matInput type="month" [(ngModel)]="mois" (ngModelChange)="load()">
+          <input matInput readonly [value]="moisLabel()" [matMenuTriggerFor]="moisMenu" #moisTrigger="matMenuTrigger" placeholder="MM/AAAA">
+          <i class="fa-solid fa-calendar-days" matSuffix style="cursor:pointer;"></i>
         </mat-form-field>
+        <mat-menu #moisMenu="matMenu" class="mois-menu-panel">
+          <mat-calendar [startAt]="moisStartAt()" startView="year" (monthSelected)="onMoisChoisi($event)"></mat-calendar>
+        </mat-menu>
       </div>
       <div class="col-md-6 text-md-end">
         <span class="me-3"><span class="lg-dot bg-transparent border"></span>Libre</span>

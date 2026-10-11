@@ -63,8 +63,8 @@ export class EtatJournalierComponent implements OnInit, OnDestroy {
   /** Position (px) de la ligne rouge « aujourd'hui » ; -1 si hors du mois affiché. */
   todayLeft = -1;
 
-  /** Redimensionnement (scale) d'une réservation en cours de glissement. */
-  drag: { id: number; dernierJour: string; minJour: string } | null = null;
+  /** Redimensionnement (scale) d'une réservation/séjour en cours de glissement. */
+  drag: { id: number; statut: string; dernierJour: string; minJour: string } | null = null;
   dragLeft = -1;
   dragDernier: string | null = null;
   private ignorerClick = false;
@@ -234,7 +234,7 @@ export class EtatJournalierComponent implements OnInit, OnDestroy {
   tooltip(c: any, r: any): string {
     const base = c.numero + ' — ' + (c.typeChambre || '') + ' · ' + this.statutFr(r.statut)
       + (r.libelle ? ' : ' + r.libelle : '') + ' (' + this.fmt(r.debut) + ' → ' + this.fmt(r.fin) + ')';
-    if (r.statut === 'RESERVEE') return base + ' — clic = prolonger, glisser le bord droit = durée';
+    if (r.statut === 'RESERVEE' || r.statut === 'OCCUPEE') return base + ' — clic = prolonger, glisser le bord droit = durée';
     return this.peutProlonger(r) ? base + ' — cliquer pour prolonger' : base;
   }
 
@@ -318,10 +318,11 @@ export class EtatJournalierComponent implements OnInit, OnDestroy {
 
   // ------------------------------------------- scale (glisser le bord droit)
   debutScale(ev: MouseEvent, c: any, r: any): void {
-    if (r.statut !== 'RESERVEE' || !r.reservationId) return;
+    const id = r.statut === 'OCCUPEE' ? r.sejourId : r.reservationId;
+    if (!this.peutProlonger(r) || !id) return;
     ev.preventDefault();
     ev.stopPropagation();
-    this.drag = { id: r.reservationId, dernierJour: r.fin, minJour: r.debut };
+    this.drag = { id, statut: r.statut, dernierJour: r.fin, minJour: r.debut };
     this.dragDernier = r.fin;
     this.dragLeft = this.leftDeJour(r.fin);
     document.addEventListener('mousemove', this.dragMove);
@@ -351,7 +352,10 @@ export class EtatJournalierComponent implements OnInit, OnDestroy {
     this.dragDernier = null;
     if (!d || !dernier) return;
     if (this.plusUnJour(dernier) === this.plusUnJour(d.dernierJour)) return;
-    this.api.prolongerReservation(d.id, this.plusUnJour(dernier)).subscribe({
+    const obs = d.statut === 'OCCUPEE'
+      ? this.api.prolongerSejour(d.id, this.plusUnJour(dernier))
+      : this.api.prolongerReservation(d.id, this.plusUnJour(dernier));
+    obs.subscribe({
       next: () => {
         Swal.fire({ icon: 'success', title: 'Durée mise à jour', timer: 900, showConfirmButton: false });
         this.load();

@@ -66,7 +66,7 @@
                 <td *ngFor="let r of runs(c)" [attr.colspan]="r.span" class="rt-day" [ngClass]="['st-' + r.statut, peutProlonger(r) ? 'cliquable' : '']"
                     [title]="tooltip(c, r)" (click)="prolonger(c, r)">
                   <span class="rt-bar" *ngIf="r.statut !== 'LIBRE'">{{ labelFor(r) }}</span>
-                  <span class="rt-poignee" *ngIf="r.statut === 'RESERVEE'" (mousedown)="debutScale($event, c, r)"
+                  <span class="rt-poignee" *ngIf="r.statut === 'RESERVEE' || r.statut === 'OCCUPEE'" (mousedown)="debutScale($event, c, r)"
                         (click)="$event.stopPropagation()" title="Glisser pour changer la durée"></span>
                 </td>
               </tr>
@@ -88,7 +88,7 @@
   <i class="fa-solid fa-circle-info me-1"></i>
   Chaque jour est un carré. Faites défiler horizontalement pour parcourir le mois. Cliquez une barre
   <span class="text-info">réservée</span> ou <span class="text-danger">occupée</span> pour prolonger, ou
-  <b>glissez le bord droit</b> d'une réservation pour allonger/raccourcir la durée (scale).
+  <b>glissez le bord droit</b> (réservation ou séjour) pour allonger/raccourcir la durée (scale).
   Utilisez <b>−</b> / <b>+</b> pour ajuster la taille des carrés. La <span class="text-danger">ligne rouge</span>
   marque le jour courant.
 </div>

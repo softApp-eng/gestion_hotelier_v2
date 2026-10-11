@@ -211,8 +211,12 @@ public class PlanningService {
             if (s.getChambre() == null || !chambreId.equals(s.getChambre().getId())) continue;
             if (!"EN_COURS".equals(s.getStatut())) continue;
             LocalDate ci = s.getDateCheckin() != null ? s.getDateCheckin().toLocalDate() : null;
-            LocalDate co = s.getDateCheckout() != null ? s.getDateCheckout().toLocalDate() : null;
-            if (ci != null && !ci.isAfter(d) && (co == null || !co.isBefore(d))) {
+            // Fin d'occupation : date de sortie réelle si le séjour est terminé, sinon la date
+            // de départ prévue — la barre reste ainsi finie et redimensionnable (prolongation).
+            LocalDate fin = s.getDateCheckout() != null
+                    ? s.getDateCheckout().toLocalDate()
+                    : s.getDateDepartPrevue();
+            if (ci != null && !ci.isAfter(d) && (fin == null || d.isBefore(fin))) {
                 return s;
             }
         }

@@ -18,35 +18,47 @@
         <input type="month" class="form-control" [(ngModel)]="mois" (ngModelChange)="load()">
       </div>
       <div class="col-md-6 text-md-end">
-        <span class="badge bg-success me-1">Libre</span>
-        <span class="badge bg-info me-1">Réservée</span>
-        <span class="badge bg-danger me-1">Occupée</span>
-        <span class="badge bg-secondary">Bloquée</span>
+        <span class="me-3"><span class="lg-dot bg-transparent border"></span>Libre</span>
+        <span class="me-3"><span class="lg-dot bg-info"></span>Réservée</span>
+        <span class="me-3"><span class="lg-dot bg-danger"></span>Occupée</span>
+        <span><span class="lg-dot bg-secondary"></span>Bloquée</span>
       </div>
     </div>
   </div>
 </div>
 
 <div class="card" *ngIf="planning">
-  <div class="card-body table-responsive">
-    <table class="table table-sm table-bordered align-middle mb-0">
+  <div class="card-body p-0 rt-wrap">
+    <table class="rt">
       <thead>
         <tr>
-          <th>Chambre</th>
-          <th>Type</th>
-          <th *ngFor="let j of jours()" class="text-center" style="min-width:28px;">{{ jourNum(j.date) }}</th>
+          <th class="rt-room">Chambre</th>
+          <th *ngFor="let j of jours()" class="text-center">
+            <div style="font-size:.62rem;color:#6c757d;">{{ jourCourt(j.date) }}</div>
+            <div style="font-weight:700;">{{ numJour(j.date) }}</div>
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let c of planning.chambres">
-          <td><b>{{ c.numero }}</b></td>
-          <td><small>{{ c.typeChambre || '-' }}</small></td>
-          <td *ngFor="let j of c.jours" class="text-center p-0" [title]="(j.libelle || j.statut)">
-            <div class="w-100" style="height:24px;" [ngClass]="cellClass(j.statut)"></div>
-          </td>
-        </tr>
+        <ng-container *ngFor="let g of groupes()">
+          <tr class="rt-grp">
+            <td [attr.colspan]="jours().length + 1">{{ g.titre }} · {{ g.nb }} chambres</td>
+          </tr>
+          <ng-container *ngFor="let sg of g.sous">
+            <tr class="rt-sub">
+              <td [attr.colspan]="jours().length + 1">{{ sg.titre }} ({{ sg.chambres.length }})</td>
+            </tr>
+            <tr *ngFor="let c of sg.chambres">
+              <td class="rt-room"><span class="n">{{ c.numero }}</span><span class="t">{{ c.typeChambre }}</span></td>
+              <td *ngFor="let r of runs(c)" [attr.colspan]="r.span" class="rt-day" [ngClass]="'st-' + r.statut"
+                  [title]="tooltip(c, r)">
+                <span class="rt-bar" *ngIf="r.statut !== 'LIBRE'">{{ labelFor(r) }}</span>
+              </td>
+            </tr>
+          </ng-container>
+        </ng-container>
         <tr *ngIf="!planning.chambres.length">
-          <td [attr.colspan]="jours().length + 2" class="text-center text-muted">Aucune chambre.</td>
+          <td [attr.colspan]="jours().length + 1" class="text-center text-muted py-3">Aucune chambre.</td>
         </tr>
       </tbody>
     </table>

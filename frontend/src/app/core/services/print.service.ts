@@ -53,6 +53,9 @@ export class PrintService {
         table.matrix td.s-etage { background: #d1e7dd; font-weight: bold; }
         table.matrix td.s-repos { background: #e2e3e5; }
         table.matrix td.s-perm { background: #fff3cd; font-weight: bold; }
+        table.matrix td.pav-row { background: #343a40; color: #fff; font-weight: bold; text-align: left; }
+        table.matrix td.sub-row { background: #e7f1ff; color: #084298; font-weight: bold; text-align: left; }
+        table.matrix td.OCCUPEE { color: #fff; }
         .legend { margin-top: 12px; font-size: 11px; }
         .legend .lg { display: inline-block; padding: 2px 8px; border: 1px solid #ccc; margin-right: 6px; }
         .legend .lg.m-clean { background: #e8f6ec; }

@@ -1,0 +1,76 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Comptes clients (folio)</h5>
+  <div>
+    <button class="btn btn-outline-secondary btn-sm me-1" (click)="filtre='OUVERT'; load()">Ouverts</button>
+    <button class="btn btn-outline-secondary btn-sm" (click)="filtre='TOUS'; load()">Tous</button>
+  </div>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead><tr><th>N° compte</th><th>Client</th><th>Chambre</th><th>Ouverture</th><th>Total</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let c of comptes">
+          <td><b>{{ c.numero }}</b></td>
+          <td>{{ c.client?.nom }} {{ c.client?.prenom }}</td>
+          <td>{{ c.sejour?.chambre?.numero || '-' }}</td>
+          <td>{{ c.dateOuverture | date:'dd/MM/yyyy HH:mm' }}</td>
+          <td>{{ c.total | number:'1.0-0' }} DA</td>
+          <td><span class="badge" [ngClass]="c.statut==='OUVERT'?'bg-success':'bg-secondary'">{{ c.statut }}</span></td>
+          <td><button class="btn btn-outline-primary btn-sm" (click)="ouvrir(c)"><i class="fa-solid fa-folder-open me-1"></i>Ouvrir</button></td>
+        </tr>
+        <tr *ngIf="!comptes.length"><td colspan="7" class="text-center text-muted">Aucun compte.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="card" *ngIf="selected">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <b>Compte {{ selected.numero }} — {{ selected.client?.nom }} {{ selected.client?.prenom }}</b>
+    <div>
+      <button class="btn btn-outline-secondary btn-sm me-1" (click)="imprimer()"><i class="fa-solid fa-print me-1"></i>Imprimer</button>
+      <button class="btn btn-primary btn-sm me-1" (click)="nouvellePrestation()"><i class="fa-solid fa-plus me-1"></i>Prestation</button>
+      <button class="btn btn-outline-info btn-sm me-1" (click)="ajouterHebergement()">Hébergement</button>
+      <button class="btn btn-outline-danger btn-sm" (click)="cloturer()" *ngIf="selected.statut==='OUVERT'">Clôturer</button>
+      <button class="btn btn-light btn-sm ms-1" (click)="selected=null">Fermer</button>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="row g-2 mb-2" *ngIf="showForm">
+      <div class="col-md-3">
+        <label class="form-label">Type</label>
+        <select class="form-select" [(ngModel)]="prestaForm.type">
+          <option *ngFor="let t of typesManuels" [value]="t">{{ t }}</option>
+        </select>
+      </div>
+      <div class="col-md-4"><label class="form-label">Libellé</label><input class="form-control" [(ngModel)]="prestaForm.libelle" placeholder="Ex : Boissons minibar"></div>
+      <div class="col-md-1"><label class="form-label">Qté</label><input type="number" class="form-control" [(ngModel)]="prestaForm.quantite"></div>
+      <div class="col-md-2"><label class="form-label">Prix unitaire</label><input type="number" class="form-control" [(ngModel)]="prestaForm.prixUnitaire"></div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-primary btn-sm me-1" (click)="savePrestation()">Ajouter</button>
+        <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
+      </div>
+    </div>
+
+    <table class="table table-sm align-middle">
+      <thead><tr><th>Date</th><th>Type</th><th>Libellé</th><th>Qté</th><th>P.U.</th><th>Montant</th><th>Réf.</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let p of prestations">
+          <td>{{ p.dateHeure | date:'dd/MM HH:mm' }}</td>
+          <td><span class="badge bg-light text-dark border">{{ p.type }}</span></td>
+          <td>{{ p.libelle }}</td>
+          <td>{{ p.quantite }}</td>
+          <td>{{ p.prixUnitaire | number:'1.0-0' }}</td>
+          <td>{{ p.montant | number:'1.0-0' }} DA</td>
+          <td><small class="text-muted">{{ p.reference }}</small></td>
+        </tr>
+        <tr *ngIf="!prestations.length"><td colspan="7" class="text-center text-muted">Aucune prestation.</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><th colspan="5" class="text-end">TOTAL</th><th colspan="2">{{ total() | number:'1.0-0' }} DA</th></tr>
+      </tfoot>
+    </table>
+  </div>
+</div>

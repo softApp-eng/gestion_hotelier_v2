@@ -1,6 +1,9 @@
 package com.softappeng.hotelv2.service;
 
+import com.softappeng.hotelv2.repositories.BonRepasRepo;
 import com.softappeng.hotelv2.repositories.CommandeRepo;
+import com.softappeng.hotelv2.repositories.CompteClientRepo;
+import com.softappeng.hotelv2.repositories.FactureRepo;
 import com.softappeng.hotelv2.repositories.TicketRepasRepo;
 import com.softappeng.hotelv2.repositories.VenteRepo;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +26,9 @@ public class NumberService {
     private final VenteRepo venteRepo;
     private final CommandeRepo commandeRepo;
     private final TicketRepasRepo ticketRepo;
+    private final CompteClientRepo compteClientRepo;
+    private final FactureRepo factureRepo;
+    private final BonRepasRepo bonRepasRepo;
 
     public String nextVente() {
         return prefix("VTE") + pad(venteRepo.count() + 1);
@@ -34,6 +40,18 @@ public class NumberService {
 
     public String nextTicket() {
         return prefix("TR") + pad(ticketRepo.count() + 1);
+    }
+
+    public String nextCompte() {
+        return prefix("CPT") + pad(compteClientRepo.count() + 1);
+    }
+
+    public String nextFacture() {
+        return prefix("FACT") + pad(factureRepo.count() + 1);
+    }
+
+    public String nextBonRepas() {
+        return prefix("BR") + pad(bonRepasRepo.count() + 1);
     }
 
     public String randomCode() {

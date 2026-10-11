@@ -85,6 +85,19 @@ Ouvrez **http://localhost:4200**.
 
 ---
 
+## 🧾 Module Hôtel — Étape 2 (compte client, facturation, night audit)
+
+| Fonction | Détail |
+|---|---|
+| **Compte client (folio)** | Ouvert automatiquement au check-in ; **prestations** imputées (hébergement, repas, diverses) ; total recalculé ; clôture au check-out |
+| **Bons repas** | Bon **déjeuner / dîner / petit-déjeuner** créé par la réception, **imprimé (HTML + PDF/QR)**, imputé automatiquement au compte client ; contrôle par code ; annulation |
+| **Facturation** | Au check-out : **Espèces / TPE → 1 facture globale** ; **Prise en charge → 3 factures** (hébergement + subsistance + globale récapitulative). Impression **HTML + PDF**. Génération idempotente |
+| **Night audit** | Aperçu du jour : **rapport d'encaissement** (par mode), **taux d'occupation**, arrivées/départs/en cours, **main courante** (journal des mouvements), **clôture** de journée. **Imprimable** |
+
+> **À venir (Étape 3)** : housekeeping (**état des chambres** : Clean / À vérifier / Dirty / Bloquée, **problèmes techniques**, **vérification quotidienne** avec gouvernante, **planning gouvernante** par étage & type avec Départ / Recouché / Arrivée, imprimable).
+
+---
+
 ## 🔌 API REST (extrait)
 
 | Méthode | Endpoint | Rôle |
@@ -104,6 +117,10 @@ Ouvrez **http://localhost:4200**.
 | GET/POST | `/api/resto/commandes`, `/api/resto/commandes/{id}/payer` | Commandes restaurant |
 | GET/POST | `/api/pos/session`, `/api/pos/session/open`, `/api/pos/ventes` | Caisse & ventes |
 | GET/POST | `/api/tickets`, `/api/tickets/{code}/utiliser`, `/api/tickets/{id}/pdf` | Tickets repas |
+| GET/POST | `/api/comptes`, `/api/comptes/sejour/{id}`, `/api/comptes/{id}/prestations`, `/api/comptes/{id}/cloturer` | Comptes clients (folio) |
+| GET/POST | `/api/bons-repas`, `/api/bons-repas/utiliser/{code}`, `/api/bons-repas/{id}/pdf` | Bons repas |
+| GET/POST | `/api/factures`, `/api/factures/sejour/{id}`, `/api/factures/{id}/pdf` | Factures |
+| GET/POST | `/api/night-audit/apercu`, `/api/night-audit/cloturer`, `/api/night-audit/main-courante` | Night audit |
 | GET | `/api/reports/ventes?from=&to=` | Rapport des ventes |
 
 ---

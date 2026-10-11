@@ -27,6 +27,8 @@ public class SejourService {
     private final ReservationRepo reservationRepo;
     private final ClientRepo clientRepo;
     private final TarifService tarifService;
+    private final CompteClientService compteClientService;
+    private final FacturationService facturationService;
 
     public List<Sejour> findAll() {
         return sejourRepo.findAll();
@@ -88,7 +90,9 @@ public class SejourService {
             c.setEtat("OCCUPEE");
             chambreRepo.save(c);
         }
-        return sejourRepo.save(s);
+        Sejour saved = sejourRepo.save(s);
+        compteClientService.ouvrir(saved);
+        return saved;
     }
 
     /** Direct walk-in check-in without a prior reservation. */
@@ -124,10 +128,12 @@ public class SejourService {
         }
         s.setDateCheckin(LocalDateTime.now());
         s.setStatut("EN_COURS");
-        return sejourRepo.save(s);
+        Sejour saved = sejourRepo.save(s);
+        compteClientService.ouvrir(saved);
+        return saved;
     }
 
-    /** Check-out: free the room and finalize the stay. */
+    /** Check-out: free the room, invoice the stay and close the folio. */
     @Transactional
     public Sejour checkout(Long id) {
         Sejour s = findById(id);
@@ -138,7 +144,15 @@ public class SejourService {
             c.setEtat("NETTOYAGE");
             chambreRepo.save(c);
         }
-        return sejourRepo.save(s);
+        Sejour saved = sejourRepo.save(s);
+
+        // Invoice the stay (1 or 3 invoices depending on the payment mode) and close the folio
+        facturationService.genererPourSejour(saved.getId());
+        com.softappeng.hotelv2.entities.CompteClient compte = compteClientService.findBySejour(saved.getId());
+        if (compte != null && "OUVERT".equals(compte.getStatut())) {
+            compteClientService.cloturer(compte.getId());
+        }
+        return saved;
     }
 
     public void delete(Long id) {

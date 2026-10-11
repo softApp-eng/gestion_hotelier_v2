@@ -22,6 +22,10 @@ import { GestionTarifsComponent } from './config/tarifs/gestion-tarifs.component
 import { GestionOrganismesComponent } from './config/organismes/gestion-organismes.component';
 import { PlanningChambresComponent } from './planning/planning-chambres.component';
 import { EtatJournalierComponent } from './etat-journalier/etat-journalier.component';
+import { GestionComptesComponent } from './comptes/gestion-comptes.component';
+import { GestionBonsRepasComponent } from './bons-repas/gestion-bons-repas.component';
+import { GestionFacturesComponent } from './factures/gestion-factures.component';
+import { NightAuditComponent } from './night-audit/night-audit.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -32,6 +36,10 @@ const routes: Routes = [
   { path: 'clients', component: GestionClientsComponent },
   { path: 'planning', component: PlanningChambresComponent },
   { path: 'etat-journalier', component: EtatJournalierComponent },
+  { path: 'comptes', component: GestionComptesComponent },
+  { path: 'bons-repas', component: GestionBonsRepasComponent },
+  { path: 'factures', component: GestionFacturesComponent },
+  { path: 'night-audit', component: NightAuditComponent },
   { path: 'config/pavillons', component: GestionPavillonsComponent },
   { path: 'config/categories-clients', component: GestionCategoriesClientsComponent },
   { path: 'config/tarifs', component: GestionTarifsComponent },
@@ -58,6 +66,10 @@ const routes: Routes = [
     GestionOrganismesComponent,
     PlanningChambresComponent,
     EtatJournalierComponent,
+    GestionComptesComponent,
+    GestionBonsRepasComponent,
+    GestionFacturesComponent,
+    NightAuditComponent,
     RestoTablesComponent,
     RestoCommandesComponent,
     RestoMenuComponent,

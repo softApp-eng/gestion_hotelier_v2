@@ -37,6 +37,16 @@ export const MENU: MenuItem[] = [
     ]
   },
   {
+    label: 'Réception & Encaissement',
+    icon: 'fa-solid fa-wallet',
+    subItems: [
+      { label: 'Comptes clients (folio)', link: '/gestion/comptes' },
+      { label: 'Bons repas', link: '/gestion/bons-repas' },
+      { label: 'Factures', link: '/gestion/factures' },
+      { label: 'Night Audit', link: '/gestion/night-audit' }
+    ]
+  },
+  {
     label: 'Restauration',
     isTitle: true
   },

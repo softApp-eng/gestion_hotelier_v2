@@ -36,6 +36,10 @@ public class DataSeeder implements CommandLineRunner {
     private final CategorieClientRepo categorieClientRepo;
     private final TarifRepo tarifRepo;
     private final OrganismeRepo organismeRepo;
+    private final SejourRepo sejourRepo;
+    private final CompteClientRepo compteClientRepo;
+    private final PrestationRepo prestationRepo;
+    private final BonRepasRepo bonRepasRepo;
 
     @Override
     public void run(String... args) {
@@ -53,6 +57,7 @@ public class DataSeeder implements CommandLineRunner {
         seedTickets();
         seedTarifs();
         seedReservations();
+        seedSejours();
     }
 
     private void seedUsers() {
@@ -298,5 +303,82 @@ public class DataSeeder implements CommandLineRunner {
                 tarifRepo.save(tarif);
             }
         }
+    }
+
+    /** An in-house stay with an open folio (accommodation + one meal voucher). */
+    private void seedSejours() {
+        List<Chambre> chambres = chambreRepo.findAll();
+        List<Client> clients = clientRepo.findAll();
+        if (chambres.isEmpty() || clients.isEmpty()) return;
+
+        Chambre c = chambreRepo.findByNumero("101").orElse(chambres.get(0));
+        Client cl = clients.get(0);
+        Organisme org = organismeRepo.findAll().stream().findFirst().orElse(null);
+        String day = LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
+
+        Sejour s = new Sejour();
+        s.setClient(cl);
+        s.setChambre(c);
+        s.setPavillon(c.getPavillon());
+        s.setCategorieClient(cl.getCategorieClient());
+        s.setDateCheckin(LocalDateTime.now().minusDays(1));
+        s.setDateDepartPrevue(LocalDate.now().plusDays(1));
+        s.setStatut("EN_COURS");
+        s.setTarifNuitee(tarifPour(cl.getCategorieClient(), c));
+        s.setMontant(s.getTarifNuitee() * 2);
+        s.setAccompagnants("Épouse + 1 enfant");
+        s.setModePaiement("PRISE_EN_CHARGE");
+        s.setOrganisme(org);
+        s.setReferencePec("PEC-2026-100");
+        s = sejourRepo.save(s);
+
+        CompteClient cpt = new CompteClient();
+        cpt.setNumero("CPT-" + day + "-0001");
+        cpt.setSejour(s);
+        cpt.setClient(cl);
+        cpt.setDateOuverture(s.getDateCheckin());
+        cpt.setStatut("OUVERT");
+        cpt = compteClientRepo.save(cpt);
+
+        Prestation p1 = new Prestation();
+        p1.setCompte(cpt);
+        p1.setType("HEBERGEMENT");
+        p1.setLibelle("Hébergement chambre " + c.getNumero() + " — 2 nuit(s)");
+        p1.setQuantite(2);
+        p1.setPrixUnitaire(s.getTarifNuitee());
+        p1.setMontant(s.getTarifNuitee() * 2);
+        p1.setDateHeure(s.getDateCheckin());
+        p1.setUtilisateur("system");
+        prestationRepo.save(p1);
+
+        BonRepas br = new BonRepas();
+        br.setNumero("BR-" + day + "-0001");
+        br.setCode("DEMOBR000001");
+        br.setCompte(cpt);
+        br.setSejour(s);
+        br.setClient(cl);
+        br.setBeneficiaire(cl.getNomComplet());
+        br.setTypeRepas("DEJEUNER");
+        br.setDateRepas(LocalDate.now());
+        br.setNbPersonnes(2);
+        br.setMontant(1600);
+        br.setStatut("VALIDE");
+        br.setCreatedBy("system");
+        bonRepasRepo.save(br);
+
+        Prestation p2 = new Prestation();
+        p2.setCompte(cpt);
+        p2.setType("BON_REPAS");
+        p2.setLibelle("Bon DEJEUNER x2");
+        p2.setQuantite(2);
+        p2.setPrixUnitaire(800);
+        p2.setMontant(1600);
+        p2.setDateHeure(LocalDateTime.now());
+        p2.setReference(br.getNumero());
+        p2.setUtilisateur("system");
+        prestationRepo.save(p2);
+
+        cpt.setTotal(s.getTarifNuitee() * 2 + 1600);
+        compteClientRepo.save(cpt);
     }
 }

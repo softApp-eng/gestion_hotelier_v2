@@ -196,4 +196,57 @@ export class ApiService {
     if (typeChambreId) params = params.set('typeChambreId', typeChambreId);
     return this.http.get(`${this.base}/planning/disponibles`, { params });
   }
+
+  // --------------------------------------------------- COMPTES CLIENTS (folio)
+  comptes(statut?: string): Observable<any> {
+    let params = new HttpParams();
+    if (statut) params = params.set('statut', statut);
+    return this.http.get(`${this.base}/comptes`, { params });
+  }
+  compteBySejour(sejourId: number): Observable<any> { return this.http.get(`${this.base}/comptes/sejour/${sejourId}`); }
+  comptePrestations(id: number): Observable<any> { return this.http.get(`${this.base}/comptes/${id}/prestations`); }
+  ajouterPrestation(id: number, p: any): Observable<any> { return this.http.post(`${this.base}/comptes/${id}/prestations`, p); }
+  ajouterHebergement(id: number): Observable<any> { return this.http.post(`${this.base}/comptes/${id}/hebergement`, {}); }
+  cloturerCompte(id: number): Observable<any> { return this.http.post(`${this.base}/comptes/${id}/cloturer`, {}); }
+
+  // --------------------------------------------------------------- BONS REPAS
+  bonsRepas(date?: string): Observable<any> {
+    let params = new HttpParams();
+    if (date) params = params.set('date', date);
+    return this.http.get(`${this.base}/bons-repas`, { params });
+  }
+  createBonRepas(b: any): Observable<any> { return this.http.post(`${this.base}/bons-repas`, b); }
+  utiliserBon(code: string): Observable<any> { return this.http.post(`${this.base}/bons-repas/utiliser/${code}`, {}); }
+  annulerBon(id: number): Observable<any> { return this.http.post(`${this.base}/bons-repas/${id}/annuler`, {}); }
+  bonPdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.base}/bons-repas/${id}/pdf`, { responseType: 'blob' });
+  }
+
+  // ---------------------------------------------------------------- FACTURES
+  factures(): Observable<any> { return this.http.get(`${this.base}/factures`); }
+  factureById(id: number): Observable<any> { return this.http.get(`${this.base}/factures/${id}`); }
+  facturesBySejour(sejourId: number): Observable<any> { return this.http.get(`${this.base}/factures/sejour/${sejourId}`); }
+  genererFactures(sejourId: number): Observable<any> { return this.http.post(`${this.base}/factures/sejour/${sejourId}`, {}); }
+  facturePdf(id: number): Observable<Blob> {
+    return this.http.get(`${this.base}/factures/${id}/pdf`, { responseType: 'blob' });
+  }
+
+  // -------------------------------------------------------------- NIGHT AUDIT
+  nightAuditApercu(date?: string): Observable<any> {
+    let params = new HttpParams();
+    if (date) params = params.set('date', date);
+    return this.http.get(`${this.base}/night-audit/apercu`, { params });
+  }
+  cloturerNightAudit(date?: string, observation?: string): Observable<any> {
+    let params = new HttpParams();
+    if (date) params = params.set('date', date);
+    if (observation) params = params.set('observation', observation);
+    return this.http.post(`${this.base}/night-audit/cloturer`, {}, { params });
+  }
+  mainCourante(date?: string): Observable<any> {
+    let params = new HttpParams();
+    if (date) params = params.set('date', date);
+    return this.http.get(`${this.base}/night-audit/main-courante`, { params });
+  }
+  derniereCloture(): Observable<any> { return this.http.get(`${this.base}/night-audit/derniere`); }
 }

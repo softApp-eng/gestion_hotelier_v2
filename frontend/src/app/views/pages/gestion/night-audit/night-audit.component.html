@@ -1,0 +1,69 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Night Audit</h5>
+  <div class="d-flex align-items-center">
+    <input type="date" class="form-control form-control-sm me-2" [(ngModel)]="date" (change)="load()">
+    <button class="btn btn-outline-secondary btn-sm me-2" (click)="load()"><i class="fa-solid fa-rotate"></i></button>
+    <button class="btn btn-outline-secondary btn-sm me-2" (click)="imprimer()"><i class="fa-solid fa-print me-1"></i>Imprimer</button>
+    <button class="btn btn-danger btn-sm" (click)="cloturer()"><i class="fa-solid fa-lock me-1"></i>Clôturer la journée</button>
+  </div>
+</div>
+
+<div class="alert alert-success" *ngIf="apercu?.dejaCloturee">
+  <i class="fa-solid fa-circle-check me-1"></i>Journée clôturée
+  <span *ngIf="apercu?.cloture?.utilisateur"> par {{ apercu.cloture.utilisateur }}</span>
+  <span *ngIf="apercu?.cloture?.dateCloture"> le {{ apercu.cloture.dateCloture | date:'dd/MM/yyyy HH:mm' }}</span>.
+</div>
+
+<div class="row g-3" *ngIf="apercu">
+  <div class="col-md-3"><div class="card text-bg-primary"><div class="card-body">
+    <div class="small">Total encaissé</div><div class="h4 mb-0">{{ apercu.totalEncaisse | number:'1.0-0' }} DA</div></div></div></div>
+  <div class="col-md-3"><div class="card text-bg-success"><div class="card-body">
+    <div class="small">Espèces</div><div class="h4 mb-0">{{ apercu.totalEspeces | number:'1.0-0' }} DA</div></div></div></div>
+  <div class="col-md-3"><div class="card text-bg-info"><div class="card-body">
+    <div class="small">Autres (TPE/PEC)</div><div class="h4 mb-0">{{ apercu.totalAutres | number:'1.0-0' }} DA</div></div></div></div>
+  <div class="col-md-3"><div class="card text-bg-dark"><div class="card-body">
+    <div class="small">Taux d'occupation</div><div class="h4 mb-0">{{ apercu.tauxOccupation | number:'1.2-2' }} %</div>
+    <div class="small">{{ apercu.chambresOccupees }} / {{ apercu.totalChambres }} chambres</div></div></div></div>
+
+  <div class="col-md-6"><div class="card h-100"><div class="card-header"><b>Rapport d'encaissement</b></div>
+    <div class="card-body">
+      <table class="table table-sm mb-0">
+        <thead><tr><th>Mode</th><th class="text-end">Montant</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let m of modes()"><td>{{ m }}</td><td class="text-end">{{ apercu.encaissementParMode[m] | number:'1.0-0' }} DA</td></tr>
+          <tr *ngIf="!modes().length"><td colspan="2" class="text-center text-muted">Aucun encaissement.</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><th class="text-end">Hébergement</th><th class="text-end">{{ apercu.totalHebergement | number:'1.0-0' }} DA</th></tr>
+          <tr><th class="text-end">Subsistance</th><th class="text-end">{{ apercu.totalSubsistance | number:'1.0-0' }} DA</th></tr>
+        </tfoot>
+      </table>
+    </div></div></div>
+
+  <div class="col-md-6"><div class="card h-100"><div class="card-header"><b>Taux d'occupation</b></div>
+    <div class="card-body">
+      <table class="table table-sm mb-0"><tbody>
+        <tr><td>Arrivées du jour</td><td class="text-end">{{ apercu.nbArrivees }}</td></tr>
+        <tr><td>Départs du jour</td><td class="text-end">{{ apercu.nbDeparts }}</td></tr>
+        <tr><td>Séjours en cours</td><td class="text-end">{{ apercu.nbEnCours }}</td></tr>
+        <tr><td>Chambres occupées</td><td class="text-end">{{ apercu.chambresOccupees }} / {{ apercu.totalChambres }}</td></tr>
+        <tr><td>Bons repas du jour</td><td class="text-end">{{ apercu.bonsRepasJour }}</td></tr>
+      </tbody></table>
+    </div></div></div>
+
+  <div class="col-12"><div class="card"><div class="card-header"><b>Main courante</b></div>
+    <div class="card-body table-responsive">
+      <table class="table table-sm table-hover mb-0">
+        <thead><tr><th>Heure</th><th>Type</th><th>Libellé</th><th class="text-end">Montant</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let e of mainCourante">
+            <td>{{ e.heure }}</td>
+            <td><span class="badge bg-light text-dark border">{{ e.type }}</span></td>
+            <td>{{ e.libelle }}</td>
+            <td class="text-end">{{ e.montant | number:'1.0-0' }} DA</td>
+          </tr>
+          <tr *ngIf="!mainCourante.length"><td colspan="4" class="text-center text-muted">Aucun mouvement.</td></tr>
+        </tbody>
+      </table>
+    </div></div></div>
+</div>

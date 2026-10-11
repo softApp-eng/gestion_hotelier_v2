@@ -13,6 +13,10 @@ public interface SejourRepo extends JpaRepository<Sejour, Long> {
     List<Sejour> findByChambreIdAndStatut(Long chambreId, String statut);
     long countByStatut(String statut);
 
+    List<Sejour> findByDateCheckinBetween(LocalDateTime start, LocalDateTime end);
+    List<Sejour> findByDateCheckoutBetween(LocalDateTime start, LocalDateTime end);
+    List<Sejour> findAllByOrderByDateCheckinDesc();
+
     /**
      * Flexible search used by the "Séjours" screen filters:
      * check-in date range, check-out date range, status and room number.

@@ -32,4 +32,18 @@ export class PrintService {
     w.focus();
     w.print();
   }
+
+  /** Open a generated PDF blob in a new tab (preview / print). */
+  openBlob(blob: Blob): void {
+    const url = URL.createObjectURL(blob);
+    const w = window.open(url, '_blank');
+    // Revoke later so the tab has time to load it.
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+    if (!w) {
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.pdf';
+      a.click();
+    }
+  }
 }

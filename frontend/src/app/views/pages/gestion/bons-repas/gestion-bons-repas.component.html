@@ -1,0 +1,72 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Bons repas</h5>
+  <div class="d-flex">
+    <div class="input-group input-group-sm me-2" style="width:260px;">
+      <input class="form-control" placeholder="Contrôler un code..." [(ngModel)]="code" (keyup.enter)="controler()">
+      <button class="btn btn-outline-secondary" (click)="controler()"><i class="fa-solid fa-qrcode"></i></button>
+    </div>
+    <button class="btn btn-primary btn-sm" (click)="nouveau()"><i class="fa-solid fa-plus me-1"></i>Nouveau bon</button>
+  </div>
+</div>
+
+<div class="card mb-3" *ngIf="showForm">
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-md-3">
+        <label class="form-label">Séjour (client in-house)</label>
+        <select class="form-select" [(ngModel)]="form.sejourId">
+          <option [ngValue]="null">— Aucun —</option>
+          <option *ngFor="let s of sejoursEnCours" [ngValue]="s.id">
+            {{ s.client?.nom }} {{ s.client?.prenom }} — ch. {{ s.chambre?.numero }}
+          </option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Type</label>
+        <select class="form-select" [(ngModel)]="form.typeRepas">
+          <option *ngFor="let t of typesRepas" [value]="t">{{ label(t) }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label">Personnes</label>
+        <input type="number" class="form-control" [(ngModel)]="form.nbPersonnes" min="1">
+      </div>
+      <div class="col-md-3">
+        <label class="form-label">Observation</label>
+        <input class="form-control" [(ngModel)]="form.observation">
+      </div>
+      <div class="col-md-2 d-flex align-items-end">
+        <button class="btn btn-primary btn-sm me-1" (click)="save()">Créer & imprimer</button>
+        <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
+      </div>
+    </div>
+    <small class="text-muted">Le bon est automatiquement imputé au compte du client.</small>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead><tr><th>N°</th><th>Type</th><th>Date</th><th>Bénéficiaire</th><th>Pers.</th><th>Montant</th><th>Statut</th><th>Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let b of bons">
+          <td><b>{{ b.numero }}</b><br><small class="text-muted">{{ b.code }}</small></td>
+          <td>{{ label(b.typeRepas) }}</td>
+          <td>{{ b.dateRepas | date:'dd/MM/yyyy' }}</td>
+          <td>{{ b.beneficiaire || '-' }}</td>
+          <td>{{ b.nbPersonnes }}</td>
+          <td>{{ b.montant | number:'1.0-0' }} DA</td>
+          <td>
+            <span class="badge" [ngClass]="b.statut==='VALIDE'?'bg-success':(b.statut==='UTILISE'?'bg-secondary':'bg-danger')">{{ b.statut }}</span>
+          </td>
+          <td class="text-nowrap">
+            <button class="btn btn-outline-secondary btn-sm me-1" title="Imprimer" (click)="imprimer(b)"><i class="fa-solid fa-print"></i></button>
+            <button class="btn btn-outline-secondary btn-sm me-1" title="PDF" (click)="pdf(b)"><i class="fa-solid fa-file-pdf"></i></button>
+            <button class="btn btn-outline-danger btn-sm" title="Annuler" *ngIf="b.statut==='VALIDE'" (click)="annuler(b)"><i class="fa-solid fa-ban"></i></button>
+          </td>
+        </tr>
+        <tr *ngIf="!bons.length"><td colspan="8" class="text-center text-muted">Aucun bon repas.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>

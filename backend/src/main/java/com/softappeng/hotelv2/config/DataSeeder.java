@@ -77,39 +77,57 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedRooms() {
-        Pavillon pa = pavillonRepo.findByCode("PA").orElse(null);
-        Pavillon pb = pavillonRepo.findByCode("PB").orElse(null);
+        Pavillon chellah = pavillonRepo.findByCode("CHELLAH").orElse(null);
+        Pavillon oudayas = pavillonRepo.findByCode("OUDAYAS").orElse(null);
 
         TypeChambre simple = typeChambreRepo.save(new TypeChambre(null, "Simple", "Chambre 1 lit", 1, 4500));
         TypeChambre doubleRoom = typeChambreRepo.save(new TypeChambre(null, "Double", "Chambre 2 lits", 2, 7000));
+        TypeChambre miniSuite = typeChambreRepo.save(new TypeChambre(null, "Mini Suite", "Mini suite (chambre + coin salon)", 2, 11000));
         TypeChambre suite = typeChambreRepo.save(new TypeChambre(null, "Suite", "Suite avec salon", 4, 15000));
+        TypeChambre junior = typeChambreRepo.save(new TypeChambre(null, "Suite Junior", "Suite junior", 3, 12000));
+        TypeChambre senior = typeChambreRepo.save(new TypeChambre(null, "Suite Senior", "Suite senior", 4, 18000));
+        TypeChambre luxe = typeChambreRepo.save(new TypeChambre(null, "Chambre de luxe", "Chambre de luxe", 2, 20000));
 
-        int numero = 101;
-        for (int etage = 1; etage <= 3; etage++) {
-            for (int i = 1; i <= 6; i++) {
-                TypeChambre t = i <= 2 ? simple : (i <= 4 ? doubleRoom : suite);
-                Chambre c = new Chambre();
-                c.setNumero(String.valueOf(numero));
-                c.setEtage(String.valueOf(etage));
-                c.setTypeChambre(t);
-                c.setPrix(t.getPrixBase());
-                c.setEtat("LIBRE");
-                c.setPavillon(etage <= 2 ? pa : pb);
-                chambreRepo.save(c);
-                numero++;
-            }
-            numero = (etage + 1) * 100 + 1;
-        }
+        // Pavillon Chellah — 5 étages x 7 chambres (Simple / Double / Suite / Mini Suite)
+        seedPavillonRooms(chellah, 5, new TypeChambre[]{ miniSuite, simple, doubleRoom, doubleRoom, suite, suite, simple });
+        // Pavillon Oudayas — 4 étages x 7 chambres (Suite Junior / Suite Senior / Chambre de luxe)
+        seedPavillonRooms(oudayas, 4, new TypeChambre[]{ junior, senior, luxe, junior, senior, luxe, luxe });
+
         // a couple of rooms already busy / cleaning / blocked
-        chambreRepo.findByNumero("101").ifPresent(c -> { c.setEtat("OCCUPEE"); chambreRepo.save(c); });
-        chambreRepo.findByNumero("102").ifPresent(c -> { c.setEtat("NETTOYAGE"); chambreRepo.save(c); });
-        chambreRepo.findByNumero("301").ifPresent(c -> {
-            c.setBloque(true);
-            c.setMotifBlocage("Maintenance technique");
-            c.setBlocageDebut(LocalDate.now());
-            c.setBlocageFin(LocalDate.now().plusDays(5));
-            chambreRepo.save(c);
-        });
+        Chambre c101 = room("CHELLAH", "101");
+        if (c101 != null) { c101.setEtat("OCCUPEE"); chambreRepo.save(c101); }
+        Chambre c102 = room("CHELLAH", "102");
+        if (c102 != null) { c102.setEtat("NETTOYAGE"); chambreRepo.save(c102); }
+        Chambre c301 = room("CHELLAH", "301");
+        if (c301 != null) {
+            c301.setBloque(true);
+            c301.setMotifBlocage("Maintenance technique");
+            c301.setBlocageDebut(LocalDate.now());
+            c301.setBlocageFin(LocalDate.now().plusDays(5));
+            chambreRepo.save(c301);
+        }
+    }
+
+    /** Creates one room per pattern entry, on every floor of a pavilion. */
+    private void seedPavillonRooms(Pavillon pav, int etages, TypeChambre[] pattern) {
+        for (int etage = 1; etage <= etages; etage++) {
+            for (int i = 0; i < pattern.length; i++) {
+                Chambre c = new Chambre();
+                c.setNumero(String.valueOf(etage * 100 + (i + 1)));
+                c.setEtage(String.valueOf(etage));
+                c.setTypeChambre(pattern[i]);
+                c.setPrix(pattern[i].getPrixBase());
+                c.setEtat("LIBRE");
+                c.setPavillon(pav);
+                chambreRepo.save(c);
+            }
+        }
+    }
+
+    private Chambre room(String pavillonCode, String numero) {
+        Pavillon p = pavillonRepo.findByCode(pavillonCode).orElse(null);
+        if (p == null) return null;
+        return chambreRepo.findByPavillonIdAndNumero(p.getId(), numero).orElse(null);
     }
 
     private void seedClients() {
@@ -203,7 +221,8 @@ public class DataSeeder implements CommandLineRunner {
         List<Client> clients = clientRepo.findAll();
         if (chambres.isEmpty() || clients.isEmpty()) return;
 
-        Chambre c1 = chambres.get(3);
+        Chambre c1 = room("CHELLAH", "104");
+        if (c1 == null) c1 = chambres.get(0);
         Reservation r = new Reservation();
         r.setClient(clients.get(0));
         r.setChambre(c1);
@@ -222,7 +241,8 @@ public class DataSeeder implements CommandLineRunner {
         r.setStatut("CONFIRMEE");
         reservationRepo.save(r);
 
-        Chambre c2 = chambres.get(4);
+        Chambre c2 = room("CHELLAH", "205");
+        if (c2 == null) c2 = chambres.get(0);
         Reservation r2 = new Reservation();
         r2.setClient(clients.get(1));
         r2.setChambre(c2);
@@ -250,8 +270,8 @@ public class DataSeeder implements CommandLineRunner {
     }
 
     private void seedPavillons() {
-        pavillonRepo.save(new Pavillon(null, "PA", "Pavillon A", "Bâtiment principal", true));
-        pavillonRepo.save(new Pavillon(null, "PB", "Pavillon B", "Bâtiment annexe", true));
+        pavillonRepo.save(new Pavillon(null, "CHELLAH", "Chellah", "Pavillon Chellah — 5 étages x 7 chambres", true));
+        pavillonRepo.save(new Pavillon(null, "OUDAYAS", "Oudayas", "Pavillon Oudayas — 4 étages x 7 chambres", true));
     }
 
     private void seedCategoriesClients() {
@@ -314,7 +334,8 @@ public class DataSeeder implements CommandLineRunner {
         List<Client> clients = clientRepo.findAll();
         if (chambres.isEmpty() || clients.isEmpty()) return;
 
-        Chambre c = chambreRepo.findByNumero("101").orElse(chambres.get(0));
+        Chambre c = room("CHELLAH", "101");
+        if (c == null) c = chambres.get(0);
         Client cl = clients.get(0);
         Organisme org = organismeRepo.findAll().stream().findFirst().orElse(null);
         String day = LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -385,22 +406,29 @@ public class DataSeeder implements CommandLineRunner {
         compteClientRepo.save(cpt);
     }
 
-    /** Housekeeping: gouvernantes, room cleaning states and a technical problem. */
+    /** Housekeeping: gouvernantes responsables, femmes de chambre, room states and a technical problem. */
     private void seedHousekeeping() {
-        List<Pavillon> pavs = pavillonRepo.findAll();
-        Pavillon p1 = pavs.isEmpty() ? null : pavs.get(0);
-        Pavillon p2 = pavs.size() > 1 ? pavs.get(1) : p1;
+        Pavillon chellah = pavillonRepo.findByCode("CHELLAH").orElse(null);
+        Pavillon oudayas = pavillonRepo.findByCode("OUDAYAS").orElse(null);
 
-        Gouvernante g1 = gouvernante("Bensalem", "Amina", "0555 11 22 33", p1);
-        Gouvernante g2 = gouvernante("Cherif", "Fatima", "0555 44 55 66", p1);
-        Gouvernante g3 = gouvernante("Hamdi", "Nadia", "0555 77 88 99", p2);
-        gouvernanteRepo.saveAll(List.of(g1, g2, g3));
+        // Pavillon Chellah : 1 gouvernante responsable + 3 femmes de chambre
+        Gouvernante gChellah = gouvernante("Bensalem", "Amina", "0555 11 22 33", chellah, "GOUVERNANTE");
+        Gouvernante f1 = gouvernante("Cherif", "Fatima", "0555 44 55 66", chellah, "FEMME_DE_CHAMBRE");
+        Gouvernante f2 = gouvernante("Saidi", "Rachida", "0555 44 55 67", chellah, "FEMME_DE_CHAMBRE");
+        Gouvernante f3 = gouvernante("Aouali", "Leila", "0555 44 55 68", chellah, "FEMME_DE_CHAMBRE");
+        // Pavillon Oudayas : 1 gouvernante responsable + 3 femmes de chambre
+        Gouvernante gOudayas = gouvernante("Hamdi", "Nadia", "0555 77 88 99", oudayas, "GOUVERNANTE");
+        Gouvernante f4 = gouvernante("Bouzid", "Samira", "0555 77 88 11", oudayas, "FEMME_DE_CHAMBRE");
+        Gouvernante f5 = gouvernante("Kessai", "Houria", "0555 77 88 22", oudayas, "FEMME_DE_CHAMBRE");
+        Gouvernante f6 = gouvernante("Merabet", "Djamila", "0555 77 88 33", oudayas, "FEMME_DE_CHAMBRE");
+        gouvernanteRepo.saveAll(List.of(gChellah, f1, f2, f3, gOudayas, f4, f5, f6));
 
-        List<Chambre> chambres = chambreRepo.findAllByOrderByNumeroAsc();
         String[] etats = {"CLEAN", "A_VERIFIER", "DIRTY"};
         int i = 0;
-        for (Chambre c : chambres) {
-            c.setGouvernante(i % 2 == 0 ? g1 : g2);
+        for (Chambre c : chambreRepo.findAllByOrderByNumeroAsc()) {
+            boolean chellahRoom = c.getPavillon() != null && "CHELLAH".equals(c.getPavillon().getCode());
+            Gouvernante[] equipe = chellahRoom ? new Gouvernante[]{ f1, f2, f3 } : new Gouvernante[]{ f4, f5, f6 };
+            c.setGouvernante(equipe[i % 3]);
             String etat = "BLOQUEE".equals(c.getEtat()) ? "BLOQUEE" : etats[i % 3];
             c.setEtatMenage(etat);
             if ("CLEAN".equals(etat)) {
@@ -411,8 +439,9 @@ public class DataSeeder implements CommandLineRunner {
             i++;
         }
 
-        if (!chambres.isEmpty()) {
-            Chambre cible = chambres.size() > 4 ? chambres.get(4) : chambres.get(0);
+        Chambre cible = room("CHELLAH", "105");
+        if (cible == null && !chambreRepo.findAll().isEmpty()) cible = chambreRepo.findAll().get(0);
+        if (cible != null) {
             ProblemeTechnique pt = new ProblemeTechnique();
             pt.setChambre(cible);
             pt.setDescription("Climatisation ne refroidit pas");
@@ -424,12 +453,13 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
-    private Gouvernante gouvernante(String nom, String prenom, String tel, Pavillon p) {
+    private Gouvernante gouvernante(String nom, String prenom, String tel, Pavillon p, String role) {
         Gouvernante g = new Gouvernante();
         g.setNom(nom);
         g.setPrenom(prenom);
         g.setTelephone(tel);
         g.setPavillon(p);
+        g.setRole(role);
         g.setActif(true);
         return g;
     }

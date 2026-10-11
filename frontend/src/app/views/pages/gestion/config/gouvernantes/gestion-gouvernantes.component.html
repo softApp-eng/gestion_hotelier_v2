@@ -6,11 +6,12 @@
 <div class="card">
   <div class="card-body table-responsive">
     <table class="table table-hover align-middle">
-      <thead><tr><th>Nom</th><th>Prénom</th><th>Téléphone</th><th>Pavillon</th><th>Statut</th><th style="width:160px">Actions</th></tr></thead>
+      <thead><tr><th>Nom</th><th>Prénom</th><th>Rôle</th><th>Téléphone</th><th>Pavillon</th><th>Statut</th><th style="width:160px">Actions</th></tr></thead>
       <tbody>
         <tr *ngFor="let g of gouvernantes">
           <td><b>{{ g.nom }}</b></td>
           <td>{{ g.prenom }}</td>
+          <td><span class="badge" [ngClass]="g.role==='GOUVERNANTE' ? 'bg-primary' : 'bg-light text-dark border'">{{ g.role==='GOUVERNANTE' ? 'Gouvernante' : 'Femme de chambre' }}</span></td>
           <td>{{ g.telephone }}</td>
           <td>{{ g.pavillon?.nom || 'Tous' }}</td>
           <td><span class="badge" [ngClass]="g.actif ? 'bg-success' : 'bg-secondary'">{{ g.actif ? 'Actif' : 'Inactif' }}</span></td>
@@ -19,7 +20,7 @@
             <button class="btn btn-outline-danger btn-sm" (click)="remove(g)"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
-        <tr *ngIf="!gouvernantes.length"><td colspan="6" class="text-center text-muted">Aucune gouvernante.</td></tr>
+        <tr *ngIf="!gouvernantes.length"><td colspan="7" class="text-center text-muted">Aucune gouvernante.</td></tr>
       </tbody>
     </table>
   </div>
@@ -46,6 +47,13 @@
           <div class="col-md-6">
             <label class="form-label">Téléphone</label>
             <input class="form-control" [(ngModel)]="form.telephone">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Rôle</label>
+            <select class="form-select" [(ngModel)]="form.role">
+              <option value="GOUVERNANTE">Gouvernante (responsable pavillon)</option>
+              <option value="FEMME_DE_CHAMBRE">Femme de chambre</option>
+            </select>
           </div>
           <div class="col-md-6">
             <label class="form-label">Pavillon affecté</label>

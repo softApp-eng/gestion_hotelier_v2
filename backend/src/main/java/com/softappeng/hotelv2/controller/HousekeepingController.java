@@ -35,6 +35,13 @@ public class HousekeepingController {
         return service.planningGouvernante(date);
     }
 
+    /** Printable occupancy matrix: per pavilion, per floor, the rooms with their situation. */
+    @GetMapping("/planning-occupation")
+    public Map<String, Object> planningOccupation(
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        return service.planningOccupation(date);
+    }
+
     @PostMapping("/{chambreId}/etat-menage")
     public Chambre changerEtatMenage(@PathVariable Long chambreId,
                                      @RequestParam String etatMenage,

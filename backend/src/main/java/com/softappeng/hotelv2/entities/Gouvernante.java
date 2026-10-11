@@ -30,7 +30,15 @@ public class Gouvernante extends Auditable {
     @JoinColumn(name = "pavillon_id")
     private Pavillon pavillon;
 
+    /** GOUVERNANTE (responsable du pavillon) or FEMME_DE_CHAMBRE. */
+    private String role = "FEMME_DE_CHAMBRE";
+
     private boolean actif = true;
 
     private String observation;
+
+    public String getNomComplet() {
+        if (prenom == null || prenom.isBlank()) return nom;
+        return nom + " " + prenom;
+    }
 }

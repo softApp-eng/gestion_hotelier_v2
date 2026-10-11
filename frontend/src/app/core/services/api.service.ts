@@ -298,4 +298,9 @@ export class ApiService {
     if (date) params = params.set('date', date);
     return this.http.get(`${this.base}/housekeeping/planning-gouvernante`, { params });
   }
+  planningOccupation(date?: string): Observable<any> {
+    let params = new HttpParams();
+    if (date) params = params.set('date', date);
+    return this.http.get(`${this.base}/housekeeping/planning-occupation`, { params });
+  }
 }

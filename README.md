@@ -100,13 +100,24 @@ Ouvrez **http://localhost:4200**.
 
 ## 🧹 Module Hôtel — Étape 3 (housekeeping / gouvernante)
 
+> **Règle de confidentialité :** l'interface gouvernante ne montre **jamais l'identité du client**.
+> On n'affiche que l'**état de la chambre**, la **situation** (Départ / Recouché / Arrivée) et le
+> simple booléen **chambre occupée / libre**.
+
+**Structure réelle des pavillons :**
+
+| Pavillon | Étages | Chambres / étage | Types de chambre |
+|---|---|---|---|
+| **Chellah** | 5 | 7 | Simple, Chambre double, Mini suite, Suite |
+| **Oudayas** | 4 | 7 | Suite Junior, Suite Senior, Chambre de luxe |
+
 | Fonction | Détail |
 |---|---|
-| **État des chambres** | Tableau de bord ménage par chambre : **Clean / À vérifier / Dirty / Bloquée**, séparé de la *disponibilité* (Libre / Occupée / Réservée / Bloquée). Filtres pavillon / type / étage / état. Impression |
-| **Vérification quotidienne** | Onglet listant les chambres à nettoyer/vérifier du jour (départ, recouché, dirty) avec **affectation de la femme de chambre** puis validation (→ Clean) |
+| **État des chambres** | Tableau **matriciel** : une ligne par **étage**, une colonne par **chambre** (numéro + type + état de ménage + situation). États : **Clean / À vérifier / Dirty / Bloquée**, séparés de la *disponibilité* (Libre / Occupée / Bloquée). Clic sur une chambre pour changer l'état. Filtres pavillon / type / étage / état. Impression |
+| **Vérification quotidienne** | Onglet listant les chambres à nettoyer/vérifier du jour (départ, recouché, dirty) avec **affectation de la femme de chambre** puis validation (→ Clean). Colonne **Chambre occupée** (Occupée / Libre) — **pas de nom de client** |
 | **Problèmes techniques** | Onglet de signalement/traitement des pannes : chambre, description, priorité (basse/moyenne/haute), statut (signalé → en cours → résolu) |
-| **Planning gouvernante** | Vue des chambres **par étage** *et* **par type de chambre**, avec situation **Départ / Recouché / Arrivée** (calculée automatiquement depuis séjours & réservations), occupant et gouvernante — **imprimable** |
-| **Gouvernantes** | Liste paramétrable (nom, prénom, téléphone, pavillon, actif) dans Configuration |
+| **Planning gouvernante** | Tableau **matriciel** identique (étages × 7 chambres). Chaque chambre affiche **une seule situation** : **RECOUCHÉ** *ou* **DÉPART** *ou* **ARRIVÉE** (calculée automatiquement depuis séjours & réservations), en plus de l'état de ménage et du badge « occupée ». **Imprimable** |
+| **Gouvernantes** | Liste paramétrable avec **rôle** : **GOUVERNANTE** (responsable de pavillon, 1 par pavillon) ou **FEMME_DE_CHAMBRE** (3 par pavillon). Nom, prénom, téléphone, pavillon, actif — dans Configuration |
 | **Ajout de chambre** | **Modal d'insertion** professionnel : identification, état de ménage, gouvernante affectée, blocage (période + motif) |
 
 ---
@@ -134,9 +145,10 @@ Ouvrez **http://localhost:4200**.
 | GET/POST | `/api/bons-repas`, `/api/bons-repas/utiliser/{code}`, `/api/bons-repas/{id}/pdf` | Bons repas |
 | GET/POST | `/api/factures`, `/api/factures/sejour/{id}`, `/api/factures/{id}/pdf` | Factures |
 | GET/POST | `/api/night-audit/apercu`, `/api/night-audit/cloturer`, `/api/night-audit/main-courante` | Night audit |
-| GET/POST | `/api/gouvernantes` | Gouvernantes (paramétrable) |
+| GET/POST | `/api/gouvernantes` | Gouvernantes (rôle GOUVERNANTE / FEMME_DE_CHAMBRE) |
 | GET/POST | `/api/housekeeping/etat-chambres`, `/api/housekeeping/{id}/etat-menage` | État des chambres |
-| GET/POST | `/api/housekeeping/planning-gouvernante` | Planning gouvernante (étage/type, départ/recouché/arrivée) |
+| GET | `/api/housekeeping/planning-gouvernante` | Planning gouvernante (par étage/type, départ/recouché/arrivée) |
+| GET | `/api/housekeeping/planning-occupation?date=` | Planning d'occupation **matriciel** (étages × chambres, situation unique, sans client) |
 | GET/POST | `/api/housekeeping/problemes`, `/api/housekeeping/problemes/{id}/statut` | Problèmes techniques |
 | GET | `/api/reports/ventes?from=&to=` | Rapport des ventes |
 

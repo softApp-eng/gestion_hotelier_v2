@@ -12,7 +12,7 @@ export class GestionGouvernantesComponent implements OnInit {
   pavillons: any[] = [];
 
   showForm = false;
-  form: any = { actif: true, pavillon: { id: null } };
+  form: any = { actif: true, pavillon: { id: null }, role: 'FEMME_DE_CHAMBRE' };
 
   constructor(private api: ApiService) {}
 
@@ -26,7 +26,7 @@ export class GestionGouvernantesComponent implements OnInit {
   }
 
   nouveau(): void {
-    this.form = { actif: true, pavillon: { id: this.pavillons[0] ? this.pavillons[0].id : null } };
+    this.form = { actif: true, role: 'FEMME_DE_CHAMBRE', pavillon: { id: this.pavillons[0] ? this.pavillons[0].id : null } };
     this.showForm = true;
   }
 

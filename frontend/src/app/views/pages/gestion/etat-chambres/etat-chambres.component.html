@@ -53,38 +53,59 @@
     <div class="col"><div class="card border-secondary"><div class="card-body py-2"><small class="text-secondary">Bloquée</small><div class="h5 mb-0">{{ compte('BLOQUEE') }}</div></div></div></div>
   </div>
 
-  <div class="row g-3">
-    <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let c of chambres">
-      <div class="card h-100">
-        <div class="card-header d-flex justify-content-between align-items-center py-2">
-          <b>{{ c.numero }}</b>
-          <span class="badge bg-{{ etatInfo(c.etatMenage).cls }}">{{ etatInfo(c.etatMenage).label }}</span>
+  <ng-container *ngFor="let pav of pavillonsAffiches()">
+    <div class="card mb-4">
+      <div class="card-header d-flex justify-content-between align-items-center py-2">
+        <div>
+          <b>PAVILLON {{ pav.pavillon }}</b>
+          <span class="badge bg-dark ms-2">{{ pav.nbChambres }} chambres</span>
         </div>
-        <div class="card-body py-2">
-          <div class="small text-muted">{{ c.typeChambre }} · étage {{ c.etage || '-' }} · {{ c.pavillon }}</div>
-          <div class="mt-1">
-            <span class="badge" [ngClass]="statutJourBadge(c.statutJour)">{{ c.statutJour || 'Libre' }}</span>
-            <span class="badge bg-light text-dark border ms-1" *ngIf="c.etat">{{ c.etat }}</span>
-            <span class="badge bg-danger ms-1" *ngIf="c.problemeOuvert"><i class="fa-solid fa-wrench me-1"></i>Panne</span>
-          </div>
-          <div class="small mt-1" *ngIf="c.occupant"><i class="fa-solid fa-user me-1"></i>{{ c.occupant }}</div>
-          <div class="small text-muted mt-1" *ngIf="c.verifiePar"><i class="fa-solid fa-check me-1"></i>Vérifié par {{ c.verifiePar }}</div>
-          <div class="mt-2">
-            <select class="form-select form-select-sm" [(ngModel)]="c.gouvernanteId" (change)="affecter(c)">
-              <option [ngValue]="null">— Femme de chambre —</option>
-              <option *ngFor="let g of gouvernantes" [ngValue]="g.id">{{ g.nom }} {{ g.prenom }}</option>
-            </select>
-          </div>
-        </div>
-        <div class="card-footer py-2 d-flex gap-1 flex-wrap">
-          <button class="btn btn-success btn-sm" (click)="setEtat(c,'CLEAN')" title="Clean">Clean</button>
-          <button class="btn btn-warning btn-sm" (click)="setEtat(c,'A_VERIFIER')" title="À vérifier">Vérifier</button>
-          <button class="btn btn-danger btn-sm" (click)="setEtat(c,'DIRTY')" title="Dirty">Dirty</button>
-          <button class="btn btn-secondary btn-sm" (click)="setEtat(c,'BLOQUEE')" title="Bloquée">Bloquée</button>
+        <div class="small"><i class="fa-solid fa-user-shield me-1"></i>Gouvernante : <b>{{ responsableNoms(pav) }}</b></div>
+      </div>
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-bordered mb-0 matrix-table">
+            <thead>
+              <tr>
+                <th class="etage-cell">Étage</th>
+                <th [attr.colspan]="colonnes(pav).length">Chambres — type · ménage · situation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let e of pav.etages">
+                <th class="etage-cell">Étage<br>{{ e.etage }}</th>
+                <td *ngFor="let c of e.chambres" class="room-cell" [ngClass]="menageCls(c.etatMenage)"
+                    (click)="ouvrirActions(c)" title="Cliquer pour changer l'état de ménage">
+                  <div class="room-num">{{ c.numero }}</div>
+                  <div class="room-type">{{ c.typeChambre }}</div>
+                  <div class="room-badges">
+                    <span class="badge" [ngClass]="'bg-' + etatInfo(c.etatMenage).cls">{{ etatInfo(c.etatMenage).label }}</span>
+                    <span class="badge bg-dark" *ngIf="c.occupe" title="Chambre occupée"><i class="fa-solid fa-bed"></i></span>
+                    <i class="fa-solid fa-wrench text-danger" *ngIf="c.problemeOuvert" title="Problème technique"></i>
+                  </div>
+                  <div class="room-situation" [ngClass]="sitCls(c.statutJour)" *ngIf="c.statutJour">{{ statutLabel(c.statutJour) }}</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+      <div class="card-footer py-2 small text-muted" *ngIf="pav.femmes && pav.femmes.length">
+        <i class="fa-solid fa-broom me-1"></i>Femmes de chambre : {{ femmesNoms(pav) }}
+      </div>
     </div>
-    <div class="col-12 text-center text-muted" *ngIf="!chambres.length">Aucune chambre.</div>
+  </ng-container>
+
+  <div class="text-center text-muted" *ngIf="!pavillonsAffiches().length">Aucune chambre à afficher.</div>
+
+  <div class="small text-muted mt-2">
+    <span class="badge bg-success me-1">Clean</span>
+    <span class="badge bg-warning text-dark me-1">À vérifier</span>
+    <span class="badge bg-danger me-1">Dirty</span>
+    <span class="badge bg-secondary me-3">Bloquée</span>
+    <span class="me-3"><span class="dot sit-recouche"></span> Recouché</span>
+    <span class="me-3"><span class="dot sit-depart"></span> Départ</span>
+    <span><span class="dot sit-arrivee"></span> Arrivée</span>
   </div>
 </div>
 
@@ -94,14 +115,14 @@
   <div class="card">
     <div class="card-body table-responsive">
       <table class="table table-hover align-middle">
-        <thead><tr><th>Chambre</th><th>Type</th><th>Situation</th><th>État ménage</th><th>Occupant</th><th style="width:250px">Femme de chambre</th><th>Action</th></tr></thead>
+        <thead><tr><th>Chambre</th><th>Type</th><th>Situation</th><th>État ménage</th><th>Chambre occupée</th><th style="width:250px">Femme de chambre</th><th>Action</th></tr></thead>
         <tbody>
           <tr *ngFor="let c of roomsAVerifier()">
             <td><b>{{ c.numero }}</b></td>
             <td>{{ c.typeChambre }}</td>
             <td><span class="badge" [ngClass]="statutJourBadge(c.statutJour)">{{ c.statutJour || 'Libre' }}</span></td>
             <td><span class="badge bg-{{ etatInfo(c.etatMenage).cls }}">{{ etatInfo(c.etatMenage).label }}</span></td>
-            <td>{{ c.occupant || '-' }}</td>
+            <td><span class="badge" [ngClass]="c.occupe ? 'bg-danger' : 'bg-light text-dark border'">{{ c.occupe ? 'Occupée' : 'Libre' }}</span></td>
             <td>
               <select class="form-select form-select-sm" [(ngModel)]="c.gouvernanteId" (change)="affecter(c)">
                 <option [ngValue]="null">— Sélectionner —</option>

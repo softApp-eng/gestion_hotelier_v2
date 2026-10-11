@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ChambreRepo extends JpaRepository<Chambre, Long> {
-    Optional<Chambre> findByNumero(String numero);
+    List<Chambre> findByNumero(String numero);
+    Optional<Chambre> findByPavillonIdAndNumero(Long pavillonId, String numero);
     List<Chambre> findByEtat(String etat);
     List<Chambre> findByTypeChambreId(Long typeChambreId);
     List<Chambre> findByPavillonId(Long pavillonId);

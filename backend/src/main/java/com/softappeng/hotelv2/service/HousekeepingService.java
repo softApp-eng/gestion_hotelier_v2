@@ -23,6 +23,7 @@ public class HousekeepingService {
     private final ChambreRepo chambreRepo;
     private final GouvernanteRepo gouvernanteRepo;
     private final ProblemeTechniqueRepo problemeRepo;
+    private final PavillonRepo pavillonRepo;
     private final SejourRepo sejourRepo;
     private final ReservationRepo reservationRepo;
 
@@ -33,7 +34,6 @@ public class HousekeepingService {
                                                   Long typeChambreId, String etatMenage) {
         LocalDate d = LocalDate.now();
         Map<Long, String> statuts = statutsJour(d);
-        Map<Long, String> occupants = occupantsJour(d);
         Set<Long> problemesOuverts = problemesOuvertsParChambre();
 
         List<Map<String, Object>> out = new ArrayList<>();
@@ -42,7 +42,7 @@ public class HousekeepingService {
             if (etage != null && !etage.isBlank() && !etage.equals(c.getEtage())) continue;
             if (typeChambreId != null && (c.getTypeChambre() == null || !typeChambreId.equals(c.getTypeChambre().getId()))) continue;
             if (etatMenage != null && !etatMenage.isBlank() && !etatMenage.equals(c.getEtatMenage())) continue;
-            out.add(dto(c, statuts.get(c.getId()), occupants.get(c.getId()), problemesOuverts.contains(c.getId())));
+            out.add(dto(c, statuts.get(c.getId()), problemesOuverts.contains(c.getId())));
         }
         return out;
     }
@@ -51,11 +51,10 @@ public class HousekeepingService {
     public Map<String, Object> planningGouvernante(LocalDate date) {
         LocalDate d = date == null ? LocalDate.now() : date;
         Map<Long, String> statuts = statutsJour(d);
-        Map<Long, String> occupants = occupantsJour(d);
         Set<Long> problemesOuverts = problemesOuvertsParChambre();
 
         List<Map<String, Object>> chambres = chambreRepo.findAllByOrderByNumeroAsc().stream()
-                .map(c -> dto(c, statuts.get(c.getId()), occupants.get(c.getId()), problemesOuverts.contains(c.getId())))
+                .map(c -> dto(c, statuts.get(c.getId()), problemesOuverts.contains(c.getId())))
                 .collect(Collectors.toList());
 
         // By floor
@@ -96,6 +95,89 @@ public class HousekeepingService {
         result.put("nbRecouche", chambres.stream().filter(r -> "RECOUCHE".equals(r.get("statutJour"))).count());
         result.put("nbArrivee", chambres.stream().filter(r -> "ARRIVEE".equals(r.get("statutJour"))).count());
         return result;
+    }
+
+    /**
+     * Occupancy planning matrix: per pavilion, per floor, the rooms of the floor
+     * (état ménage + situation du jour RECOUCHÉ / DÉPART / ARRIVÉE) — the printable
+     * board that mirrors the paper "Planning d'occupation".
+     */
+    public Map<String, Object> planningOccupation(LocalDate date) {
+        LocalDate d = date == null ? LocalDate.now() : date;
+        Map<Long, String> statuts = statutsJour(d);
+        Set<Long> problemesOuverts = problemesOuvertsParChambre();
+
+        long[] cpt = new long[]{0, 0, 0, 0}; // total, depart, recouche, arrivee
+        List<Map<String, Object>> pavillons = new ArrayList<>();
+
+        for (Pavillon pav : pavillonRepo.findAll()) {
+            List<Chambre> chambres = chambreRepo.findByPavillonId(pav.getId());
+
+            Map<String, List<Chambre>> byEtage = new TreeMap<>(etageOrder());
+            for (Chambre c : chambres) {
+                String et = (c.getEtage() == null || c.getEtage().isBlank()) ? "0" : c.getEtage();
+                byEtage.computeIfAbsent(et, k -> new ArrayList<>()).add(c);
+            }
+
+            List<Map<String, Object>> etages = new ArrayList<>();
+            for (Map.Entry<String, List<Chambre>> e : byEtage.entrySet()) {
+                List<Chambre> rooms = new ArrayList<>(e.getValue());
+                rooms.sort(Comparator.comparing(Chambre::getNumero));
+                List<Map<String, Object>> cells = new ArrayList<>();
+                for (Chambre c : rooms) {
+                    String statut = statuts.get(c.getId());
+                    cells.add(dto(c, statut, problemesOuverts.contains(c.getId())));
+                    cpt[0]++;
+                    if ("DEPART".equals(statut)) cpt[1]++;
+                    else if ("RECOUCHE".equals(statut)) cpt[2]++;
+                    else if ("ARRIVEE".equals(statut)) cpt[3]++;
+                }
+                Map<String, Object> g = new LinkedHashMap<>();
+                g.put("etage", e.getKey());
+                g.put("chambres", cells);
+                etages.add(g);
+            }
+
+            List<Map<String, Object>> responsables = new ArrayList<>();
+            List<Map<String, Object>> femmes = new ArrayList<>();
+            for (Gouvernante gv : gouvernanteRepo.findByPavillonIdOrderByNomAsc(pav.getId())) {
+                Map<String, Object> gm = new LinkedHashMap<>();
+                gm.put("id", gv.getId());
+                gm.put("nom", gv.getNomComplet());
+                gm.put("telephone", gv.getTelephone());
+                if ("GOUVERNANTE".equals(gv.getRole())) responsables.add(gm);
+                else femmes.add(gm);
+            }
+
+            Map<String, Object> p = new LinkedHashMap<>();
+            p.put("pavillonId", pav.getId());
+            p.put("code", pav.getCode());
+            p.put("pavillon", pav.getNom());
+            p.put("responsables", responsables);
+            p.put("femmes", femmes);
+            p.put("nbChambres", chambres.size());
+            p.put("etages", etages);
+            pavillons.add(p);
+        }
+
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("date", d.toString());
+        result.put("pavillons", pavillons);
+        result.put("nbChambres", cpt[0]);
+        result.put("nbDepart", cpt[1]);
+        result.put("nbRecouche", cpt[2]);
+        result.put("nbArrivee", cpt[3]);
+        return result;
+    }
+
+    private static Comparator<String> etageOrder() {
+        return (a, b) -> {
+            try {
+                return Integer.compare(Integer.parseInt(a), Integer.parseInt(b));
+            } catch (NumberFormatException ex) {
+                return a.compareTo(b);
+            }
+        };
     }
 
     // ------------------------------------------------- mutations
@@ -177,21 +259,6 @@ public class HousekeepingService {
         return statuts;
     }
 
-    private Map<Long, String> occupantsJour(LocalDate d) {
-        Map<Long, String> occ = new LinkedHashMap<>();
-        for (Sejour s : sejourRepo.findByStatut("EN_COURS")) {
-            if (s.getChambre() != null && s.getClient() != null) {
-                occ.put(s.getChambre().getId(), s.getClient().getNomComplet());
-            }
-        }
-        for (Reservation r : reservationRepo.findByDateArrivee(d)) {
-            if (r.getChambre() != null && r.getClient() != null) {
-                occ.putIfAbsent(r.getChambre().getId(), r.getClient().getNomComplet());
-            }
-        }
-        return occ;
-    }
-
     private Set<Long> problemesOuvertsParChambre() {
         return problemeRepo.findAll().stream()
                 .filter(p -> !"RESOLU".equals(p.getStatut()))
@@ -200,7 +267,7 @@ public class HousekeepingService {
                 .collect(Collectors.toSet());
     }
 
-    private Map<String, Object> dto(Chambre c, String statutJour, String occupant, boolean problemeOuvert) {
+    private Map<String, Object> dto(Chambre c, String statutJour, boolean problemeOuvert) {
         Map<String, Object> m = new LinkedHashMap<>();
         m.put("id", c.getId());
         m.put("numero", c.getNumero());
@@ -213,7 +280,9 @@ public class HousekeepingService {
         m.put("etatMenage", c.getEtatMenage());
         m.put("bloque", c.isBloque());
         m.put("statutJour", statutJour);
-        m.put("occupant", occupant);
+        // Housekeeping only: we never expose the client identity here, only whether the room is busy.
+        m.put("occupe", "OCCUPEE".equals(c.getEtat())
+                || "RECOUCHE".equals(statutJour) || "DEPART".equals(statutJour));
         m.put("gouvernante", c.getGouvernante() == null ? null
                 : (c.getGouvernante().getNom()
                     + (c.getGouvernante().getPrenom() != null ? " " + c.getGouvernante().getPrenom() : "")));

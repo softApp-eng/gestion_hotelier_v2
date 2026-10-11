@@ -1,0 +1,181 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">État des chambres (gouvernante)</h5>
+  <div>
+    <button class="btn btn-outline-secondary btn-sm me-2" (click)="imprimer()"><i class="fa-solid fa-print me-1"></i>Imprimer</button>
+    <button class="btn btn-primary btn-sm" (click)="nouveauProbleme()"><i class="fa-solid fa-triangle-exclamation me-1"></i>Signaler un problème</button>
+  </div>
+</div>
+
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item"><a class="nav-link" [class.active]="tab==='etat'" href="javascript:void(0)" (click)="tab='etat'">État des chambres</a></li>
+  <li class="nav-item"><a class="nav-link" [class.active]="tab==='verification'" href="javascript:void(0)" (click)="tab='verification'">Vérification quotidienne</a></li>
+  <li class="nav-item"><a class="nav-link" [class.active]="tab==='technique'" href="javascript:void(0)" (click)="tab='technique'; loadProblemes()">Problèmes techniques <span class="badge bg-danger ms-1" *ngIf="problemes.length">{{ problemes.length }}</span></a></li>
+</ul>
+
+<!-- ======================= TAB: ÉTAT DES CHAMBRES ======================= -->
+<div *ngIf="tab==='etat'">
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">Pavillon</label>
+          <select class="form-select" [(ngModel)]="filtres.pavillonId" (change)="load()">
+            <option [ngValue]="undefined">Tous</option>
+            <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Type de chambre</label>
+          <select class="form-select" [(ngModel)]="filtres.typeChambreId" (change)="load()">
+            <option [ngValue]="undefined">Tous</option>
+            <option *ngFor="let t of types" [ngValue]="t.id">{{ t.libelle }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">État de ménage</label>
+          <select class="form-select" [(ngModel)]="filtres.etatMenage" (change)="load()">
+            <option [ngValue]="undefined">Tous</option>
+            <option *ngFor="let e of etatsMenage" [value]="e.code">{{ e.label }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Étage</label>
+          <input class="form-control" [(ngModel)]="filtres.etage" (change)="load()" placeholder="ex : 1">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-2 mb-3">
+    <div class="col"><div class="card border-success"><div class="card-body py-2"><small class="text-success">Clean</small><div class="h5 mb-0">{{ compte('CLEAN') }}</div></div></div></div>
+    <div class="col"><div class="card border-warning"><div class="card-body py-2"><small class="text-warning">À vérifier</small><div class="h5 mb-0">{{ compte('A_VERIFIER') }}</div></div></div></div>
+    <div class="col"><div class="card border-danger"><div class="card-body py-2"><small class="text-danger">Dirty</small><div class="h5 mb-0">{{ compte('DIRTY') }}</div></div></div></div>
+    <div class="col"><div class="card border-secondary"><div class="card-body py-2"><small class="text-secondary">Bloquée</small><div class="h5 mb-0">{{ compte('BLOQUEE') }}</div></div></div></div>
+  </div>
+
+  <div class="row g-3">
+    <div class="col-lg-3 col-md-4 col-sm-6" *ngFor="let c of chambres">
+      <div class="card h-100">
+        <div class="card-header d-flex justify-content-between align-items-center py-2">
+          <b>{{ c.numero }}</b>
+          <span class="badge bg-{{ etatInfo(c.etatMenage).cls }}">{{ etatInfo(c.etatMenage).label }}</span>
+        </div>
+        <div class="card-body py-2">
+          <div class="small text-muted">{{ c.typeChambre }} · étage {{ c.etage || '-' }} · {{ c.pavillon }}</div>
+          <div class="mt-1">
+            <span class="badge" [ngClass]="statutJourBadge(c.statutJour)">{{ c.statutJour || 'Libre' }}</span>
+            <span class="badge bg-light text-dark border ms-1" *ngIf="c.etat">{{ c.etat }}</span>
+            <span class="badge bg-danger ms-1" *ngIf="c.problemeOuvert"><i class="fa-solid fa-wrench me-1"></i>Panne</span>
+          </div>
+          <div class="small mt-1" *ngIf="c.occupant"><i class="fa-solid fa-user me-1"></i>{{ c.occupant }}</div>
+          <div class="small text-muted mt-1" *ngIf="c.verifiePar"><i class="fa-solid fa-check me-1"></i>Vérifié par {{ c.verifiePar }}</div>
+          <div class="mt-2">
+            <select class="form-select form-select-sm" [(ngModel)]="c.gouvernanteId" (change)="affecter(c)">
+              <option [ngValue]="null">— Femme de chambre —</option>
+              <option *ngFor="let g of gouvernantes" [ngValue]="g.id">{{ g.nom }} {{ g.prenom }}</option>
+            </select>
+          </div>
+        </div>
+        <div class="card-footer py-2 d-flex gap-1 flex-wrap">
+          <button class="btn btn-success btn-sm" (click)="setEtat(c,'CLEAN')" title="Clean">Clean</button>
+          <button class="btn btn-warning btn-sm" (click)="setEtat(c,'A_VERIFIER')" title="À vérifier">Vérifier</button>
+          <button class="btn btn-danger btn-sm" (click)="setEtat(c,'DIRTY')" title="Dirty">Dirty</button>
+          <button class="btn btn-secondary btn-sm" (click)="setEtat(c,'BLOQUEE')" title="Bloquée">Bloquée</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 text-center text-muted" *ngIf="!chambres.length">Aucune chambre.</div>
+  </div>
+</div>
+
+<!-- ======================= TAB: VÉRIFICATION QUOTIDIENNE ======================= -->
+<div *ngIf="tab==='verification'">
+  <p class="text-muted">Chambres à nettoyer / vérifier aujourd'hui (départ, recouché, dirty). Saisissez la <b>femme de chambre</b> puis validez.</p>
+  <div class="card">
+    <div class="card-body table-responsive">
+      <table class="table table-hover align-middle">
+        <thead><tr><th>Chambre</th><th>Type</th><th>Situation</th><th>État ménage</th><th>Occupant</th><th style="width:250px">Femme de chambre</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let c of roomsAVerifier()">
+            <td><b>{{ c.numero }}</b></td>
+            <td>{{ c.typeChambre }}</td>
+            <td><span class="badge" [ngClass]="statutJourBadge(c.statutJour)">{{ c.statutJour || 'Libre' }}</span></td>
+            <td><span class="badge bg-{{ etatInfo(c.etatMenage).cls }}">{{ etatInfo(c.etatMenage).label }}</span></td>
+            <td>{{ c.occupant || '-' }}</td>
+            <td>
+              <select class="form-select form-select-sm" [(ngModel)]="c.gouvernanteId" (change)="affecter(c)">
+                <option [ngValue]="null">— Sélectionner —</option>
+                <option *ngFor="let g of gouvernantes" [ngValue]="g.id">{{ g.nom }} {{ g.prenom }}</option>
+              </select>
+            </td>
+            <td><button class="btn btn-success btn-sm" (click)="verifier(c)"><i class="fa-solid fa-check me-1"></i>Vérifier (Clean)</button></td>
+          </tr>
+          <tr *ngIf="!roomsAVerifier().length"><td colspan="7" class="text-center text-muted">Aucune chambre à vérifier.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= TAB: PROBLÈMES TECHNIQUES ======================= -->
+<div *ngIf="tab==='technique'">
+  <div class="card mb-3" *ngIf="showProblemeForm">
+    <div class="card-body">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-3">
+          <label class="form-label">Chambre</label>
+          <select class="form-select" [(ngModel)]="problemeForm.chambreId">
+            <option *ngFor="let c of chambres" [ngValue]="c.id">{{ c.numero }} — {{ c.typeChambre }}</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Priorité</label>
+          <select class="form-select" [(ngModel)]="problemeForm.priorite">
+            <option value="BASSE">Basse</option>
+            <option value="MOYENNE">Moyenne</option>
+            <option value="HAUTE">Haute</option>
+          </select>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Description</label>
+          <input class="form-control" [(ngModel)]="problemeForm.description" placeholder="ex : fuite d'eau salle de bain">
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-primary btn-sm me-1" (click)="saveProbleme()">Signaler</button>
+          <button class="btn btn-light btn-sm" (click)="showProblemeForm=false">Annuler</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mb-2">
+    <button class="btn btn-outline-secondary btn-sm me-1" (click)="problemeFilter=''; loadProblemes()">Tous</button>
+    <button class="btn btn-outline-danger btn-sm me-1" (click)="problemeFilter='SIGNALE'; loadProblemes()">Signalés</button>
+    <button class="btn btn-outline-warning btn-sm me-1" (click)="problemeFilter='EN_COURS'; loadProblemes()">En cours</button>
+    <button class="btn btn-outline-success btn-sm" (click)="problemeFilter='RESOLU'; loadProblemes()">Résolus</button>
+  </div>
+
+  <div class="card">
+    <div class="card-body table-responsive">
+      <table class="table table-hover align-middle">
+        <thead><tr><th>Chambre</th><th>Description</th><th>Priorité</th><th>Statut</th><th>Signalé par</th><th>Date</th><th>Actions</th></tr></thead>
+        <tbody>
+          <tr *ngFor="let p of problemes">
+            <td><b>{{ p.chambre?.numero }}</b></td>
+            <td>{{ p.description }}</td>
+            <td><span class="badge" [ngClass]="p.priorite==='HAUTE'?'bg-danger':(p.priorite==='MOYENNE'?'bg-warning text-dark':'bg-secondary')">{{ p.priorite }}</span></td>
+            <td><span class="badge" [ngClass]="p.statut==='RESOLU'?'bg-success':(p.statut==='EN_COURS'?'bg-warning text-dark':'bg-danger')">{{ p.statut }}</span></td>
+            <td>{{ p.signalePar }}</td>
+            <td>{{ p.dateSignalement | date:'dd/MM HH:mm' }}</td>
+            <td class="text-nowrap">
+              <button class="btn btn-outline-warning btn-sm me-1" *ngIf="p.statut==='SIGNALE'" (click)="prendreEnCharge(p)">En cours</button>
+              <button class="btn btn-outline-success btn-sm" *ngIf="p.statut!=='RESOLU'" (click)="resoudre(p)">Résoudre</button>
+              <span class="text-muted small" *ngIf="p.statut==='RESOLU'">{{ p.resolution }}</span>
+            </td>
+          </tr>
+          <tr *ngIf="!problemes.length"><td colspan="7" class="text-center text-muted">Aucun problème.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

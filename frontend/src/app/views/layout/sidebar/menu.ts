@@ -37,6 +37,14 @@ export const MENU: MenuItem[] = [
     ]
   },
   {
+    label: 'Gouvernante',
+    icon: 'fa-solid fa-broom',
+    subItems: [
+      { label: 'État des chambres', link: '/gestion/etat-chambres' },
+      { label: 'Planning gouvernante', link: '/gestion/planning-gouvernante' }
+    ]
+  },
+  {
     label: 'Réception & Encaissement',
     icon: 'fa-solid fa-wallet',
     subItems: [
@@ -78,7 +86,8 @@ export const MENU: MenuItem[] = [
       { label: 'Pavillons', link: '/gestion/config/pavillons' },
       { label: 'Catégories clients', link: '/gestion/config/categories-clients' },
       { label: 'Grille tarifaire', link: '/gestion/config/tarifs' },
-      { label: 'Organismes (PEC)', link: '/gestion/config/organismes' }
+      { label: 'Organismes (PEC)', link: '/gestion/config/organismes' },
+      { label: 'Gouvernantes', link: '/gestion/config/gouvernantes' }
     ]
   },
   {

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * Physical room. {@code etat} is one of:
@@ -51,4 +52,22 @@ public class Chambre {
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate blocageFin;
+
+    /**
+     * Housekeeping state: CLEAN, A_VERIFIER, DIRTY, BLOQUEE.
+     * Kept separate from {@code etat} (availability) used by the planning.
+     */
+    private String etatMenage = "A_VERIFIER";
+
+    /** Housekeeper who cleaned / verified the room. */
+    @ManyToOne
+    @JoinColumn(name = "gouvernante_id")
+    private Gouvernante gouvernante;
+
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    private LocalDateTime dateVerification;
+
+    private String verifiePar;
+
+    private String observationMenage;
 }

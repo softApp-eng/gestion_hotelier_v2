@@ -40,6 +40,8 @@ public class DataSeeder implements CommandLineRunner {
     private final CompteClientRepo compteClientRepo;
     private final PrestationRepo prestationRepo;
     private final BonRepasRepo bonRepasRepo;
+    private final GouvernanteRepo gouvernanteRepo;
+    private final ProblemeTechniqueRepo problemeRepo;
 
     @Override
     public void run(String... args) {
@@ -58,6 +60,7 @@ public class DataSeeder implements CommandLineRunner {
         seedTarifs();
         seedReservations();
         seedSejours();
+        seedHousekeeping();
     }
 
     private void seedUsers() {
@@ -380,5 +383,54 @@ public class DataSeeder implements CommandLineRunner {
 
         cpt.setTotal(s.getTarifNuitee() * 2 + 1600);
         compteClientRepo.save(cpt);
+    }
+
+    /** Housekeeping: gouvernantes, room cleaning states and a technical problem. */
+    private void seedHousekeeping() {
+        List<Pavillon> pavs = pavillonRepo.findAll();
+        Pavillon p1 = pavs.isEmpty() ? null : pavs.get(0);
+        Pavillon p2 = pavs.size() > 1 ? pavs.get(1) : p1;
+
+        Gouvernante g1 = gouvernante("Bensalem", "Amina", "0555 11 22 33", p1);
+        Gouvernante g2 = gouvernante("Cherif", "Fatima", "0555 44 55 66", p1);
+        Gouvernante g3 = gouvernante("Hamdi", "Nadia", "0555 77 88 99", p2);
+        gouvernanteRepo.saveAll(List.of(g1, g2, g3));
+
+        List<Chambre> chambres = chambreRepo.findAllByOrderByNumeroAsc();
+        String[] etats = {"CLEAN", "A_VERIFIER", "DIRTY"};
+        int i = 0;
+        for (Chambre c : chambres) {
+            c.setGouvernante(i % 2 == 0 ? g1 : g2);
+            String etat = "BLOQUEE".equals(c.getEtat()) ? "BLOQUEE" : etats[i % 3];
+            c.setEtatMenage(etat);
+            if ("CLEAN".equals(etat)) {
+                c.setDateVerification(LocalDateTime.now().minusHours(2));
+                c.setVerifiePar("reception");
+            }
+            chambreRepo.save(c);
+            i++;
+        }
+
+        if (!chambres.isEmpty()) {
+            Chambre cible = chambres.size() > 4 ? chambres.get(4) : chambres.get(0);
+            ProblemeTechnique pt = new ProblemeTechnique();
+            pt.setChambre(cible);
+            pt.setDescription("Climatisation ne refroidit pas");
+            pt.setPriorite("HAUTE");
+            pt.setStatut("SIGNALE");
+            pt.setSignalePar("reception");
+            pt.setDateSignalement(LocalDateTime.now().minusHours(1));
+            problemeRepo.save(pt);
+        }
+    }
+
+    private Gouvernante gouvernante(String nom, String prenom, String tel, Pavillon p) {
+        Gouvernante g = new Gouvernante();
+        g.setNom(nom);
+        g.setPrenom(prenom);
+        g.setTelephone(tel);
+        g.setPavillon(p);
+        g.setActif(true);
+        return g;
     }
 }

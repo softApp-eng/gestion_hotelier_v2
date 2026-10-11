@@ -1,0 +1,75 @@
+<div class="d-flex align-items-center justify-content-between mb-3">
+  <h5 class="mb-0">Gouvernantes / Femmes de chambre</h5>
+  <button class="btn btn-primary btn-sm" (click)="nouveau()"><i class="fa-solid fa-plus me-1"></i>Nouvelle gouvernante</button>
+</div>
+
+<div class="card">
+  <div class="card-body table-responsive">
+    <table class="table table-hover align-middle">
+      <thead><tr><th>Nom</th><th>Prénom</th><th>Téléphone</th><th>Pavillon</th><th>Statut</th><th style="width:160px">Actions</th></tr></thead>
+      <tbody>
+        <tr *ngFor="let g of gouvernantes">
+          <td><b>{{ g.nom }}</b></td>
+          <td>{{ g.prenom }}</td>
+          <td>{{ g.telephone }}</td>
+          <td>{{ g.pavillon?.nom || 'Tous' }}</td>
+          <td><span class="badge" [ngClass]="g.actif ? 'bg-success' : 'bg-secondary'">{{ g.actif ? 'Actif' : 'Inactif' }}</span></td>
+          <td>
+            <button class="btn btn-outline-primary btn-sm me-1" (click)="edit(g)"><i class="fa-solid fa-pen"></i></button>
+            <button class="btn btn-outline-danger btn-sm" (click)="remove(g)"><i class="fa-solid fa-trash"></i></button>
+          </td>
+        </tr>
+        <tr *ngIf="!gouvernantes.length"><td colspan="6" class="text-center text-muted">Aucune gouvernante.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showForm" style="background: rgba(0,0,0,.5)">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">{{ form.id ? 'Modifier' : 'Nouvelle' }} gouvernante</h5>
+        <button type="button" class="btn-close" (click)="showForm=false"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label">Nom <span class="text-danger">*</span></label>
+            <input class="form-control" [(ngModel)]="form.nom" placeholder="Nom de famille">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Prénom</label>
+            <input class="form-control" [(ngModel)]="form.prenom">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Téléphone</label>
+            <input class="form-control" [(ngModel)]="form.telephone">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Pavillon affecté</label>
+            <select class="form-select" [(ngModel)]="form.pavillon.id">
+              <option [ngValue]="null">Tous les pavillons</option>
+              <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
+            </select>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Observation</label>
+            <input class="form-control" [(ngModel)]="form.observation">
+          </div>
+          <div class="col-12">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="gactif" [(ngModel)]="form.actif">
+              <label class="form-check-label" for="gactif">Active</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-light" (click)="showForm=false">Annuler</button>
+        <button class="btn btn-primary" (click)="save()">Enregistrer</button>
+      </div>
+    </div>
+  </div>
+</div>

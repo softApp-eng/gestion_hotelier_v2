@@ -1,57 +1,27 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
-  <h5 class="mb-0">Chambres</h5>
+  <div>
+    <h5 class="mb-0">Chambres</h5>
+    <small class="text-muted">{{ chambres.length }} chambre(s) — gestion hôtelière</small>
+  </div>
   <button class="btn btn-primary btn-sm" (click)="newRoom()"><i class="fa-solid fa-plus me-1"></i>Nouvelle chambre</button>
 </div>
 
-<!-- Add/Edit form -->
-<div class="card mb-3" *ngIf="showForm">
-  <div class="card-header"><b>{{ form.id ? 'Modifier' : 'Nouvelle' }} chambre</b></div>
-  <div class="card-body">
-    <div class="row g-2">
-      <div class="col-md-2"><label class="form-label">N°</label><input class="form-control" [(ngModel)]="form.numero"></div>
-      <div class="col-md-1"><label class="form-label">Étage</label><input class="form-control" [(ngModel)]="form.etage"></div>
-      <div class="col-md-3">
-        <label class="form-label">Type</label>
-        <select class="form-select" [(ngModel)]="form.typeChambre.id" (ngModelChange)="onTypeChange()">
-          <option *ngFor="let t of types" [value]="t.id">{{ t.libelle }}</option>
-        </select>
-      </div>
-      <div class="col-md-2">
-        <label class="form-label">Pavillon</label>
-        <select class="form-select" [(ngModel)]="form.pavillon.id">
-          <option *ngFor="let p of pavillons" [value]="p.id">{{ p.nom }}</option>
-        </select>
-      </div>
-      <div class="col-md-2"><label class="form-label">Prix / nuit</label><input type="number" class="form-control" [(ngModel)]="form.prix"></div>
-      <div class="col-md-2">
-        <label class="form-label">État</label>
-        <select class="form-select" [(ngModel)]="form.etat">
-          <option>LIBRE</option><option>OCCUPEE</option><option>NETTOYAGE</option><option>HORS_SERVICE</option>
-        </select>
-      </div>
-    </div>
-    <div class="row g-2 mt-1">
-      <div class="col-md-2 d-flex align-items-end">
-        <div class="form-check"><input class="form-check-input" type="checkbox" id="blk" [(ngModel)]="form.bloque"><label class="form-check-label" for="blk">Chambre bloquée</label></div>
-      </div>
-      <div class="col-md-4" *ngIf="form.bloque"><label class="form-label">Motif</label><input class="form-control" [(ngModel)]="form.motifBlocage"></div>
-      <div class="col-md-3" *ngIf="form.bloque"><label class="form-label">Du</label><input type="date" class="form-control" [(ngModel)]="form.blocageDebut"></div>
-      <div class="col-md-3" *ngIf="form.bloque"><label class="form-label">Au</label><input type="date" class="form-control" [(ngModel)]="form.blocageFin"></div>
-    </div>
-    <div class="mt-3">
-      <button class="btn btn-primary btn-sm me-2" (click)="save()">Enregistrer</button>
-      <button class="btn btn-light btn-sm" (click)="showForm=false">Annuler</button>
-    </div>
-  </div>
-</div>
-
-<!-- List -->
+<!-- ==================== LISTE ==================== -->
 <div class="card mb-3">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <b>Liste des chambres</b>
+    <input class="form-control form-control-sm" style="max-width:220px" placeholder="Rechercher un n°…" [(ngModel)]="recherche">
+  </div>
   <div class="card-body table-responsive">
     <table class="table table-hover align-middle">
-      <thead><tr><th>N°</th><th>Type</th><th>Pavillon</th><th>Étage</th><th>Prix</th><th>État</th><th style="width:230px;">Actions</th></tr></thead>
+      <thead>
+        <tr>
+          <th>N°</th><th>Type</th><th>Pavillon</th><th>Étage</th><th>Prix / nuit</th>
+          <th>Disponibilité</th><th>Ménage</th><th>Gouvernante</th><th style="width:260px">Actions</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr *ngFor="let c of chambres">
+        <tr *ngFor="let c of chambresFiltrees()">
           <td><b>{{ c.numero }}</b></td>
           <td>{{ c.typeChambre?.libelle || '-' }}</td>
           <td>{{ c.pavillon?.nom || '-' }}</td>
@@ -61,20 +31,26 @@
             <span class="badge" [ngClass]="etatBadge(c.etat)">{{ c.etat }}</span>
             <span class="badge bg-secondary ms-1" *ngIf="c.bloque" title="{{ c.motifBlocage }}">Bloquée</span>
           </td>
-          <td>
-            <button class="btn btn-xs btn-outline-secondary btn-sm me-1" title="Libre" (click)="setEtat(c,'LIBRE')">Libre</button>
-            <button class="btn btn-outline-warning btn-sm me-1" title="Nettoyage" (click)="setEtat(c,'NETTOYAGE')">Nett.</button>
+          <td><span class="badge" [ngClass]="menageBadge(c.etatMenage)">{{ c.etatMenage }}</span></td>
+          <td>{{ c.gouvernante ? (c.gouvernante.nom + ' ' + (c.gouvernante.prenom || '')) : '-' }}</td>
+          <td class="text-nowrap">
+            <div class="btn-group btn-group-sm me-1" role="group">
+              <button class="btn btn-outline-success" title="Clean" (click)="setEtatMenage(c,'CLEAN')">C</button>
+              <button class="btn btn-outline-warning" title="À vérifier" (click)="setEtatMenage(c,'A_VERIFIER')">V</button>
+              <button class="btn btn-outline-danger" title="Dirty" (click)="setEtatMenage(c,'DIRTY')">D</button>
+              <button class="btn btn-outline-secondary" title="Bloquée" (click)="setEtatMenage(c,'BLOQUEE')">B</button>
+            </div>
             <button class="btn btn-outline-primary btn-sm me-1" (click)="edit(c)"><i class="fa-solid fa-pen"></i></button>
             <button class="btn btn-outline-danger btn-sm" (click)="remove(c)"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
-        <tr *ngIf="!chambres.length"><td colspan="7" class="text-center text-muted">Aucune chambre.</td></tr>
+        <tr *ngIf="!chambresFiltrees().length"><td colspan="9" class="text-center text-muted">Aucune chambre.</td></tr>
       </tbody>
     </table>
   </div>
 </div>
 
-<!-- Types -->
+<!-- ==================== TYPES ==================== -->
 <div class="card">
   <div class="card-header"><b>Types de chambre</b></div>
   <div class="card-body">
@@ -89,6 +65,102 @@
       <div class="col-md-2"><input type="number" class="form-control" placeholder="Prix base" [(ngModel)]="typeForm.prixBase"></div>
       <div class="col-md-3"><input class="form-control" placeholder="Description" [(ngModel)]="typeForm.description"></div>
       <div class="col-md-2"><button class="btn btn-outline-primary w-100" (click)="saveType()">Ajouter</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MODAL INSERTION CHAMBRE ==================== -->
+<div class="modal fade show d-block" tabindex="-1" *ngIf="showForm" style="background: rgba(0,0,0,.5)">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="fa-solid fa-bed me-2"></i>{{ form.id ? 'Modifier la chambre' : 'Nouvelle chambre' }}</h5>
+        <button type="button" class="btn-close" (click)="showForm=false"></button>
+      </div>
+      <div class="modal-body">
+
+        <h6 class="text-uppercase text-muted small mb-2">Identification</h6>
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">N° de chambre <span class="text-danger">*</span></label>
+            <input class="form-control" [(ngModel)]="form.numero" placeholder="101">
+          </div>
+          <div class="col-md-2">
+            <label class="form-label">Étage</label>
+            <input class="form-control" [(ngModel)]="form.etage" placeholder="1">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Pavillon</label>
+            <select class="form-select" [(ngModel)]="form.pavillon.id">
+              <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Type de chambre</label>
+            <select class="form-select" [(ngModel)]="form.typeChambre.id" (ngModelChange)="onTypeChange()">
+              <option *ngFor="let t of types" [ngValue]="t.id">{{ t.libelle }}</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">Prix / nuit (DA)</label>
+            <input type="number" class="form-control" [(ngModel)]="form.prix">
+          </div>
+        </div>
+
+        <hr class="my-3">
+        <h6 class="text-uppercase text-muted small mb-2">État & housekeeping</h6>
+        <div class="row g-3">
+          <div class="col-md-3">
+            <label class="form-label">Disponibilité</label>
+            <select class="form-select" [(ngModel)]="form.etat">
+              <option *ngFor="let e of etats" [value]="e">{{ e }}</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">État de ménage</label>
+            <select class="form-select" [(ngModel)]="form.etatMenage">
+              <option *ngFor="let e of etatsMenage" [value]="e.code">{{ e.label }}</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Femme de chambre / Gouvernante</label>
+            <select class="form-select" [(ngModel)]="form.gouvernante.id">
+              <option [ngValue]="null">— Non affectée —</option>
+              <option *ngFor="let g of gouvernantes" [ngValue]="g.id">{{ g.nom }} {{ g.prenom }}</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="my-3">
+        <h6 class="text-uppercase text-muted small mb-2">Blocage éventuel</h6>
+        <div class="row g-3">
+          <div class="col-md-3 d-flex align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" id="blk" [(ngModel)]="form.bloque">
+              <label class="form-check-label" for="blk">Chambre bloquée</label>
+            </div>
+          </div>
+          <ng-container *ngIf="form.bloque">
+            <div class="col-md-4">
+              <label class="form-label">Motif</label>
+              <input class="form-control" [(ngModel)]="form.motifBlocage" placeholder="Travaux, maintenance…">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Du</label>
+              <input type="date" class="form-control" [(ngModel)]="form.blocageDebut">
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Au</label>
+              <input type="date" class="form-control" [(ngModel)]="form.blocageFin">
+            </div>
+          </ng-container>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-light" (click)="showForm=false">Annuler</button>
+        <button class="btn btn-primary" (click)="save()"><i class="fa-solid fa-floppy-disk me-1"></i>Enregistrer</button>
+      </div>
     </div>
   </div>
 </div>

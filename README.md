@@ -94,7 +94,20 @@ Ouvrez **http://localhost:4200**.
 | **Facturation** | Au check-out : **Espèces / TPE → 1 facture globale** ; **Prise en charge → 3 factures** (hébergement + subsistance + globale récapitulative). Impression **HTML + PDF**. Génération idempotente |
 | **Night audit** | Aperçu du jour : **rapport d'encaissement** (par mode), **taux d'occupation**, arrivées/départs/en cours, **main courante** (journal des mouvements), **clôture** de journée. **Imprimable** |
 
-> **À venir (Étape 3)** : housekeeping (**état des chambres** : Clean / À vérifier / Dirty / Bloquée, **problèmes techniques**, **vérification quotidienne** avec gouvernante, **planning gouvernante** par étage & type avec Départ / Recouché / Arrivée, imprimable).
+> **À venir (Étape 4)** : gouvernante — à définir ensemble.
+
+---
+
+## 🧹 Module Hôtel — Étape 3 (housekeeping / gouvernante)
+
+| Fonction | Détail |
+|---|---|
+| **État des chambres** | Tableau de bord ménage par chambre : **Clean / À vérifier / Dirty / Bloquée**, séparé de la *disponibilité* (Libre / Occupée / Réservée / Bloquée). Filtres pavillon / type / étage / état. Impression |
+| **Vérification quotidienne** | Onglet listant les chambres à nettoyer/vérifier du jour (départ, recouché, dirty) avec **affectation de la femme de chambre** puis validation (→ Clean) |
+| **Problèmes techniques** | Onglet de signalement/traitement des pannes : chambre, description, priorité (basse/moyenne/haute), statut (signalé → en cours → résolu) |
+| **Planning gouvernante** | Vue des chambres **par étage** *et* **par type de chambre**, avec situation **Départ / Recouché / Arrivée** (calculée automatiquement depuis séjours & réservations), occupant et gouvernante — **imprimable** |
+| **Gouvernantes** | Liste paramétrable (nom, prénom, téléphone, pavillon, actif) dans Configuration |
+| **Ajout de chambre** | **Modal d'insertion** professionnel : identification, état de ménage, gouvernante affectée, blocage (période + motif) |
 
 ---
 
@@ -121,6 +134,10 @@ Ouvrez **http://localhost:4200**.
 | GET/POST | `/api/bons-repas`, `/api/bons-repas/utiliser/{code}`, `/api/bons-repas/{id}/pdf` | Bons repas |
 | GET/POST | `/api/factures`, `/api/factures/sejour/{id}`, `/api/factures/{id}/pdf` | Factures |
 | GET/POST | `/api/night-audit/apercu`, `/api/night-audit/cloturer`, `/api/night-audit/main-courante` | Night audit |
+| GET/POST | `/api/gouvernantes` | Gouvernantes (paramétrable) |
+| GET/POST | `/api/housekeeping/etat-chambres`, `/api/housekeeping/{id}/etat-menage` | État des chambres |
+| GET/POST | `/api/housekeeping/planning-gouvernante` | Planning gouvernante (étage/type, départ/recouché/arrivée) |
+| GET/POST | `/api/housekeeping/problemes`, `/api/housekeeping/problemes/{id}/statut` | Problèmes techniques |
 | GET | `/api/reports/ventes?from=&to=` | Rapport des ventes |
 
 ---

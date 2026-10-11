@@ -249,4 +249,53 @@ export class ApiService {
     return this.http.get(`${this.base}/night-audit/main-courante`, { params });
   }
   derniereCloture(): Observable<any> { return this.http.get(`${this.base}/night-audit/derniere`); }
+
+  // ------------------------------------------------------------- GOUVERNANTES
+  gouvernantes(actifs?: boolean, pavillonId?: number): Observable<any> {
+    let params = new HttpParams();
+    if (actifs) params = params.set('actifs', 'true');
+    if (pavillonId) params = params.set('pavillonId', pavillonId);
+    return this.http.get(`${this.base}/gouvernantes`, { params });
+  }
+  saveGouvernante(g: any): Observable<any> { return this.http.post(`${this.base}/gouvernantes`, g); }
+  deleteGouvernante(id: number): Observable<any> { return this.http.delete(`${this.base}/gouvernantes/${id}`); }
+
+  // -------------------------------------------------------- HOUSEKEEPING
+  etatChambres(filtres?: { pavillonId?: number; etage?: string; typeChambreId?: number; etatMenage?: string }): Observable<any> {
+    let params = new HttpParams();
+    if (filtres) {
+      if (filtres.pavillonId) params = params.set('pavillonId', filtres.pavillonId);
+      if (filtres.etage) params = params.set('etage', filtres.etage);
+      if (filtres.typeChambreId) params = params.set('typeChambreId', filtres.typeChambreId);
+      if (filtres.etatMenage) params = params.set('etatMenage', filtres.etatMenage);
+    }
+    return this.http.get(`${this.base}/housekeeping/etat-chambres`, { params });
+  }
+  changerEtatMenage(chambreId: number, etatMenage: string, gouvernanteId?: number, observation?: string): Observable<any> {
+    let params = new HttpParams().set('etatMenage', etatMenage);
+    if (gouvernanteId) params = params.set('gouvernanteId', gouvernanteId);
+    if (observation) params = params.set('observation', observation);
+    return this.http.post(`${this.base}/housekeeping/${chambreId}/etat-menage`, {}, { params });
+  }
+  affecterGouvernante(chambreId: number, gouvernanteId?: number): Observable<any> {
+    let params = new HttpParams();
+    if (gouvernanteId) params = params.set('gouvernanteId', gouvernanteId);
+    return this.http.post(`${this.base}/housekeeping/${chambreId}/gouvernante`, {}, { params });
+  }
+  problemes(statut?: string): Observable<any> {
+    let params = new HttpParams();
+    if (statut) params = params.set('statut', statut);
+    return this.http.get(`${this.base}/housekeeping/problemes`, { params });
+  }
+  signalerProbleme(body: any): Observable<any> { return this.http.post(`${this.base}/housekeeping/problemes`, body); }
+  changerStatutProbleme(id: number, statut: string, resolution?: string): Observable<any> {
+    let params = new HttpParams().set('statut', statut);
+    if (resolution) params = params.set('resolution', resolution);
+    return this.http.post(`${this.base}/housekeeping/problemes/${id}/statut`, {}, { params });
+  }
+  planningGouvernante(date?: string): Observable<any> {
+    let params = new HttpParams();
+    if (date) params = params.set('date', date);
+    return this.http.get(`${this.base}/housekeeping/planning-gouvernante`, { params });
+  }
 }

@@ -11,10 +11,20 @@ export class GestionChambresComponent implements OnInit {
   chambres: any[] = [];
   types: any[] = [];
   pavillons: any[] = [];
+  gouvernantes: any[] = [];
   loading = false;
+  recherche = '';
+
+  etats = ['LIBRE', 'OCCUPEE', 'NETTOYAGE', 'HORS_SERVICE'];
+  etatsMenage = [
+    { code: 'CLEAN', label: 'Clean' },
+    { code: 'A_VERIFIER', label: 'À vérifier' },
+    { code: 'DIRTY', label: 'Dirty' },
+    { code: 'BLOQUEE', label: 'Bloquée' }
+  ];
 
   showForm = false;
-  form: any = { etat: 'LIBRE' };
+  form: any = { etat: 'LIBRE', etatMenage: 'A_VERIFIER' };
   typeForm: any = { capacite: 2 };
 
   constructor(private api: ApiService) {}
@@ -23,6 +33,7 @@ export class GestionChambresComponent implements OnInit {
     this.load();
     this.loadTypes();
     this.api.pavillons().subscribe(d => this.pavillons = d);
+    this.api.gouvernantes().subscribe(d => this.gouvernantes = d);
   }
 
   load(): void {
@@ -37,16 +48,30 @@ export class GestionChambresComponent implements OnInit {
     this.api.typesChambre().subscribe({ next: (d) => this.types = d });
   }
 
+  chambresFiltrees(): any[] {
+    if (!this.recherche) return this.chambres;
+    const q = this.recherche.toLowerCase();
+    return this.chambres.filter(c => (c.numero || '').toLowerCase().includes(q));
+  }
+
   newRoom(): void {
-    this.form = { etat: 'LIBRE', typeChambre: { id: this.types[0]?.id }, pavillon: { id: this.pavillons[0]?.id } };
+    this.form = {
+      etat: 'LIBRE',
+      etatMenage: 'A_VERIFIER',
+      bloque: false,
+      typeChambre: { id: this.types[0] ? this.types[0].id : null },
+      pavillon: { id: this.pavillons[0] ? this.pavillons[0].id : null },
+      gouvernante: { id: null }
+    };
     this.showForm = true;
   }
 
   edit(c: any): void {
     this.form = {
       ...c,
-      typeChambre: c.typeChambre ? { id: c.typeChambre.id } : null,
-      pavillon: c.pavillon ? { id: c.pavillon.id } : null
+      typeChambre: c.typeChambre ? { id: c.typeChambre.id } : { id: null },
+      pavillon: c.pavillon ? { id: c.pavillon.id } : { id: null },
+      gouvernante: c.gouvernante ? { id: c.gouvernante.id } : { id: null }
     };
     this.showForm = true;
   }
@@ -57,9 +82,13 @@ export class GestionChambresComponent implements OnInit {
   }
 
   save(): void {
+    if (!this.form.numero) {
+      Swal.fire('Numéro requis', 'Saisissez le numéro de la chambre.', 'warning');
+      return;
+    }
     this.api.saveChambre(this.form).subscribe({
       next: () => {
-        Swal.fire({ icon: 'success', title: 'Enregistré', timer: 1200, showConfirmButton: false });
+        Swal.fire({ icon: 'success', title: 'Chambre enregistrée', timer: 1200, showConfirmButton: false });
         this.showForm = false;
         this.load();
       },
@@ -69,6 +98,10 @@ export class GestionChambresComponent implements OnInit {
 
   setEtat(c: any, etat: string): void {
     this.api.changeEtatChambre(c.id, etat).subscribe({ next: () => this.load() });
+  }
+
+  setEtatMenage(c: any, etat: string): void {
+    this.api.changerEtatMenage(c.id, etat, c.gouvernante ? c.gouvernante.id : null).subscribe({ next: () => this.load() });
   }
 
   remove(c: any): void {
@@ -92,8 +125,19 @@ export class GestionChambresComponent implements OnInit {
     switch (etat) {
       case 'LIBRE': return 'bg-success';
       case 'OCCUPEE': return 'bg-danger';
-      case 'NETTOYAGE': return 'bg-warning';
+      case 'NETTOYAGE': return 'bg-warning text-dark';
+      case 'HORS_SERVICE': return 'bg-dark';
       default: return 'bg-secondary';
+    }
+  }
+
+  menageBadge(etat: string): string {
+    switch (etat) {
+      case 'CLEAN': return 'bg-success';
+      case 'A_VERIFIER': return 'bg-warning text-dark';
+      case 'DIRTY': return 'bg-danger';
+      case 'BLOQUEE': return 'bg-secondary';
+      default: return 'bg-light text-dark';
     }
   }
 }

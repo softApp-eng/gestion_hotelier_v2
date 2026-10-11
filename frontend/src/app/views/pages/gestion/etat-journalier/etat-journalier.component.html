@@ -19,13 +19,21 @@
       <div class="col-md-3">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>Mois</mat-label>
-          <input matInput type="month" [(ngModel)]="mois" (ngModelChange)="load()">
+          <input matInput readonly [value]="moisLabel()" [matMenuTriggerFor]="moisMenu" #moisTrigger="matMenuTrigger" placeholder="MM/AAAA">
+          <i class="fa-solid fa-calendar-days" matSuffix style="cursor:pointer;"></i>
         </mat-form-field>
+        <mat-menu #moisMenu="matMenu" class="mois-menu-panel">
+          <mat-calendar [startAt]="moisStartAt()" startView="year" (monthSelected)="onMoisChoisi($event)"></mat-calendar>
+        </mat-menu>
       </div>
       <div class="col-md-3">
         <mat-form-field appearance="outline" class="w-100">
           <mat-label>État statistique du</mat-label>
-          <input matInput type="date" [(ngModel)]="refDate" (ngModelChange)="load()">
+          <input matInput [matDatepicker]="refPicker" [ngModel]="refDateObj" (ngModelChange)="onRefDateChoisie($event)" placeholder="JJ/MM/AAAA">
+          <mat-datepicker-toggle matSuffix [for]="refPicker" aria-label="Choisir une date">
+            <i class="fa-solid fa-calendar-days" matDatepickerToggleIcon></i>
+          </mat-datepicker-toggle>
+          <mat-datepicker #refPicker></mat-datepicker>
         </mat-form-field>
       </div>
       <div class="col-md-6 text-md-end">

@@ -13,6 +13,7 @@ import { ErrorPageComponent } from './views/pages/error-page/error-page.componen
 import { HIGHLIGHT_OPTIONS } from 'ngx-highlightjs';
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 @NgModule({
@@ -30,6 +31,8 @@ import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
   ],
   providers: [
     AuthGuard,
+    // Locale française pour les sélecteurs de date Angular Material
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' },
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     // {
     //   provide: HIGHLIGHT_OPTIONS, // https://www.npmjs.com/package/ngx-highlightjs

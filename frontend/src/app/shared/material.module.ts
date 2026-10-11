@@ -12,6 +12,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatMenuModule } from '@angular/material/menu';
 
 /**
  * Regroupe les modules Angular Material utilisés pour les champs de formulaire
@@ -28,7 +29,8 @@ const MODULES = [
   MatSlideToggleModule,
   MatButtonModule,
   MatIconModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatMenuModule
 ];
 
 @NgModule({

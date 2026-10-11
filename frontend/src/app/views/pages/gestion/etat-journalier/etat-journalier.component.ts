@@ -1,4 +1,5 @@
-import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatMenuTrigger } from '@angular/material/menu';
 import Swal from 'sweetalert2';
 import { ApiService } from 'src/app/core/services/api.service';
 import { PrintService } from 'src/app/core/services/print.service';
@@ -55,7 +56,12 @@ export class EtatJournalierComponent implements OnInit, OnDestroy {
   planning: any = null;
   mois = '';
   refDate = '';
+  /** Date (objet) liée au sélecteur Material « État statistique du ». */
+  refDateObj: Date | null = null;
   loading = false;
+
+  /** Déclencheur du menu contenant le calendrier de choix du mois. */
+  @ViewChild('moisTrigger') moisTrigger: MatMenuTrigger;
 
   /** Échelle (zoom) : 1 = 34 px par carré-jour. */
   zoom = 1;
@@ -78,6 +84,7 @@ export class EtatJournalierComponent implements OnInit, OnDestroy {
     const n = new Date();
     this.mois = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0');
     this.refDate = this.iso(n);
+    this.refDateObj = n;
     this.load();
   }
 
@@ -102,6 +109,7 @@ export class EtatJournalierComponent implements OnInit, OnDestroy {
     const n = new Date();
     this.mois = n.getFullYear() + '-' + String(n.getMonth() + 1).padStart(2, '0');
     this.refDate = this.iso(n);
+    this.refDateObj = n;
     this.load();
   }
 
@@ -109,6 +117,38 @@ export class EtatJournalierComponent implements OnInit, OnDestroy {
     const p = (mois || '').split('-');
     const d = new Date(Number(p[0]), Number(p[1]) - 1 + delta, 1);
     return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+  }
+
+  // ---------------------------------------- sélecteurs Material (mois / date)
+  /** Libellé « MM/AAAA » affiché dans le champ Material du mois. */
+  moisLabel(): string {
+    if (!this.mois) return '';
+    const p = this.mois.split('-');
+    return p[1] + '/' + p[0];
+  }
+
+  /** Mois positionné dans le calendrier de choix du mois. */
+  moisStartAt(): Date {
+    const n = new Date();
+    if (!this.mois) return n;
+    const p = this.mois.split('-').map(Number);
+    return new Date(p[0], (p[1] || 1) - 1, 1);
+  }
+
+  /** Sélection d'un mois dans le calendrier Material. */
+  onMoisChoisi(d: Date): void {
+    if (!d) return;
+    this.mois = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    if (this.moisTrigger) this.moisTrigger.closeMenu();
+    this.load();
+  }
+
+  /** Sélection de la date « État statistique du » dans le datepicker Material. */
+  onRefDateChoisie(d: Date): void {
+    this.refDateObj = d;
+    if (!d) return;
+    this.refDate = this.iso(d);
+    this.load();
   }
 
   colW(): number { return Math.round(34 * this.zoom); }

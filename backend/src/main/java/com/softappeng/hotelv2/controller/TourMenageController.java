@@ -34,4 +34,13 @@ public class TourMenageController {
         String note = body.get("note") == null ? null : String.valueOf(body.get("note"));
         return service.enregistrer(gouvernanteId, date, etage, repos, note);
     }
+
+    /** One permanent (late duty) chambermaid per day, hotel-wide. */
+    @PostMapping("/permanence")
+    public Map<String, Object> permanence(@RequestBody Map<String, Object> body) {
+        LocalDate date = body.get("date") == null ? null : LocalDate.parse(String.valueOf(body.get("date")));
+        Object gid = body.get("gouvernanteId");
+        Long gouvernanteId = (gid == null || String.valueOf(gid).isBlank()) ? null : Long.valueOf(String.valueOf(gid));
+        return service.definirPermanence(date, gouvernanteId);
+    }
 }

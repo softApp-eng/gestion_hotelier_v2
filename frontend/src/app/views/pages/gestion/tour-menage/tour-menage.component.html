@@ -36,6 +36,15 @@
             <span *ngIf="aff(f, j).repos" class="repos-tag">Repos</span>
             <span *ngIf="!aff(f, j).repos && aff(f, j).etage" class="etage-tag">Ét. {{ aff(f, j).etage }}</span>
             <span *ngIf="!aff(f, j).repos && !aff(f, j).etage" class="text-muted">—</span>
+            <div><span *ngIf="permanenceId(j) === f.id" class="badge bg-warning text-dark mt-1" title="Reste en retard">Permanence</span></div>
+          </td>
+        </tr>
+        <tr *ngIf="data.femmes?.length">
+          <td class="femme-cell"><b>Permanence</b><div class="pav"><i class="fa-solid fa-clock me-1"></i>reste en retard</div></td>
+          <td *ngFor="let j of data.jours" class="day-cell" [ngClass]="j.jour === 'Dimanche' ? 'sun' : ''"
+              (click)="editerPermanence(j)" title="Cliquer pour choisir la femme de chambre qui reste en retard">
+            <span *ngIf="permanenceNom(j)" class="perm-tag">{{ permanenceNom(j) }}</span>
+            <span *ngIf="!permanenceNom(j)" class="text-muted">—</span>
           </td>
         </tr>
         <tr *ngIf="!data.femmes?.length">

@@ -52,12 +52,16 @@ export class PrintService {
         table.matrix .sit-tag.s-arrivee { background: #d1e7dd; }
         table.matrix td.s-etage { background: #d1e7dd; font-weight: bold; }
         table.matrix td.s-repos { background: #e2e3e5; }
+        table.matrix td.s-perm { background: #fff3cd; font-weight: bold; }
         .legend { margin-top: 12px; font-size: 11px; }
         .legend .lg { display: inline-block; padding: 2px 8px; border: 1px solid #ccc; margin-right: 6px; }
         .legend .lg.m-clean { background: #e8f6ec; }
         .legend .lg.m-verif { background: #fff7e0; }
         .legend .lg.m-dirty { background: #fdeaea; }
         .legend .lg.m-block { background: #ececec; }
+        .legend .lg.s-recouche { background: #dbeafe; }
+        .legend .lg.s-depart { background: #f8d7da; }
+        .legend .lg.s-arrivee { background: #d1e7dd; }
       </style></head><body>${body}</body></html>`);
     w.document.close();
     w.focus();

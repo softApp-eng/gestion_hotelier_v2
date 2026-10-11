@@ -42,5 +42,8 @@ public class TourMenage extends Auditable {
     /** Rest / day off. */
     private boolean repos = false;
 
+    /** Permanence : cette femme reste en retard ce jour-là (une seule par jour, tout l'hôtel). */
+    private boolean permanence = false;
+
     private String note;
 }

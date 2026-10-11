@@ -14,4 +14,6 @@ public interface TourMenageRepo extends JpaRepository<TourMenage, Long> {
     List<TourMenage> findByGouvernanteIdAndDateBetween(Long gouvernanteId, LocalDate debut, LocalDate fin);
 
     Optional<TourMenage> findByGouvernanteIdAndDate(Long gouvernanteId, LocalDate date);
+
+    List<TourMenage> findByDate(LocalDate date);
 }

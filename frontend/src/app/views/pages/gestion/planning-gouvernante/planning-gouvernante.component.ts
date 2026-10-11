@@ -92,9 +92,8 @@ export class PlanningGouvernanteComponent implements OnInit {
       }
     });
 
-    html += '<div class="legend"><span class="lg m-clean">Clean</span>'
-      + '<span class="lg m-verif">À vérifier</span><span class="lg m-dirty">Dirty</span>'
-      + '<span class="lg m-block">Bloquée</span></div>';
+    html += '<div class="legend"><span class="lg s-recouche">Recouché</span>'
+      + '<span class="lg s-depart">Départ</span><span class="lg s-arrivee">Arrivée</span></div>';
 
     this.print.print('Planning d\'occupation ' + this.fmt(this.data.date), html, 'landscape');
   }
@@ -102,15 +101,12 @@ export class PlanningGouvernanteComponent implements OnInit {
   private matrixHtml(pav: any): string {
     const cols = this.colonnes(pav).length;
     let h = '<table class="matrix"><thead><tr><th class="etage">Étage</th>'
-      + '<th colspan="' + cols + '">Chambres — type · ménage · situation</th></tr></thead><tbody>';
+      + '<th colspan="' + cols + '">Chambres — n° · situation</th></tr></thead><tbody>';
     (pav.etages || []).forEach((e: any) => {
       h += '<tr><th class="etage">Étage<br>' + e.etage + '</th>';
       (e.chambres || []).forEach((c: any) => {
-        h += '<td class="room ' + this.menageCls(c.etatMenage) + '">'
+        h += '<td class="room">'
           + '<div class="num">' + c.numero + '</div>'
-          + '<div class="typ">' + (c.typeChambre || '') + '</div>'
-          + '<div class="men">' + this.etatInfo(c.etatMenage).label
-          + (c.occupe ? ' · occupée' : '') + '</div>'
           + (c.statutJour ? '<div class="sit-tag ' + this.sitCls(c.statutJour) + '">'
               + this.statutLabel(c.statutJour) + '</div>' : '')
           + '</td>';

@@ -137,6 +137,39 @@ export class EtatChambresComponent implements OnInit {
     this.api.changerStatutProbleme(p.id, 'EN_COURS').subscribe(() => this.loadProblemes());
   }
 
+  /** Impression de la liste des problèmes techniques. */
+  imprimerProblemes(): void {
+    const lib = (s: string): string => {
+      if (s === 'SIGNALE') return 'Signalé';
+      if (s === 'EN_COURS') return 'En cours';
+      if (s === 'RESOLU') return 'Résolu';
+      return s || '';
+    };
+    let html = '<div class="hdr"><div class="brand">PROBLÈMES TECHNIQUES</div>'
+      + '<div class="sub">' + new Date().toLocaleDateString()
+      + ' &nbsp;·&nbsp; Total : <b>' + this.problemes.length + '</b></div></div>';
+    html += '<table><thead><tr>'
+      + '<th>Chambre</th><th class="lib">Description</th><th>Priorité</th><th>Statut</th>'
+      + '<th>Signalé par</th><th>Date</th><th class="lib">Résolution</th></tr></thead><tbody>';
+    this.problemes.forEach((p: any) => {
+      const d = p.dateSignalement ? new Date(p.dateSignalement) : null;
+      html += '<tr>'
+        + '<td><b>' + (p.chambre ? p.chambre.numero : '') + '</b></td>'
+        + '<td class="lib">' + (p.description || '') + '</td>'
+        + '<td>' + (p.priorite || '') + '</td>'
+        + '<td>' + lib(p.statut) + '</td>'
+        + '<td>' + (p.signalePar || '') + '</td>'
+        + '<td>' + (d ? d.toLocaleString() : '') + '</td>'
+        + '<td class="lib">' + (p.resolution || '') + '</td>'
+        + '</tr>';
+    });
+    if (!this.problemes.length) {
+      html += '<tr><td colspan="7">Aucun problème</td></tr>';
+    }
+    html += '</tbody></table>';
+    this.print.print('Problèmes techniques', html, 'portrait');
+  }
+
   // ---------- affichage ----------
   etatInfo(code: string): any {
     return this.etatsMenage.find(e => e.code === code) || { label: code, cls: 'light' };
@@ -201,9 +234,8 @@ export class EtatChambresComponent implements OnInit {
       }
     });
 
-    html += '<div class="legend"><span class="lg m-clean">Clean</span>'
-      + '<span class="lg m-verif">À vérifier</span><span class="lg m-dirty">Dirty</span>'
-      + '<span class="lg m-block">Bloquée</span></div>';
+    html += '<div class="legend"><span class="lg s-recouche">Recouché</span>'
+      + '<span class="lg s-depart">Départ</span><span class="lg s-arrivee">Arrivée</span></div>';
 
     this.print.print('Planning d\'occupation', html, 'landscape');
   }
@@ -211,15 +243,12 @@ export class EtatChambresComponent implements OnInit {
   private matrixHtml(pav: any): string {
     const cols = this.colonnes(pav).length;
     let h = '<table class="matrix"><thead><tr><th class="etage">Étage</th>'
-      + '<th colspan="' + cols + '">Chambres — type · ménage · situation</th></tr></thead><tbody>';
+      + '<th colspan="' + cols + '">Chambres — n° · situation</th></tr></thead><tbody>';
     (pav.etages || []).forEach((e: any) => {
       h += '<tr><th class="etage">Étage<br>' + e.etage + '</th>';
       (e.chambres || []).forEach((c: any) => {
-        h += '<td class="room ' + this.menageCls(c.etatMenage) + '">'
+        h += '<td class="room">'
           + '<div class="num">' + c.numero + '</div>'
-          + '<div class="typ">' + (c.typeChambre || '') + '</div>'
-          + '<div class="men">' + this.etatInfo(c.etatMenage).label
-          + (c.occupe ? ' · occupée' : '') + '</div>'
           + (c.statutJour ? '<div class="sit-tag ' + this.sitCls(c.statutJour) + '">'
               + this.statutLabel(c.statutJour) + '</div>' : '')
           + '</td>';

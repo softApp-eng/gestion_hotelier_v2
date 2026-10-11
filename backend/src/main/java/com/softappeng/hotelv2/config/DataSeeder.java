@@ -88,10 +88,11 @@ public class DataSeeder implements CommandLineRunner {
         TypeChambre senior = typeChambreRepo.save(new TypeChambre(null, "Suite Senior", "Suite senior", 4, 18000));
         TypeChambre luxe = typeChambreRepo.save(new TypeChambre(null, "Chambre de luxe", "Chambre de luxe", 2, 20000));
 
-        // Pavillon Chellah — 5 étages x 7 chambres (Simple / Double / Suite / Mini Suite)
-        seedPavillonRooms(chellah, 5, new TypeChambre[]{ miniSuite, simple, doubleRoom, doubleRoom, suite, suite, simple });
-        // Pavillon Oudayas — 4 étages x 7 chambres (Suite Junior / Suite Senior / Chambre de luxe)
-        seedPavillonRooms(oudayas, 4, new TypeChambre[]{ junior, senior, luxe, junior, senior, luxe, luxe });
+        // Pavillon Chellah — 5 étages x 7 chambres, numéros 101..507 (Simple / Double / Suite / Mini Suite)
+        seedPavillonRooms(chellah, 1, 5, new TypeChambre[]{ miniSuite, simple, doubleRoom, doubleRoom, suite, suite, simple });
+        // Pavillon Oudayas — 4 étages x 7 chambres, numéros 601..907
+        // (la numérotation continue après Chellah : 1er étage = 601, 602, 603…)
+        seedPavillonRooms(oudayas, 6, 4, new TypeChambre[]{ junior, senior, luxe, junior, senior, luxe, luxe });
 
         // a couple of rooms already busy / cleaning / blocked
         Chambre c101 = room("CHELLAH", "101");
@@ -108,12 +109,19 @@ public class DataSeeder implements CommandLineRunner {
         }
     }
 
-    /** Creates one room per pattern entry, on every floor of a pavilion. */
-    private void seedPavillonRooms(Pavillon pav, int etages, TypeChambre[] pattern) {
+    /**
+     * Creates one room per pattern entry, on every floor of a pavilion.
+     *
+     * @param numeroBaseEtage floor number used for room numbering on the 1st floor
+     *                        (1 for Chellah → 101, 6 for Oudayas → 601). The logical
+     *                        {@code etage} remains 1..nbEtages.
+     */
+    private void seedPavillonRooms(Pavillon pav, int numeroBaseEtage, int etages, TypeChambre[] pattern) {
         for (int etage = 1; etage <= etages; etage++) {
+            int numeroEtage = numeroBaseEtage + etage - 1;
             for (int i = 0; i < pattern.length; i++) {
                 Chambre c = new Chambre();
-                c.setNumero(String.valueOf(etage * 100 + (i + 1)));
+                c.setNumero(String.valueOf(numeroEtage * 100 + (i + 1)));
                 c.setEtage(String.valueOf(etage));
                 c.setTypeChambre(pattern[i]);
                 c.setPrix(pattern[i].getPrixBase());

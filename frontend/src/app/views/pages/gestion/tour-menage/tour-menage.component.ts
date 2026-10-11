@@ -14,6 +14,7 @@ import Swal from 'sweetalert2';
     .tour-table .day-cell:hover { outline: 2px solid #0d6efd; outline-offset: -2px; }
     .tour-table .etage-tag { display: inline-block; background: #d1e7dd; color: #0f5132; font-weight: 700; padding: 1px 8px; border-radius: 3px; }
     .tour-table .repos-tag { display: inline-block; background: #e2e3e5; color: #41464b; font-weight: 700; padding: 1px 8px; border-radius: 3px; }
+    .tour-table .perm-tag { display: inline-block; background: #fff3cd; color: #664d03; font-weight: 700; padding: 1px 8px; border-radius: 3px; font-size: .72rem; white-space: nowrap; }
     .tour-table th.sun, .tour-table td.sun { background: #fff5f5; }
     .tour-table thead th { background: #f1f3f5; font-size: .8rem; }
   `]
@@ -69,6 +70,43 @@ export class TourMenageComponent implements OnInit {
       || { gouvernanteId: f.id, date: jour.date, repos: false, etage: null };
   }
 
+  /** Id de la femme de chambre en permanence (« reste en retard ») pour un jour. */
+  permanenceId(jour: any): number | null {
+    const m = this.data.permanences || {};
+    const id = m[jour.date];
+    return id == null ? null : Number(id);
+  }
+
+  permanenceNom(jour: any): string {
+    const id = this.permanenceId(jour);
+    if (id == null) return '';
+    const f = (this.data.femmes || []).find((x: any) => x.id === id);
+    return f ? f.nomComplet : '';
+  }
+
+  /** Choisit LA femme de chambre qui reste en retard ce jour-là (tout l'hôtel). */
+  editerPermanence(jour: any): void {
+    const options: any = { '': '— Aucune —' };
+    (this.data.femmes || []).forEach((f: any) => {
+      options[String(f.id)] = f.nomComplet + (f.pavillon ? ' (' + f.pavillon + ')' : '');
+    });
+    const cur = this.permanenceId(jour);
+    Swal.fire({
+      title: 'Permanence — ' + jour.jour + ' ' + this.fmt(jour.date),
+      html: '<div class="text-muted small mb-1">Femme de chambre qui reste en retard</div>',
+      input: 'select',
+      inputOptions: options,
+      inputValue: cur == null ? '' : String(cur),
+      showCancelButton: true,
+      confirmButtonText: 'Enregistrer',
+      cancelButtonText: 'Annuler'
+    }).then((r) => {
+      if (!r.isConfirmed) return;
+      const v = String(r.value == null ? '' : r.value);
+      this.api.savePermanence(jour.date, v === '' ? null : Number(v)).subscribe({ next: () => this.load() });
+    });
+  }
+
   editer(f: any, jour: any): void {
     const a = this.aff(f, jour);
     const options: any = { '': '— Aucune affectation —', 'REPOS': 'Repos (congé)' };
@@ -114,6 +152,12 @@ export class TourMenageComponent implements OnInit {
       });
       h += '</tr>';
     });
+    h += '<tr><td class="lib"><b>Permanence</b><br><small>reste en retard</small></td>';
+    jours.forEach((j: any) => {
+      const nom = this.permanenceNom(j);
+      h += '<td class="' + (nom ? 's-perm' : '') + '">' + (nom || '—') + '</td>';
+    });
+    h += '</tr>';
     h += '</tbody></table>';
     this.print.print('Tour de la semaine — Femmes de chambre', h, 'landscape');
   }

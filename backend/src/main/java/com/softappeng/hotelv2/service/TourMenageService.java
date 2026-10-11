@@ -51,6 +51,7 @@ public class TourMenageService {
 
         List<Map<String, Object>> femmesDto = new ArrayList<>();
         List<Map<String, Object>> affectations = new ArrayList<>();
+        Map<String, Object> permanences = new LinkedHashMap<>();
         for (Gouvernante f : femmes) {
             int nbEtages = nbEtages(f);
             Map<String, Object> fd = new LinkedHashMap<>();
@@ -69,14 +70,20 @@ public class TourMenageService {
                 Map<String, Object> a = new LinkedHashMap<>();
                 a.put("gouvernanteId", f.getId());
                 a.put("date", d.toString());
+                boolean perm = false;
                 if (t != null) {
                     a.put("etage", t.getEtage());
                     a.put("repos", t.isRepos());
+                    perm = t.isPermanence();
                     a.put("note", t.getNote());
                 } else {
                     boolean repos = d.getDayOfWeek() == DayOfWeek.SUNDAY;
                     a.put("repos", repos);
                     a.put("etage", repos ? null : String.valueOf(((f.getId().intValue() + i) % nbEtages) + 1));
+                }
+                a.put("permanence", perm);
+                if (perm) {
+                    permanences.put(d.toString(), f.getId());
                 }
                 affectations.add(a);
             }
@@ -88,6 +95,7 @@ public class TourMenageService {
         out.put("jours", jours);
         out.put("femmes", femmesDto);
         out.put("affectations", affectations);
+        out.put("permanences", permanences);
         return out;
     }
 
@@ -109,6 +117,37 @@ public class TourMenageService {
         t.setEtage(r ? null : etage);
         t.setNote(note);
         return repo.save(t);
+    }
+
+    /**
+     * Définit LA permanence de la journée (tout l'hôtel) : la femme de chambre
+     * qui « reste en retard ». Un seul agent par jour ; {@code gouvernanteId} nul
+     * efface la permanence du jour.
+     */
+    public Map<String, Object> definirPermanence(LocalDate date, Long gouvernanteId) {
+        if (date == null) {
+            throw new IllegalArgumentException("Date requise");
+        }
+        for (TourMenage t : repo.findByDate(date)) {
+            if (t.isPermanence()) {
+                t.setPermanence(false);
+                repo.save(t);
+            }
+        }
+        if (gouvernanteId != null) {
+            Gouvernante f = gouvernanteRepo.findById(gouvernanteId)
+                    .orElseThrow(() -> new IllegalArgumentException("Agent introuvable: " + gouvernanteId));
+            TourMenage t = repo.findByGouvernanteIdAndDate(gouvernanteId, date).orElseGet(TourMenage::new);
+            t.setGouvernante(f);
+            t.setDate(date);
+            t.setPavillon(f.getPavillon());
+            t.setPermanence(true);
+            repo.save(t);
+        }
+        Map<String, Object> out = new LinkedHashMap<>();
+        out.put("date", date.toString());
+        out.put("gouvernanteId", gouvernanteId);
+        return out;
     }
 
     /** Highest floor number found among the staff member's pavilion rooms. */

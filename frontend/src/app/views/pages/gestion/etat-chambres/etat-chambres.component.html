@@ -173,7 +173,8 @@
     <button class="btn btn-outline-secondary btn-sm me-1" (click)="problemeFilter=''; loadProblemes()">Tous</button>
     <button class="btn btn-outline-danger btn-sm me-1" (click)="problemeFilter='SIGNALE'; loadProblemes()">Signalés</button>
     <button class="btn btn-outline-warning btn-sm me-1" (click)="problemeFilter='EN_COURS'; loadProblemes()">En cours</button>
-    <button class="btn btn-outline-success btn-sm" (click)="problemeFilter='RESOLU'; loadProblemes()">Résolus</button>
+    <button class="btn btn-outline-success btn-sm me-3" (click)="problemeFilter='RESOLU'; loadProblemes()">Résolus</button>
+    <button class="btn btn-outline-secondary btn-sm" (click)="imprimerProblemes()"><i class="fa-solid fa-print me-1"></i>Imprimer la liste</button>
   </div>
 
   <div class="card">

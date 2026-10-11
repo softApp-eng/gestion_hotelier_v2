@@ -314,4 +314,9 @@ export class ApiService {
   saveTourMenage(a: any): Observable<any> {
     return this.http.post(`${this.base}/tour-menage`, a);
   }
+
+  /** Permanence du jour (une seule femme de chambre « reste en retard », tout l'hôtel). */
+  savePermanence(date: string, gouvernanteId: number | null): Observable<any> {
+    return this.http.post(`${this.base}/tour-menage/permanence`, { date, gouvernanteId });
+  }
 }

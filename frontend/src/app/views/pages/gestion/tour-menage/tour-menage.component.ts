@@ -12,7 +12,6 @@ import Swal from 'sweetalert2';
     .tour-table .femme-cell .pav { font-size: .72rem; color: #6c757d; }
     .tour-table .day-cell { cursor: pointer; min-width: 76px; }
     .tour-table .day-cell:hover { outline: 2px solid #0d6efd; outline-offset: -2px; }
-    .tour-table .etage-tag { display: inline-block; background: #d1e7dd; color: #0f5132; font-weight: 700; padding: 1px 8px; border-radius: 3px; }
     .tour-table .repos-tag { display: inline-block; background: #e2e3e5; color: #41464b; font-weight: 700; padding: 1px 8px; border-radius: 3px; }
     .tour-table .perm-tag { display: inline-block; background: #fff3cd; color: #664d03; font-weight: 700; padding: 1px 8px; border-radius: 3px; font-size: .72rem; white-space: nowrap; }
     .tour-table th.sun, .tour-table td.sun { background: #fff5f5; }
@@ -107,31 +106,19 @@ export class TourMenageComponent implements OnInit {
     });
   }
 
-  editer(f: any, jour: any): void {
+  /**
+   * Bascule le repos (congé) d'une femme de chambre pour un jour donné.
+   * L'écran ne sert qu'à connaître les repos et la permanence : aucune affectation d'étage.
+   */
+  basculerRepos(f: any, jour: any): void {
     const a = this.aff(f, jour);
-    const options: any = { '': '— Aucune affectation —', 'REPOS': 'Repos (congé)' };
-    const n = f.nbEtages || 5;
-    for (let i = 1; i <= n; i++) options[String(i)] = 'Étage ' + i;
-    Swal.fire({
-      title: f.nomComplet,
-      html: '<div class="text-muted small mb-1">' + jour.jour + ' ' + this.fmt(jour.date) + '</div>',
-      input: 'select',
-      inputOptions: options,
-      inputValue: a.repos ? 'REPOS' : (a.etage ? String(a.etage) : ''),
-      showCancelButton: true,
-      confirmButtonText: 'Enregistrer',
-      cancelButtonText: 'Annuler'
-    }).then((r) => {
-      if (!r.isConfirmed) return;
-      const v = String(r.value == null ? '' : r.value);
-      const payload = {
-        gouvernanteId: f.id,
-        date: jour.date,
-        repos: v === 'REPOS',
-        etage: (v === 'REPOS' || v === '') ? null : v
-      };
-      this.api.saveTourMenage(payload).subscribe({ next: () => this.load() });
-    });
+    const payload = {
+      gouvernanteId: f.id,
+      date: jour.date,
+      repos: !a.repos,
+      etage: null
+    };
+    this.api.saveTourMenage(payload).subscribe({ next: () => this.load() });
   }
 
   imprimer(): void {
@@ -146,8 +133,8 @@ export class TourMenageComponent implements OnInit {
         + (f.pavillon ? '<br><small>' + f.pavillon + '</small>' : '') + '</td>';
       jours.forEach((j: any) => {
         const a = this.aff(f, j);
-        const txt = a.repos ? 'Repos' : (a.etage ? ('Ét. ' + a.etage) : '—');
-        const cls = a.repos ? 's-repos' : (a.etage ? 's-etage' : '');
+        const txt = a.repos ? 'Repos' : '—';
+        const cls = a.repos ? 's-repos' : '';
         h += '<td class="' + cls + '">' + txt + '</td>';
       });
       h += '</tr>';

@@ -2,7 +2,7 @@
   <div>
     <h5 class="mb-0">Tour de la semaine — Femmes de chambre</h5>
     <small class="text-muted">
-      Semaine du {{ fmt(data.debut) }} au {{ fmt(data.fin) }} — cliquez sur une case pour affecter un étage ou un repos
+      Semaine du {{ fmt(data.debut) }} au {{ fmt(data.fin) }} — cliquez sur une case pour basculer le <b>repos</b> ; la ligne <b>Permanence</b> indique qui reste en retard
     </small>
   </div>
   <div class="d-flex align-items-center gap-2">
@@ -32,10 +32,9 @@
           </td>
           <td *ngFor="let j of data.jours" class="day-cell"
               [ngClass]="{ 'repos': aff(f, j).repos, 'sun': j.jour === 'Dimanche' }"
-              (click)="editer(f, j)" title="Cliquer pour modifier">
+              (click)="basculerRepos(f, j)" title="Cliquer pour basculer Repos / Travail">
             <span *ngIf="aff(f, j).repos" class="repos-tag">Repos</span>
-            <span *ngIf="!aff(f, j).repos && aff(f, j).etage" class="etage-tag">Ét. {{ aff(f, j).etage }}</span>
-            <span *ngIf="!aff(f, j).repos && !aff(f, j).etage" class="text-muted">—</span>
+            <span *ngIf="!aff(f, j).repos" class="text-muted">—</span>
             <div><span *ngIf="permanenceId(j) === f.id" class="badge bg-warning text-dark mt-1" title="Reste en retard">Permanence</span></div>
           </td>
         </tr>

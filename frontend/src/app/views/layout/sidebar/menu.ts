@@ -32,7 +32,7 @@ export const MENU: MenuItem[] = [
     icon: 'fa-solid fa-calendar-days',
     subItems: [
       { label: 'Planning des chambres', link: '/gestion/planning' },
-      { label: 'État journalier', link: '/gestion/etat-journalier' }
+      { label: 'État des chambres', link: '/gestion/etat-journalier' }
     ]
   },
   {

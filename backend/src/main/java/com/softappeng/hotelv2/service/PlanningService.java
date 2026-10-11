@@ -67,6 +67,8 @@ public class PlanningService {
                 cell.put("date", d.toString());
                 String statut = "LIBRE";
                 String libelle = null;
+                Long sejourId = null;
+                Long reservationId = null;
 
                 if (estBloque(c, d)) {
                     statut = "BLOQUEE";
@@ -76,16 +78,20 @@ public class PlanningService {
                     if (s != null) {
                         statut = "OCCUPEE";
                         libelle = s.getClient() != null ? s.getClient().getNomComplet() : null;
+                        sejourId = s.getId();
                     } else {
                         Reservation r = reservationSurChambre(reservations, c.getId(), d);
                         if (r != null) {
                             statut = "RESERVEE";
                             libelle = r.getClient() != null ? r.getClient().getNomComplet() : null;
+                            reservationId = r.getId();
                         }
                     }
                 }
                 cell.put("statut", statut);
                 cell.put("libelle", libelle);
+                cell.put("sejourId", sejourId);
+                cell.put("reservationId", reservationId);
                 jours.add(cell);
             }
             row.put("jours", jours);

@@ -62,7 +62,7 @@ Ouvrez **http://localhost:4200**.
 | **Tickets repas** | Création (auto-numérotée + code unique), contrôle d'accès par code/scan, impression **PDF + QR**, annulation |
 | **Rapports** | CA 7 jours, ventes par période, export **CSV** |
 | **Utilisateurs & rôles** | Gestion des comptes (ADMIN), rôles RECEPTION / SERVEUR / CAISSIER / MANAGER / ADMIN |
-| **Planning** | Planning **mensuel** en **resource timeline** (chambres × jours, groupé par pavillon puis type de chambre), **État journalier** des chambres (timeline par bâtiment), **impression** |
+| **Planning** | Planning **mensuel** en **resource timeline** (chambres × jours, groupé par pavillon → type de chambre → numéro), **État des chambres** (même timeline mensuelle), **zoom (échelle)**, **prolongation du séjour** par clic, **impression** |
 | **Configuration hôtel** | **Pavillons**, **Catégories de clients** (officier sup./sub., gendarmerie, civil, invité, délégation…), **Grille tarifaire** (catégorie × type de chambre), **Organismes** de prise en charge |
 
 ---
@@ -77,8 +77,8 @@ Ouvrez **http://localhost:4200**.
 | **Réservation** | Pavillon, chambre, catégorie client, dates, nb personnes, **accompagnants (officier + famille)**, **mode de paiement** (TPE / Espèces / **Prise en charge**), organisme payeur + référence PEC, tarif et montant calculés |
 | **Chambres** | Filtre par pavillon + **blocage** (période + motif) |
 | **Séjours** | Filtres : date check-in (du/au), date check-out (du/au), option (en cours / terminés), **n° de chambre** |
-| **Planning des chambres** | **Resource timeline** (grille maison, sans dépendance) : chambres en lignes, jours en colonnes, **groupées par pavillon (Chellah puis Oudayas) puis par type de chambre** ; les séjours/réservations forment des **barres** couvrant les jours consécutifs. Colonne chambre figée, mois sélectionnable, **imprimable** (paysage, groupée) |
-| **État journalier** | Même **resource timeline** mais **groupée par bâtiment (pavillon)** sur une **semaine** navigable (colonne du jour surlignée) ; compteurs Total / Libres / Occupées / Nettoyage / Bloquées / Taux conservés ; **imprimable** (paysage) |
+| **Planning des chambres** | **Resource timeline** (grille maison, sans dépendance) : chambres en lignes, jours en colonnes **espacées et bordées** sur **tout le mois** avec **défilement horizontal**, **groupées par pavillon (Chellah puis Oudayas) → type de chambre → numéro** ; les séjours/réservations forment des **barres** couvrant les jours consécutifs. Colonne chambre figée, navigation mois précédent/suivant, **zoom (échelle ±)**, **clic sur une barre (réservée/occupée) pour prolonger la date de départ**, **ligne rouge** sur le jour courant, **imprimable** (paysage, groupée) |
+| **État des chambres** | Même **resource timeline** sur **tout le mois** navigable avec **défilement horizontal** (jours **espacés et bordés**, **ligne rouge** sur le jour courant), **groupée par bâtiment (pavillon) → type de chambre → numéro** ; **zoom (échelle ±)**, **prolongation du séjour/réservation par clic** ; compteurs Total / Libres / Occupées / Nettoyage / Bloquées / Taux conservés pour une **date de référence** ; **imprimable** (paysage) |
 | **Organismes (PEC)** | Armée, Gendarmerie, Délégation… rattachés aux réservations en prise en charge |
 
 > **À venir (Étape 2)** : compte client (folio) + prestations, **bons repas** (déjeuner/dîner) imprimés et imputés au compte, **facturation** (globale + hébergement + subsistance en PEC ; globale en espèces), **Night audit** (clôture de caisse, rapport d'encaissement, taux d'occupation, main courante imprimables).
@@ -139,6 +139,7 @@ Ouvrez **http://localhost:4200**.
 | GET/POST/DELETE | `/api/tarifs`, `/api/tarifs/prix` | Grille tarifaire |
 | GET | `/api/planning?debut=&fin=&pavillonId=`, `/api/planning/etat-journalier`, `/api/planning/disponibles` | Planning & état journalier |
 | POST | `/api/sejours/checkin/{id}`, `/api/sejours/{id}/checkout` | Check-in / Check-out |
+| PUT | `/api/sejours/{id}/prolonger`, `/api/reservations/{id}/prolonger` | Prolongation d'un séjour / d'une réservation (nouvelle date de départ) |
 | GET/POST | `/api/menu/categories`, `/api/menu/produits` | Menu |
 | GET/POST | `/api/tables` | Tables |
 | GET/POST | `/api/resto/commandes`, `/api/resto/commandes/{id}/payer` | Commandes restaurant |

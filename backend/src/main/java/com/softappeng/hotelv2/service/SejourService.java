@@ -159,6 +159,25 @@ public class SejourService {
         sejourRepo.deleteById(id);
     }
 
+    /** Prolongation : nouvelle date de départ prévue (recalcule le montant hébergement). */
+    @Transactional
+    public Sejour prolonger(Long id, LocalDate dateDepart) {
+        Sejour s = findById(id);
+        if (dateDepart == null) {
+            throw new IllegalArgumentException("Date de départ requise");
+        }
+        LocalDate arrivee = s.getDateCheckin() != null ? s.getDateCheckin().toLocalDate() : LocalDate.now();
+        if (!dateDepart.isAfter(arrivee)) {
+            throw new IllegalArgumentException("La date de départ doit être après la date d'arrivée");
+        }
+        long nights = Math.max(ChronoUnit.DAYS.between(arrivee, dateDepart), 1);
+        s.setDateDepartPrevue(dateDepart);
+        if (s.getTarifNuitee() > 0) {
+            s.setMontant(s.getTarifNuitee() * nights);
+        }
+        return sejourRepo.save(s);
+    }
+
     public long countEnCours() {
         return sejourRepo.countByStatut("EN_COURS");
     }

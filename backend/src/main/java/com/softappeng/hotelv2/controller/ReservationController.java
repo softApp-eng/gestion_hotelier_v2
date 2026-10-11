@@ -7,7 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/reservations")
@@ -40,6 +42,13 @@ public class ReservationController {
     public Reservation update(@PathVariable Long id, @RequestBody Reservation r) {
         r.setId(id);
         return reservationService.save(r);
+    }
+
+    /** Prolongation d'une réservation : nouvelle date de départ. */
+    @PutMapping("/{id}/prolonger")
+    public Reservation prolonger(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        LocalDate d = body.get("dateDepart") == null ? null : LocalDate.parse(String.valueOf(body.get("dateDepart")));
+        return reservationService.prolonger(id, d);
     }
 
     @PatchMapping("/{id}/statut")

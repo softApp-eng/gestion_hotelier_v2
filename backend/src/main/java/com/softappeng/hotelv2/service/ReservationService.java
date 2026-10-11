@@ -121,6 +121,30 @@ public class ReservationService {
         return reservationRepo.save(r);
     }
 
+    /** Prolongation d'une réservation : nouvelle date de départ (vérifie les conflits de chambre). */
+    public Reservation prolonger(Long id, LocalDate dateDepart) {
+        Reservation r = findById(id);
+        if (dateDepart == null) {
+            throw new IllegalArgumentException("Date de départ requise");
+        }
+        if (!dateDepart.isAfter(r.getDateArrivee())) {
+            throw new IllegalArgumentException("La date de départ doit être après la date d'arrivée");
+        }
+        if (r.getChambre() != null && r.getChambre().getId() != null) {
+            List<Reservation> overlaps = reservationRepo.findOverlapping(r.getChambre().getId(), r.getDateArrivee(), dateDepart);
+            boolean conflict = overlaps.stream().anyMatch(o -> !o.getId().equals(id));
+            if (conflict) {
+                throw new IllegalStateException("La chambre est déjà réservée sur cette période");
+            }
+        }
+        r.setDateDepart(dateDepart);
+        if (r.getTarifNuitee() > 0) {
+            long nights = Math.max(ChronoUnit.DAYS.between(r.getDateArrivee(), dateDepart), 1);
+            r.setMontantPrevu(r.getTarifNuitee() * nights);
+        }
+        return reservationRepo.save(r);
+    }
+
     public void delete(Long id) {
         reservationRepo.deleteById(id);
     }

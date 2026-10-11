@@ -62,13 +62,23 @@ export class ApiService {
     return this.http.patch(`${this.base}/reservations/${id}/statut?statut=${statut}`, {});
   }
   deleteReservation(id: number): Observable<any> { return this.http.delete(`${this.base}/reservations/${id}`); }
+  reservationById(id: number): Observable<any> { return this.http.get(`${this.base}/reservations/${id}`); }
+  /** Prolongation d'une réservation : nouvelle date de départ. */
+  prolongerReservation(id: number, dateDepart: string): Observable<any> {
+    return this.http.put(`${this.base}/reservations/${id}/prolonger`, { dateDepart });
+  }
 
   // --------------------------------------------------------------- SEJOURS
   sejours(): Observable<any> { return this.http.get(`${this.base}/sejours`); }
   sejoursEnCours(): Observable<any> { return this.http.get(`${this.base}/sejours?statut=EN_COURS`); }
+  sejourById(id: number): Observable<any> { return this.http.get(`${this.base}/sejours/${id}`); }
   checkinReservation(id: number): Observable<any> { return this.http.post(`${this.base}/sejours/checkin/${id}`, {}); }
   checkinDirect(s: any): Observable<any> { return this.http.post(`${this.base}/sejours/checkin-direct`, s); }
   checkout(id: number): Observable<any> { return this.http.post(`${this.base}/sejours/${id}/checkout`, {}); }
+  /** Prolongation du séjour : nouvelle date de départ prévue. */
+  prolongerSejour(id: number, dateDepart: string): Observable<any> {
+    return this.http.put(`${this.base}/sejours/${id}/prolonger`, { dateDepart });
+  }
 
   /** Advanced stay search used by the Séjours filters. */
   sejoursRecherche(f: { checkinFrom?: string; checkinTo?: string; checkoutFrom?: string; checkoutTo?: string; statut?: string; numero?: string }): Observable<any> {

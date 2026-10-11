@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/sejours")
@@ -53,6 +54,13 @@ public class SejourController {
     @PostMapping("/{id}/checkout")
     public Sejour checkout(@PathVariable Long id) {
         return sejourService.checkout(id);
+    }
+
+    /** Prolongation du séjour : nouvelle date de départ prévue. */
+    @PutMapping("/{id}/prolonger")
+    public Sejour prolonger(@PathVariable Long id, @RequestBody Map<String, Object> body) {
+        LocalDate d = body.get("dateDepart") == null ? null : LocalDate.parse(String.valueOf(body.get("dateDepart")));
+        return sejourService.prolonger(id, d);
     }
 
     @DeleteMapping("/{id}")

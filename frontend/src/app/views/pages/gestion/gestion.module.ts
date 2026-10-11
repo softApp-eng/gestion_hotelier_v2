@@ -30,6 +30,7 @@ import { EtatChambresComponent } from './etat-chambres/etat-chambres.component';
 import { PlanningGouvernanteComponent } from './planning-gouvernante/planning-gouvernante.component';
 import { TourMenageComponent } from './tour-menage/tour-menage.component';
 import { GestionGouvernantesComponent } from './config/gouvernantes/gestion-gouvernantes.component';
+import { GestionConfigChambresComponent } from './config/chambres/gestion-config-chambres.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
@@ -52,6 +53,7 @@ const routes: Routes = [
   { path: 'config/tarifs', component: GestionTarifsComponent },
   { path: 'config/organismes', component: GestionOrganismesComponent },
   { path: 'config/gouvernantes', component: GestionGouvernantesComponent },
+  { path: 'config/chambres', component: GestionConfigChambresComponent },
   { path: 'restaurant/tables', component: RestoTablesComponent },
   { path: 'restaurant/commandes', component: RestoCommandesComponent },
   { path: 'restaurant/menu', component: RestoMenuComponent },
@@ -82,6 +84,7 @@ const routes: Routes = [
     PlanningGouvernanteComponent,
     TourMenageComponent,
     GestionGouvernantesComponent,
+    GestionConfigChambresComponent,
     RestoTablesComponent,
     RestoCommandesComponent,
     RestoMenuComponent,

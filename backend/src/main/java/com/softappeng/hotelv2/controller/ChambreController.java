@@ -60,6 +60,12 @@ public class ChambreController {
         return chambreService.saveType(type);
     }
 
+    @PutMapping("/types/{id}")
+    public TypeChambre updateType(@PathVariable Long id, @RequestBody TypeChambre type) {
+        type.setId(id);
+        return chambreService.saveType(type);
+    }
+
     @DeleteMapping("/types/{id}")
     public ResponseEntity<Void> deleteType(@PathVariable Long id) {
         chambreService.deleteType(id);

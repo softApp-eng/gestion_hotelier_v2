@@ -47,7 +47,10 @@ export class ApiService {
   }
   deleteChambre(id: number): Observable<any> { return this.http.delete(`${this.base}/chambres/${id}`); }
   typesChambre(): Observable<any> { return this.http.get(`${this.base}/chambres/types`); }
-  saveTypeChambre(t: any): Observable<any> { return this.http.post(`${this.base}/chambres/types`, t); }
+  saveTypeChambre(t: any): Observable<any> {
+    return t.id ? this.http.put(`${this.base}/chambres/types/${t.id}`, t) : this.http.post(`${this.base}/chambres/types`, t);
+  }
+  deleteTypeChambre(id: number): Observable<any> { return this.http.delete(`${this.base}/chambres/types/${id}`); }
 
   // ---------------------------------------------------------- RESERVATIONS
   reservations(statut?: string): Observable<any> {

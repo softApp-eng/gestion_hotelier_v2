@@ -1,9 +1,11 @@
 package com.softappeng.hotelv2.service;
 
 import com.softappeng.hotelv2.entities.Chambre;
+import com.softappeng.hotelv2.entities.Gouvernante;
 import com.softappeng.hotelv2.entities.Pavillon;
 import com.softappeng.hotelv2.entities.TypeChambre;
 import com.softappeng.hotelv2.repositories.ChambreRepo;
+import com.softappeng.hotelv2.repositories.GouvernanteRepo;
 import com.softappeng.hotelv2.repositories.PavillonRepo;
 import com.softappeng.hotelv2.repositories.TypeChambreRepo;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ public class ChambreService {
     private final ChambreRepo chambreRepo;
     private final TypeChambreRepo typeChambreRepo;
     private final PavillonRepo pavillonRepo;
+    private final GouvernanteRepo gouvernanteRepo;
 
     // ---- Rooms ----
     public List<Chambre> findAll() {
@@ -32,10 +35,20 @@ public class ChambreService {
         if (chambre.getTypeChambre() != null && chambre.getTypeChambre().getId() != null) {
             TypeChambre t = typeChambreRepo.findById(chambre.getTypeChambre().getId()).orElse(null);
             chambre.setTypeChambre(t);
+        } else {
+            chambre.setTypeChambre(null);
         }
         if (chambre.getPavillon() != null && chambre.getPavillon().getId() != null) {
             Pavillon p = pavillonRepo.findById(chambre.getPavillon().getId()).orElse(null);
             chambre.setPavillon(p);
+        } else {
+            chambre.setPavillon(null);
+        }
+        if (chambre.getGouvernante() != null && chambre.getGouvernante().getId() != null) {
+            Gouvernante g = gouvernanteRepo.findById(chambre.getGouvernante().getId()).orElse(null);
+            chambre.setGouvernante(g);
+        } else {
+            chambre.setGouvernante(null);
         }
         return chambreRepo.save(chambre);
     }

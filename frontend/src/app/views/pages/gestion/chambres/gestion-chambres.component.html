@@ -8,15 +8,49 @@
 
 <!-- ==================== LISTE ==================== -->
 <div class="card mb-3">
-  <div class="card-header d-flex justify-content-between align-items-center">
-    <b>Liste des chambres</b>
-    <input class="form-control form-control-sm" style="max-width:220px" placeholder="Rechercher un n°…" [(ngModel)]="recherche">
-  </div>
-  <div class="card-body table-responsive">
+  <div class="card-header"><b>Liste des chambres</b></div>
+  <div class="card-body">
+    <div class="row g-2 align-items-end mb-3">
+      <div class="col-md-3">
+        <label class="form-label mb-1">Pavillon</label>
+        <select class="form-select form-select-sm" [(ngModel)]="pavillonFiltre">
+          <option [ngValue]="null">Tous les pavillons</option>
+          <option *ngFor="let p of pavillons" [ngValue]="p.id">{{ p.nom }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label mb-1">Type de chambre</label>
+        <select class="form-select form-select-sm" [(ngModel)]="typeFiltre">
+          <option [ngValue]="null">Tous les types</option>
+          <option *ngFor="let t of types" [ngValue]="t.id">{{ t.libelle }}</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <label class="form-label mb-1">État</label>
+        <select class="form-select form-select-sm" [(ngModel)]="etatFiltre">
+          <option value="">Tous</option>
+          <option *ngFor="let e of etats" [value]="e">{{ e }}</option>
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label mb-1">Recherche (n°)</label>
+        <input class="form-control form-control-sm" placeholder="Rechercher un n°…" [(ngModel)]="recherche">
+      </div>
+      <div class="col-md-1">
+        <button class="btn btn-outline-secondary btn-sm w-100" (click)="resetFiltres()" title="Réinitialiser">
+          <i class="fa-solid fa-rotate-left"></i>
+        </button>
+      </div>
+    </div>
+    <div class="table-responsive">
     <table class="table table-hover align-middle">
       <thead>
         <tr>
-          <th>N°</th><th>Type</th><th>Pavillon</th><th>Étage</th><th>Prix / nuit</th>
+          <th>N°</th>
+          <th>Type</th>
+          <th>Pavillon</th>
+          <th>Étage</th>
+          <!-- <th>Prix / nuit</th> -->
           <th>Disponibilité</th><th>Ménage</th><th>Gouvernante</th><th style="width:260px">Actions</th>
         </tr>
       </thead>
@@ -26,7 +60,7 @@
           <td>{{ c.typeChambre?.libelle || '-' }}</td>
           <td>{{ c.pavillon?.nom || '-' }}</td>
           <td>{{ c.etage }}</td>
-          <td>{{ c.prix | number:'1.0-0' }} DA</td>
+          <!-- <td>{{ c.prix | number:'1.0-0' }} DA</td> -->
           <td>
             <span class="badge" [ngClass]="etatBadge(c.etat)">{{ c.etat }}</span>
             <span class="badge bg-secondary ms-1" *ngIf="c.bloque" title="{{ c.motifBlocage }}">Bloquée</span>
@@ -47,6 +81,7 @@
         <tr *ngIf="!chambresFiltrees().length"><td colspan="9" class="text-center text-muted">Aucune chambre.</td></tr>
       </tbody>
     </table>
+    </div>
   </div>
 </div>
 

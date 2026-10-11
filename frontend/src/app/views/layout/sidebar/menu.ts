@@ -84,6 +84,7 @@ export const MENU: MenuItem[] = [
     label: 'Paramètres hôtel',
     icon: 'fa-solid fa-sliders',
     subItems: [
+      { label: 'Chambres', link: '/gestion/config/chambres' },
       { label: 'Pavillons', link: '/gestion/config/pavillons' },
       { label: 'Catégories clients', link: '/gestion/config/categories-clients' },
       { label: 'Grille tarifaire', link: '/gestion/config/tarifs' },

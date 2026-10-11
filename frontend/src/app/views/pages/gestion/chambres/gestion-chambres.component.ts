@@ -15,6 +15,11 @@ export class GestionChambresComponent implements OnInit {
   loading = false;
   recherche = '';
 
+  // ---- Filtres ----
+  pavillonFiltre: number | null = null;
+  typeFiltre: number | null = null;
+  etatFiltre = '';
+
   etats = ['LIBRE', 'OCCUPEE', 'NETTOYAGE', 'HORS_SERVICE'];
   etatsMenage = [
     { code: 'CLEAN', label: 'Clean' },
@@ -49,9 +54,21 @@ export class GestionChambresComponent implements OnInit {
   }
 
   chambresFiltrees(): any[] {
-    if (!this.recherche) return this.chambres;
-    const q = this.recherche.toLowerCase();
-    return this.chambres.filter(c => (c.numero || '').toLowerCase().includes(q));
+    const q = this.recherche.trim().toLowerCase();
+    return this.chambres.filter(c => {
+      if (this.pavillonFiltre && c.pavillon?.id !== this.pavillonFiltre) return false;
+      if (this.typeFiltre && c.typeChambre?.id !== this.typeFiltre) return false;
+      if (this.etatFiltre && c.etat !== this.etatFiltre) return false;
+      if (q && !(c.numero || '').toLowerCase().includes(q)) return false;
+      return true;
+    });
+  }
+
+  resetFiltres(): void {
+    this.recherche = '';
+    this.pavillonFiltre = null;
+    this.typeFiltre = null;
+    this.etatFiltre = '';
   }
 
   newRoom(): void {
